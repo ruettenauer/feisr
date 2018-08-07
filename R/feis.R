@@ -1,0 +1,334 @@
+#######################
+#### Function FEIS ####
+#######################
+#' @importFrom Rdpack reprompt
+#' @importFrom stats as.formula ave coef coefficients lm model.matrix model.response printCoefmat pt resid sd terms update var
+
+#' @title Fixed Effects Individual Slope Estimator
+#'
+#' @description
+#' Estimates fixed effects individual slope estimators by applying linear \code{lm} models
+#' to "detrended" data.
+#'
+#' @details
+#' \code{feis} is a special function to estimate linear fixed effects models with individual-specific slopes.
+#' In contrast to conventional fixed effects models, data are not person "demeaned", but "detrended" by
+#' the predicted indivdiual slope of each person
+#' \insertCite{Bruderl.2015.387,Wooldridge.2010.384}{feisr}.
+#' For conventional fixed or random effects models, please use the function \code{\link[plm]{plm}}.
+#'
+#' Estimation requires at least \code{q+1} observations per unit, where \code{q} is the number of slope
+#' parameters (including a constant).
+#' \code{feis} automatically selects only those groups from the current data set which have at least \code{q+1} observations.
+#' The function draws a warning if units with \code{<q+1} observations are dropped.
+#'
+#' The function requires a two-part formula, in which the second part indicates the slope parameter(s).
+#' If, for example, the model is \code{y ~ x1 + x2}, with the slope variables \code{x3} and \code{x4},
+#' the model can be estimated with:
+#' \itemize{
+#'   \item \code{formula = y ~ x1 + x2 | x3 + x4}
+#' }
+#' If the second part is not specified (and individual "slopes" are estimated only by a constant),
+#' the model reduces to a conventional fixed effects (within) model. In this case please use
+#' \code{\link[plm]{plm}} (\code{model="within"}) instead of \code{feis}.
+#'
+#' If specified, \code{feis} estimated panel-robust standard errors. Panel-robust standard errors are
+#' robust to arbitrary forms of serial correlation within groups formed by \code{id} as well as
+#' heteroscedasticity across groups \insertCite{@see @Wooldridge.2010.384, pp. 379-381}{feisr}.
+
+#'
+#' @seealso \code{\link[plm]{plm}}, \code{\link[feisr]{feistest}}
+#'
+#' @param formula	a symbolic description for the model to be fitted.
+#' @param data a \code{data.frame} containing the specified variables.
+#' @param id the name of a unique group / person identifier (as string).
+#' @param robust logical. If \code{TRUE} estimates cluster robust standard errors (default is \code{FALSE}).
+#' @param intercept logical. If \code{TRUE} estimates the model with an intercept (default is \code{FALSE}).
+#' @param dropgroups logical. If \code{TRUE} groups without any within variance on a slope variable are dropped
+#'  , if \code{FALSE} those variables are omitted for the respective groups only (default is \code{FALSE}).
+#' @param ...	further arguments.
+#'
+#' @return An object of class "\code{feis}", containing the following elements:
+#' \item{coefficients}{the vector of coefficients.}
+#' \item{vcov}{the variance-covariance matrix of the coefficients.}
+#' \item{residuals}{the vector of residuals (computed from the "detrended" data).}
+#' \item{df.residual}{degrees of freedom of the residuals.}
+#' \item{formula}{an object of class "\code{Formula}" describing the model.}
+#' \item{model}{the original model frame as a \code{data.frame} containing the original
+#'   variables used for estimation.}
+#' \item{modelhat}{a constructed model frame as a \code{data.frame} containing the predicted
+#'   values from the first stage regression using the slope variable as predictor.}
+#' \item{modeltrans}{a constructed model frame as a \code{data.frame} containing the "detrended"
+#'   variables used for the final model estimation and the untransformed slope variables.}
+#' \item{response}{the vector of the "detrended" response variable.}
+#' \item{fitted.values}{the vector of fitted values (computed from the "detrended" data).}
+#' \item{id}{a vector containing the unique person identifier.}
+#' \item{call}{the matched call.}
+#' \item{assign}{assign attributes of the formula.}
+#' \item{na.omit}{(where relevant) a vector of the omitted observations. Only handling of \code{NA}s is "\code{omit}".}
+#' \item{contrasts}{(only where relevant) the contrasts used.}
+#' \item{arg}{a list containing the used methods. Only "\code{feis}" and "\code{individual}" effects available.}
+#' \item{slopes}{a character vector containing the names of the slope variables.}
+#' \item{r2}{R squared of the "detrended" model.}
+#' \item{adj.r2}{adjusted R squared of the "detrended" model.}
+#' \item{vcov_arg}{a character containing the method used to compute the variance-covariance matrix.}
+#'
+#' @references
+#' \insertAllCited{}
+#'
+#' @examples
+#' data("Produc", package = "plm")
+#' feis.mod <- feis("log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp | year",
+#'                  data = Produc, id = "state", robust = TRUE)
+#' summary(feis.mod)
+#' @export
+feis <- function(formula, data, id, robust = FALSE, intercept = FALSE, dropgroups = FALSE, ...){
+
+  if(!is.character(formula)){
+    formula <- Formula::Formula(formula)
+  }
+
+  formula <- Formula::as.Formula(formula, update = TRUE)
+
+  dots <- list(...)
+
+  # Save row names
+  orig_rownames <- row.names(data)
+
+  # Extract id
+  i <- data[, which(colnames(data) == id)]
+
+  # eval the model.frame
+  if (length(formula)[2] == 2){
+    formula  <-  expand.formula(formula)
+  }else{
+    stop(paste("No individual slopes specified. Please use plm"))
+  }
+  if (! plm::has.intercept(formula)[2]){
+    stop(paste("Individual slopes have to be estimated with intercept"))
+  }
+
+  cl <- match.call()
+  mf <- match.call(expand.dots = FALSE)
+  m <- match(c("formula", "data", "subset", "weights", "na.action"), names(mf), 0)
+  mf <- mf[c(1, m)]
+  mf$drop.unused.levels  <-  TRUE
+  mf[[1]] <- as.name("model.frame")
+  mf$formula <- formula
+  new_rownames <- 1:nrow(data)
+  row.names(data) <- new_rownames
+  mf$data <- data
+
+  # Eval
+  data <- eval(mf, parent.frame())
+
+  # Subset id
+  i <- i[as.numeric(row.names(data))]
+
+  # Subset to obs with N > n_slopes+1
+  ns <- ncol(attr(terms(formula(formula, rhs = 2, lhs = 0)), "factors"))
+  pcount <- ave(c(1:length(i)), i, FUN = function(x) length(x))
+
+  if(any(pcount<=(ns+1))){
+    warning(paste("FEIS needs at least n(slopes)+1 observations per group. \n",
+                  "You specified", ns, "slope parameter(s) plus intercept,",
+                  "all groups with t <=", ns+1, "dropped", sep=" "), call. = TRUE, immediate. = TRUE)
+
+    # reduce sample
+    data <- data[which(pcount > (ns + 1)), ]
+    i <- i[which(pcount > (ns + 1))]
+
+
+  }
+
+  # Check for collinearity in slopes and within variance in slopes (to avoid computationally singular)
+  X1_test <- model.matrix(formula, data, rhs = 2, lhs = 0, cstcovar.rm = "all")
+  X1_test_dm <- X1_test[, -1, drop = FALSE] - apply(X1_test[, -1, drop = FALSE], 2, FUN =
+                                                function(u) ave(u, i, FUN = function(z) mean(z)))
+
+  if(qr(X1_test_dm)$rank < ncol(X1_test_dm)){
+    stop(paste("Perfect collinearity in slope variables"))
+  }
+
+  wvar <- apply(X1_test[, -1, drop = FALSE], 2, FUN = function(u) ave(u, i, FUN = function(z) sd(z)))
+  novar <- apply(wvar, 1, FUN = function(u) any(u == 0))
+
+  if(any(novar) & dropgroups == TRUE){
+    nom <- length(unique(i[which(novar)]))
+    warning(paste(nom, "groups without any within variance on slope variable(s) dropped"),
+            call. = TRUE, immediate. = TRUE)
+
+    # reduce sample
+    data <- data[-which(novar), ]
+    i <- i[-which(novar)]
+
+  }
+
+
+  # Save omitted rows
+  omitted <- new_rownames[-as.numeric(row.names(data))]
+  names(omitted) <- orig_rownames[-as.numeric(row.names(data))]
+  attr(omitted, "class")<-"omit"
+
+  # preserve original row.names
+  row.names(data)  <-  orig_rownames[as.numeric(row.names(data))]
+
+
+  # Names
+  #sv <- attr(terms(formula(formula, rhs = 2, lhs = 0)), "term.labels")
+  cv <- attr(terms(formula(formula, rhs = 1, lhs = 0)), "term.labels")
+  rv <- all.vars(formula(formula, rhs = 0, lhs = 1))
+
+
+  ### First level (individual slope) regression
+
+  X1 <- model.matrix(formula, data, rhs = 2, lhs = 0, cstcovar.rm = "all")
+  sv <- colnames(X1)[-1]
+
+  Y1 <- as.matrix(model.response(data, "numeric"))
+  colnames(Y1) <- all.vars(formula(formula, rhs = 0, lhs = 1))
+  Y1 <- cbind(Y1, model.matrix(formula, data, rhs = 1, lhs = 0, cstcovar.rm = "all")[, -1, drop = FALSE])
+
+  ny <- ncol(Y1)
+  nx <- ncol(X1)
+
+  df_step1<-cbind(X1, Y1)
+
+  dhat <- by(df_step1, i, FUN=function(u) hatm(y = u[, (nx + 1):(nx + ny)], x = u[, 1:nx],
+                                               checkcol = !dropgroups))
+  dhat <- do.call(rbind, lapply(dhat, as.matrix))
+
+  # Ensure original order
+  dhat <- dhat[match(rownames(data), rownames(dhat)), ]
+
+
+  ### De-trend Data
+
+  X <- model.matrix(formula, data, rhs = 1, lhs = 0, cstcovar.rm = "all")
+  ass_X <- attr(X, "assign")
+  cont_X <- attr(X, "contrasts")
+
+  # Test for computationally singular (including slope vars)
+  novar <- nowithinvar(X1, X, i)
+  drop <- colnames(X)[novar]
+
+  if(any(novar[which(names(novar) != "(Intercept)")])){
+    drop <- drop[which(drop != "(Intercept)")]
+    X <- X[, -which(colnames(X) %in% drop)]
+  }
+
+  # Omit intercept
+  if(plm::has.intercept(formula)[1]){
+    X <- X[, -1, drop = FALSE]
+    ass_X <- ass_X[-1]
+  }
+
+
+  # Update covariates
+  if(length(cont_X) != 0){
+    cv<-colnames(X)
+    # if(intercept == TRUE){
+    #   cv<-cv[-1]
+    # }
+  }
+
+  # Substract dhat
+  o1<-match(cv, colnames(X))
+  o2<-match(cv, colnames(dhat))
+  X[, o1] <- X[, o1] - dhat[, o2]
+
+
+  Y <- as.matrix(model.response(data, "numeric"))
+  Y <- as.vector(Y - dhat[, which(colnames(dhat) == rv)])
+
+  # Store transformed data
+  transformed <- data.frame(Y, X)
+  colnames(transformed)[1]<-rv
+
+  ### Coefficents
+
+  # Run lm model
+  #beta <- solve(t(mx)%*%mx)%*%t(mx)%*%my
+  if(intercept == TRUE){
+    f <- paste(rv, "~", 1, "+ .", sep=" ")
+  }else{
+    f <- paste(rv, "~", -1, "+ .", sep=" ")
+  }
+
+  result  <-  lm(f, data = data.frame(transformed))
+
+  # Exract coefs
+  beta <- result$coefficients
+  aliased <- result$aliased
+
+  # Extract residuals
+  u <- resid(result)
+  k <- length(unique(i)) * ncol(X1) + ncol(X)
+  df <- length(u) - k
+
+  # Extract Rsquared
+  r.squared <- r.sq.feis(result, adj = FALSE)
+  adj.r.squared <- r.sq.feis(result, adj = TRUE)
+
+  # Fitted values (similar fitted values as plm for FE)
+  fitted <- as.vector(Y - u)
+
+  names(fitted) <- rownames(X)
+  names(Y) <- rownames(X)
+  names(u) <- rownames(X)
+
+  ### Standard errors
+
+  if(!robust){
+    sigma <- sum((u * u)) / (df)
+    vcov <- sigma * solve(t(X) %*% X)
+    se <- sqrt(diag(vcov))
+  }
+
+  # Cluster robust SEs
+  if(robust){
+    mxu <- X * u
+    e <- rowsum(mxu, i)
+    dfc <- ((length(unique(i)) / (length(unique(i)) - 1))
+            * ((length(i) - 1) / (length(i) - (ncol(X1) + ncol(X)))))
+    vcovCL <- dfc * (solve(t(X) %*% X) %*% t(e) %*% e %*% solve(t(X) %*% X))
+    se <- sqrt(diag(vcovCL))
+
+    vcov <- vcovCL
+  }
+
+
+  ### Output
+
+  result <- list(coefficients = beta,
+               vcov          = vcov,
+               residuals     = u,
+               df.residual   = df,
+               formula       = formula,
+               model         = data,
+               modelhat      = dhat,
+               modeltrans    = transformed,
+               response      = Y,
+               fitted.values = fitted,
+               id            = i)
+  result$call <- cl
+  result$assign <- ass_X
+  result$na.action <- omitted
+  result$contrasts <- cont_X
+  result$arg <- list(model = "feis", effect = "individual")
+  result$aliased <- aliased
+  result$slopes <- sv
+  result$r2 <- r.squared
+  result$adj.r2 <- adj.r.squared
+
+  if(robust){
+    result$vcov_arg <- "Cluster robust standard errors"
+  }else{result$vcov_arg <- "Normal standard errors"}
+
+  class(result)  <-  c("feis")
+
+  return(result)
+}
+#' @exportClass feis
+
+
