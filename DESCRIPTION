@@ -1,12 +1,15 @@
 Package: feisr
 Title: Estimating Fixed Effects Individual Slope Models
-Version: 0.0.0.9000
+Version: 0.0.0.9001
 URL: https://github.com/ruettenauer/feisr
 BugReports: https://github.com/ruettenauer/feisr/issues
+Author: Tobias Rüttenauer [aut, cre],
+  Volker Ludwig [aut]
+Maintainer: Tobias Rüttenauert <ruettenauer@sowi.uni-kl.de>
 Authors@R: c(	person("Tobias", "Rüttenauer", email = "ruettenauer@sowi.uni-kl.de", role = c("aut", "cre")),
 				person("Volker", "Ludwig", email = "ludwig@sowi.uni-kl.de", role = c("aut")))
 Description: Provides a function to estimate fixed effects individual slope models.
-Depends: R (>= 3.5.0)
+Depends: R (>= 3.4.0)
 License: GPL (>= 2)
 Encoding: UTF-8
 LazyData: true
@@ -14,7 +17,7 @@ RdMacros: Rdpack
 Imports: aod, 
 	Formula,
 	methods,
-	plm,
+	plm,	
 	Rdpack,
 	stats
 Suggests: texreg,

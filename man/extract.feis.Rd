@@ -2,7 +2,7 @@
 % Please edit documentation in R/summary_functions.R
 \name{extract.feis}
 \alias{extract.feis}
-\title{Extract metho for \code{feis}-class}
+\title{Extract method for \code{feis}-class}
 \usage{
 extract.feis(model, include.rsquared = TRUE, include.adjrs = TRUE,
   include.nobs = TRUE, include.groups = TRUE, include.rmse = TRUE, ...)

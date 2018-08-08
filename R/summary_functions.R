@@ -1,6 +1,8 @@
 ###########################
 #### Describe function ####
 ###########################
+#' @importFrom Rdpack reprompt
+
 
 describe <- function(x,
                      what = c('model', 'effect', 'random.method',
@@ -33,15 +35,14 @@ describe <- function(x,
 #' about estimated feis models
 #'
 #' @param object an object of class "\code{plm}".
-#' @param vcov a variance–covariance matrix furnished by the user or a
-#' function to calculate one
+#' @param vcov a variance-covariance matrix furnished by the user or a function to calculate one.
 #' @param ...	further arguments.
 #'
 #' @return An object of class "\code{summary.feis}", containing the elements
 #' of the feis object (see \code{\link[feisr]{feis}}). The following objects
 #' are modified:
 #' \item{coefficients}{a matrix with the estimated coefficients, standard errors,
-#' t–values, and p–values, if argument vcov was set to non-NULL the standard errors
+#' t-values, and p-values, if argument vcov was set to non-NULL the standard errors
 #' are calculated by the \code{vcov} in the input object.}
 #' \item{r.squared}{a vector containing R squared and adjusted R squared.}
 #'
@@ -220,7 +221,7 @@ print.summary.feistest <- function(x, digits = max(3, getOption("digits") - 2),
 #### Extract Function (for texreg) ####
 #######################################
 
-#' @title Extract metho for \code{feis}-class
+#' @title Extract method for \code{feis}-class
 #'
 #' @description
 #' Provides extract method for usage of \code{\link[texreg]{texreg}} with \code{feis}-class

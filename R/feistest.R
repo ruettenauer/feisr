@@ -1,6 +1,7 @@
 #############################################
 #### Augmented Regression Test FEIS - FE ####
 #############################################
+#' @importFrom Rdpack reprompt
 #' @title Augmented Regression Test
 #'
 #' @description
