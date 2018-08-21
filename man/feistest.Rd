@@ -19,13 +19,15 @@ feistest(model = NA, robust = FALSE, type = c("both", "art1", "art2"),
 \value{
 An object of class "\code{feistest}", containing the following elements:
 \item{wald_feis}{an object of class "\code{wald.test}" testing the fixed effects individual slopes model
-  against the conventional fixed effects model.}
+  against the conventional fixed effects model (see \code{\link[aod]{wald.test}}).}
 \item{wald_fe}{an object of class "\code{wald.test}" testing the fixed effects model
-  against the random effects model.}
+  against the random effects model (see \code{\link[aod]{wald.test}}).}
 \item{vcov1}{the variance-covariance matrix of CREIS.}
 \item{vcov2}{the variance-covariance matrix of CRE.}
-\item{CREIS}{an object of class "\code{plm}" estimating a Correlated Random Effect Individual Slope model.}
-\item{CRE}{an object of class "\code{plm}" estimating a Correlated Random Effect model.}
+\item{CREIS}{an object of class "\code{plm}" estimating a Correlated Random Effect Individual Slope model
+  (see \code{\link[plm]{plm}}).}
+\item{CRE}{an object of class "\code{plm}" estimating a Correlated Random Effect model
+  (see \code{\link[plm]{plm}}).}
 \item{call}{the matched call.}
 \item{robust}{logical. If \code{TRUE} cluster robust standard errors were used.}
 \item{formula}{an object of class "\code{Formula}" describing the model.}
