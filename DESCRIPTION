@@ -16,7 +16,6 @@ LazyData: true
 RdMacros: Rdpack
 Imports: aod, 
 	Formula,
-	methods,
 	plm,	
 	Rdpack,
 	stats
