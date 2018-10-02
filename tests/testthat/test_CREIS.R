@@ -1,7 +1,6 @@
 ######################################################################
 #### Test feis / feistest creis / manual creis against each other ####
 ######################################################################
-
 library(plm)
 context("Compare CRE + CREIS results with feis")
 
@@ -20,10 +19,10 @@ ht1.cre <- ht1$CRE
 ht1.creis <- ht1$CREIS
 
 # Test for sufficient coefficients
-coefs <- cleani(names(feis1.mod$coefficients))
-coefs1 <- c(coefs, paste(coefs, "mean", sep = "_"), feis1.mod$slopes) # year_mean constant (dropped)
+coefs <- feisr:::cleani(names(feis1.mod$coefficients))
+coefs1 <- c(coefs, paste(coefs, "mean", sep = "_"), feis1.mod$slopevars) # year_mean constant (dropped)
 coefs2 <- c(coefs, paste(coefs, "hat", sep = "_"), paste(coefs, "mean", sep = "_"),
-            feis1.mod$slopes) # year_mean constant (dropped)
+            feis1.mod$slopevars) # year_mean constant (dropped)
 
 test_that("CRE + CREIS specification (Produc)", {
   expect_identical(names(ht1.cre$coefficients)[-1], coefs1)
@@ -100,9 +99,9 @@ ht2.creis <- ht2$CREIS
 
 # Test for sufficient coefficients
 coefs <- cleani(names(feis2.mod$coefficients))
-coefs1 <- c(coefs, paste(coefs, "mean", sep = "_"), feis2.mod$slopes, paste(feis2.mod$slopes, "mean", sep = "_"))
+coefs1 <- c(coefs, paste(coefs, "mean", sep = "_"), feis2.mod$slopevars, paste(feis2.mod$slopevars, "mean", sep = "_"))
 coefs2 <- c(coefs, paste(coefs, "hat", sep = "_"), paste(coefs, "mean", sep = "_"),
-            feis2.mod$slopes, paste(feis2.mod$slopes, "mean", sep = "_"))
+            feis2.mod$slopevars, paste(feis2.mod$slopevars, "mean", sep = "_"))
 
 test_that("CRE + CREIS specification (Hedonic)", {
   expect_identical(names(ht2.cre$coefficients)[-1], coefs1)

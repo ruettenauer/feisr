@@ -75,7 +75,7 @@ feistest <- function(model = NA, robust = FALSE, type = c("both", "art1", "art2"
   type <- type[1]
 
   # Names
-  sv <- model$slopes
+  sv <- model$slopevars
   cv <- names(model$coefficients)
   cv <- cv[which(cv != "(Intercept)")]
   rv <- all.vars(formula(formula, rhs = 0, lhs = 1))

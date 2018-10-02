@@ -113,7 +113,7 @@ print.summary.feis <- function(x, digits = max(3, getOption("digits") - 2),
   else printCoefmat(coef(x)[subset, , drop = FALSE], digits = digits)
   cat("\n")
   cat(paste(x$vcov_arg,       "\n", sep = ""))
-  cat(paste("Slope parameters: ", paste(x$slopes, collapse=", "),        "\n", collapse = ""))
+  cat(paste("Slope parameters: ", paste(x$slopevars, collapse=", "),        "\n", collapse = ""))
   cat(paste("Total Sum of Squares:    ", signif(tss.feis(x),      digits), "\n", sep = ""))
   cat(paste("Residual Sum of Squares: ", signif(rss.feis(x), digits), "\n", sep = ""))
   cat(paste("R-Squared:      ", signif(x$r.squared[1], digits),       "\n", sep = ""))

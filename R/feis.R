@@ -15,7 +15,6 @@
 #' In contrast to conventional fixed effects models, data are not person "demeaned", but "detrended" by
 #' the predicted indivdiual slope of each person
 #' \insertCite{Bruderl.2015.387,Wooldridge.2010.384}{feisr}.
-#' For conventional fixed or random effects models, please use the function \code{\link[plm]{plm}}.
 #'
 #' Estimation requires at least \code{q+1} observations per unit, where \code{q} is the number of slope
 #' parameters (including a constant).
@@ -28,9 +27,9 @@
 #' \itemize{
 #'   \item \code{formula = y ~ x1 + x2 | x3 + x4}
 #' }
-#' If the second part is not specified (and individual "slopes" are estimated only by a constant),
+#' If the second part is not specified (and individual "slopes" are estimated only by an intercept),
 #' the model reduces to a conventional fixed effects (within) model. In this case please use
-#' \code{\link[plm]{plm}} (\code{model="within"}) instead of \code{feis}.
+#' the well-established \code{\link[plm]{plm}} (\code{model="within"}) instead of \code{feis}.
 #'
 #' If specified, \code{feis} estimated panel-robust standard errors. Panel-robust standard errors are
 #' robust to arbitrary forms of serial correlation within groups formed by \code{id} as well as
@@ -68,7 +67,7 @@
 #' \item{na.omit}{(where relevant) a vector of the omitted observations. Only handling of \code{NA}s is "\code{omit}".}
 #' \item{contrasts}{(only where relevant) the contrasts used.}
 #' \item{arg}{a list containing the used methods. Only "\code{feis}" and "\code{individual}" effects available.}
-#' \item{slopes}{a character vector containing the names of the slope variables.}
+#' \item{slopevars}{a character vector containing the names of the slope variables.}
 #' \item{r2}{R squared of the "detrended" model.}
 #' \item{adj.r2}{adjusted R squared of the "detrended" model.}
 #' \item{vcov_arg}{a character containing the method used to compute the variance-covariance matrix.}
@@ -187,6 +186,7 @@ feis <- function(formula, data, id, robust = FALSE, intercept = FALSE, dropgroup
 
   Y1 <- as.matrix(model.response(data, "numeric"))
   colnames(Y1) <- all.vars(formula(formula, rhs = 0, lhs = 1))
+  #colnames(Y1) <- rownames(attr(terms(formula), "factors"))[attr(terms(formula), "response")]
   Y1 <- cbind(Y1, model.matrix(formula, data, rhs = 1, lhs = 0, cstcovar.rm = "all")[, -1, drop = FALSE])
 
   ny <- ncol(Y1)
@@ -317,7 +317,7 @@ feis <- function(formula, data, id, robust = FALSE, intercept = FALSE, dropgroup
   result$contrasts <- cont_X
   result$arg <- list(model = "feis", effect = "individual")
   result$aliased <- aliased
-  result$slopes <- sv
+  result$slopevars <- sv
   result$r2 <- r.squared
   result$adj.r2 <- adj.r.squared
 
@@ -330,5 +330,106 @@ feis <- function(formula, data, id, robust = FALSE, intercept = FALSE, dropgroup
   return(result)
 }
 #' @exportClass feis
+
+
+
+
+#########################
+#### Function slopes ####
+#########################
+
+# Slope maker
+slpmk <- function(Y=NA, X=NA, Z=NA, beta=NA, checkcol = TRUE){
+
+  Y <- as.matrix(Y)
+  X <- as.matrix(X)
+  Z <- as.matrix(Z)
+  beta <- as.vector(beta)
+
+  # Fill zero in case of collinearity
+  res <- as.vector(rep(0, ncol(Z)))
+  names(res) <- colnames(Z)
+
+  # Check for perfect collinearity within groups
+  if(checkcol == TRUE){
+    z.qr <- qr(Z)
+    if(z.qr$rank < ncol(Z)){
+      vars <- z.qr$pivot[1:z.qr$rank]
+      Z <- Z[, vars]
+    }else{
+      vars <- 1:ncol(Z)
+    }
+  }
+
+
+  res[vars] <- as.vector(solve(t(Z) %*% Z) %*% t(Z) %*% (Y - X %*% beta))
+  return(t(res))
+}
+
+
+# Extract slopes
+
+#' @title Extract individual slopes
+#'
+#' @description
+#' Extracts the individual slopes \code{alpha_i} from a \code{feis} object created by
+#' \code{\link[feisr]{feis}}
+#'
+#' @details
+#' If slope variables are perfectly collinear within a cluster, one variable is dropped
+#' and the function returns \code{0} for the respective slope and cluster.
+#'
+#' @param model	an object of class "\code{feis}".
+#' @param ...	further arguments.
+#'
+#' @return A \code{N x J} matrix containing the individual slopes for each cluster unit \code{N}
+#' and slope variable \code{J}. Rownames indicate the cluster id.
+#'
+#' @examples
+#' data("Produc", package = "plm")
+#' feis.mod <- feis("log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp | year",
+#'                  data = Produc, id = "state", robust = TRUE)
+#' slps <- slopes(feis.mod)
+#' @export
+
+slopes <- function(model=NA, ...){
+
+  data <- model$model
+  fm <- model$formula
+  coefs <- model$coefficients
+  names(coefs) <- dimnames(model$vcov)[[1]]
+
+  Z <- model.matrix(fm, data, rhs = 2, lhs = 0, cstcovar.rm = "all")
+  Y <- model.response(data)
+  X <- model.matrix(fm, data, rhs = 1, lhs = 0, cstcovar.rm = "all")
+
+  # Omit intercept
+  if(plm::has.intercept(fm)[1]){
+    X <- X[, -1, drop = FALSE]
+  }
+
+  i <- model$id
+
+  # Test order
+  oo <- match(colnames(X), names(coefs))
+  coefs <- as.vector(coefs[oo])
+
+  # Combine to df
+  df <- cbind(Y, X, Z)
+
+  nx <- ncol(X)
+  nz <- ncol(Z)
+
+  slps <- by(df, i, FUN = function(u) slpmk(Y = u[, 1], X = u[, 2:(nx + 1)],
+                                          Z = u[, (nx + 2):(nx + 1 + nz)], beta = coefs,
+                                          checkcol = TRUE))
+
+  nslps <- names(slps)
+  slps <- do.call(rbind, lapply(slps, as.matrix))
+  rownames(slps) <- nslps
+
+  return(slps)
+
+}
 
 

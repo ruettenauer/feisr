@@ -44,7 +44,7 @@ An object of class "\code{feis}", containing the following elements:
 \item{na.omit}{(where relevant) a vector of the omitted observations. Only handling of \code{NA}s is "\code{omit}".}
 \item{contrasts}{(only where relevant) the contrasts used.}
 \item{arg}{a list containing the used methods. Only "\code{feis}" and "\code{individual}" effects available.}
-\item{slopes}{a character vector containing the names of the slope variables.}
+\item{slopevars}{a character vector containing the names of the slope variables.}
 \item{r2}{R squared of the "detrended" model.}
 \item{adj.r2}{adjusted R squared of the "detrended" model.}
 \item{vcov_arg}{a character containing the method used to compute the variance-covariance matrix.}
@@ -58,7 +58,6 @@ to "detrended" data.
 In contrast to conventional fixed effects models, data are not person "demeaned", but "detrended" by
 the predicted indivdiual slope of each person
 \insertCite{Bruderl.2015.387,Wooldridge.2010.384}{feisr}.
-For conventional fixed or random effects models, please use the function \code{\link[plm]{plm}}.
 
 Estimation requires at least \code{q+1} observations per unit, where \code{q} is the number of slope
 parameters (including a constant).
@@ -71,9 +70,9 @@ the model can be estimated with:
 \itemize{
   \item \code{formula = y ~ x1 + x2 | x3 + x4}
 }
-If the second part is not specified (and individual "slopes" are estimated only by a constant),
+If the second part is not specified (and individual "slopes" are estimated only by an intercept),
 the model reduces to a conventional fixed effects (within) model. In this case please use
-\code{\link[plm]{plm}} (\code{model="within"}) instead of \code{feis}.
+the well-established \code{\link[plm]{plm}} (\code{model="within"}) instead of \code{feis}.
 
 If specified, \code{feis} estimated panel-robust standard errors. Panel-robust standard errors are
 robust to arbitrary forms of serial correlation within groups formed by \code{id} as well as
