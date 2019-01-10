@@ -23,7 +23,7 @@ extract.feis(model, include.rsquared = TRUE, include.adjrs = TRUE,
 \item{...}{further arguments.}
 }
 \description{
-Provides extract method for usage of \code{\link[texreg]{texreg}} with \code{feis}-class
+Provides an extract method for usage of \code{\link[texreg]{texreg}} with \code{feis}-class.
 }
 \examples{
 library(texreg)

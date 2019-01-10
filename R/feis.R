@@ -19,7 +19,7 @@
 #' Estimation requires at least \code{q+1} observations per unit, where \code{q} is the number of slope
 #' parameters (including a constant).
 #' \code{feis} automatically selects only those groups from the current data set which have at least \code{q+1} observations.
-#' The function draws a warning if units with \code{<q+1} observations are dropped.
+#' The function returns a warning if units with \code{<q+1} observations are dropped.
 #'
 #' The function requires a two-part formula, in which the second part indicates the slope parameter(s).
 #' If, for example, the model is \code{y ~ x1 + x2}, with the slope variables \code{x3} and \code{x4},
@@ -29,16 +29,16 @@
 #' }
 #' If the second part is not specified (and individual "slopes" are estimated only by an intercept),
 #' the model reduces to a conventional fixed effects (within) model. In this case please use
-#' the well-established \code{\link[plm]{plm}} (\code{model="within"}) instead of \code{feis}.
+#' the well-established \code{\link[plm]{plm}} (\code{model="within"}) function instead of \code{feis}.
 #'
-#' If specified, \code{feis} estimated panel-robust standard errors. Panel-robust standard errors are
+#' If specified, \code{feis} estimates panel-robust standard errors. Panel-robust standard errors are
 #' robust to arbitrary forms of serial correlation within groups formed by \code{id} as well as
 #' heteroscedasticity across groups \insertCite{@see @Wooldridge.2010.384, pp. 379-381}{feisr}.
 
 #'
 #' @seealso \code{\link[plm]{plm}}, \code{\link[feisr]{feistest}}
 #'
-#' @param formula	a symbolic description for the model to be fitted.
+#' @param formula	a symbolic description for the model to be fitted (see Details).
 #' @param data a \code{data.frame} containing the specified variables.
 #' @param id the name of a unique group / person identifier (as string).
 #' @param robust logical. If \code{TRUE} estimates cluster robust standard errors (default is \code{FALSE}).
@@ -56,7 +56,7 @@
 #' \item{model}{the original model frame as a \code{data.frame} containing the original
 #'   variables used for estimation.}
 #' \item{modelhat}{a constructed model frame as a \code{data.frame} containing the predicted
-#'   values from the first stage regression using the slope variable as predictor.}
+#'   values from the first stage regression using the slope variable(s) as predictor(s).}
 #' \item{modeltrans}{a constructed model frame as a \code{data.frame} containing the "detrended"
 #'   variables used for the final model estimation and the untransformed slope variables.}
 #' \item{response}{the vector of the "detrended" response variable.}
@@ -64,7 +64,8 @@
 #' \item{id}{a vector containing the unique person identifier.}
 #' \item{call}{the matched call.}
 #' \item{assign}{assign attributes of the formula.}
-#' \item{na.omit}{(where relevant) a vector of the omitted observations. Only handling of \code{NA}s is "\code{omit}".}
+#' \item{na.omit}{(where relevant) a vector of the omitted observations. The only handling method
+#'  of \code{NA}s is "\code{omit}".}
 #' \item{contrasts}{(only where relevant) the contrasts used.}
 #' \item{arg}{a list containing the used methods. Only "\code{feis}" and "\code{individual}" effects available.}
 #' \item{slopevars}{a character vector containing the names of the slope variables.}
@@ -218,7 +219,7 @@ feis <- function(formula, data, id, robust = FALSE, intercept = FALSE, dropgroup
   }
 
   # Omit intercept
-  if(plm::has.intercept(formula)[1]){
+  if(plm::has.intercept(formula)[1] & intercept == FALSE){
     X <- X[, -1, drop = FALSE]
     ass_X <- ass_X[-1]
   }
@@ -226,10 +227,10 @@ feis <- function(formula, data, id, robust = FALSE, intercept = FALSE, dropgroup
 
   # Update covariates
   if(length(cont_X) != 0){
-    cv<-colnames(X)
-    # if(intercept == TRUE){
-    #   cv<-cv[-1]
-    # }
+    cv <- colnames(X)
+    if(intercept == TRUE){
+      cv <- cv[-which(cv == "(Intercept)")]
+    }
   }
 
   # Substract dhat
@@ -241,25 +242,30 @@ feis <- function(formula, data, id, robust = FALSE, intercept = FALSE, dropgroup
   Y <- as.matrix(model.response(data, "numeric"))
   Y <- as.vector(Y - dhat[, which(colnames(dhat) == rv)])
 
+
   # Store transformed data
   transformed <- data.frame(Y, X)
-  colnames(transformed)[1]<-rv
+  # colnames(transformed)[1] <- rv
+  colnames(transformed) <- c(rv, cv)
+
 
   ### Coefficents
 
   # Run lm model
-  #beta <- solve(t(mx)%*%mx)%*%t(mx)%*%my
-  if(intercept == TRUE){
-    f <- paste(rv, "~", 1, "+ .", sep=" ")
-  }else{
-    f <- paste(rv, "~", -1, "+ .", sep=" ")
-  }
+  # #beta <- solve(t(mx)%*%mx)%*%t(mx)%*%my
+  # if(intercept == TRUE){
+  #   f <- paste(rv, "~", 1, "+ .", sep=" ")
+  # }else{
+  #   f <- paste(rv, "~", -1, "+ .", sep=" ")
+  # }
+  #
+  # result  <-  lm(f, data = data.frame(transformed))
 
-  result  <-  lm(f, data = data.frame(transformed))
+  result <- stats::lm.fit(X, Y, ...)
 
   # Exract coefs
   beta <- result$coefficients
-  aliased <- result$aliased
+  # aliased <- result$aliased
 
   # Extract residuals
   u <- resid(result)
@@ -267,8 +273,8 @@ feis <- function(formula, data, id, robust = FALSE, intercept = FALSE, dropgroup
   df <- length(u) - k
 
   # Extract Rsquared
-  r.squared <- r.sq.feis(result, adj = FALSE)
-  adj.r.squared <- r.sq.feis(result, adj = TRUE)
+  r.squared <- r.sq.feis(result, adj = FALSE, intercept = intercept)
+  adj.r.squared <- r.sq.feis(result, adj = TRUE, intercept = intercept)
 
   # Fitted values (similar fitted values as plm for FE)
   fitted <- as.vector(Y - u)
@@ -316,7 +322,7 @@ feis <- function(formula, data, id, robust = FALSE, intercept = FALSE, dropgroup
   result$na.action <- omitted
   result$contrasts <- cont_X
   result$arg <- list(model = "feis", effect = "individual")
-  result$aliased <- aliased
+  # result$aliased <- aliased
   result$slopevars <- sv
   result$r2 <- r.squared
   result$adj.r2 <- adj.r.squared
@@ -372,17 +378,21 @@ slpmk <- function(Y=NA, X=NA, Z=NA, beta=NA, checkcol = TRUE){
 #' @title Extract individual slopes
 #'
 #' @description
-#' Extracts the individual slopes \code{alpha_i} from a \code{feis} object created by
-#' \code{\link[feisr]{feis}}
+#' Extracts the individual slopes (\code{alpha_i}) from a \code{feis} object created by
+#' \code{\link[feisr]{feis}}.
 #'
 #' @details
+#' The function extracts a matrix containing the individual slope parameters (\code{alpha_i}),
+#' which equals the coefficient(s) of regressing the depenent variable on the slope parameter(s).
+#'
 #' If slope variables are perfectly collinear within a cluster, one variable is dropped
 #' and the function returns \code{0} for the respective slope and cluster.
+#'
 #'
 #' @param model	an object of class "\code{feis}".
 #' @param ...	further arguments.
 #'
-#' @return A \code{N x J} matrix containing the individual slopes for each cluster unit \code{N}
+#' @return An \code{N x J} matrix containing the individual slopes for each cluster unit \code{N}
 #' and slope variable \code{J}. Rownames indicate the cluster id.
 #'
 #' @examples
@@ -431,5 +441,11 @@ slopes <- function(model=NA, ...){
   return(slps)
 
 }
+
+
+
+
+
+
 
 

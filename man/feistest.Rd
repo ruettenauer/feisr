@@ -2,34 +2,44 @@
 % Please edit documentation in R/feistest.R
 \name{feistest}
 \alias{feistest}
-\title{Augmented Regression Test}
+\title{Artificial Regression Test}
 \usage{
-feistest(model = NA, robust = FALSE, type = c("both", "art1", "art2"),
-  ...)
+feistest(model = NA, robust = FALSE, type = c("all", "art1", "art2",
+  "art3"), ...)
 }
 \arguments{
 \item{model}{an object of class "\code{feis}".}
 
 \item{robust}{logical. If \code{TRUE} uses cluster robust standard errors (Default is \code{FALSE}).}
 
-\item{type}{one of "\code{both}" (the Default), "\code{art1}", "\code{art2}".}
+\item{type}{one of "\code{all}" (the Default), "\code{art1}" for test of FEIS against FE only,
+"\code{art2}" for test of FE against RE only, and "\code{art3}" for test of FEIS against RE only
+(see also Details).}
 
 \item{...}{further arguments.}
 }
 \value{
 An object of class "\code{feistest}", containing the following elements:
-\item{wald_feis}{an object of class "\code{wald.test}" testing the fixed effects individual slopes model
-  against the conventional fixed effects model (see \code{\link[aod]{wald.test}}).}
-\item{wald_fe}{an object of class "\code{wald.test}" testing the fixed effects model
-  against the random effects model (see \code{\link[aod]{wald.test}}).}
-\item{vcov1}{the variance-covariance matrix of CREIS.}
-\item{vcov2}{the variance-covariance matrix of CRE.}
-\item{CREIS}{an object of class "\code{plm}" estimating a Correlated Random Effect Individual Slope model
-  (see \code{\link[plm]{plm}}).}
-\item{CRE}{an object of class "\code{plm}" estimating a Correlated Random Effect model
-  (see \code{\link[plm]{plm}}).}
+\item{wald_feis}{an object of class "\code{wald.test}" (see \code{\link[aod]{wald.test}}) testing
+the fixed effects individual slopes model against the conventional fixed effects model
+(\code{type="art1"}).}
+\item{wald_fe}{an object of class "\code{wald.test}" (see \code{\link[aod]{wald.test}}) testing
+the fixed effects model against the random effects model (\code{type="art2"}).}
+\item{wald_re}{an object of class "\code{wald.test}" (see \code{\link[aod]{wald.test}}) testing
+the fixed effects individual slopes model against the random effects model (\code{type="art3"}).}
+\item{vcov1}{the variance-covariance matrix of CREIS (\code{type="art1"}).}
+\item{vcov2}{the variance-covariance matrix of CRE (\code{type="art2"}).}
+\item{vcov3}{the variance-covariance matrix of CREIS without the means (\code{type="art3"}).}
+\item{CREIS}{an object of class "\code{plm}" (see \code{\link[plm]{plm}}) estimating a Correlated
+Random Effect Individual Slope model (\code{type="art1"}).}
+\item{CRE}{an object of class "\code{plm}" (see \code{\link[plm]{plm}}) estimating a Correlated
+Random Effect model (\code{type="art2"}).}
+\item{CREIS2}{an object of class "\code{plm}" (see \code{\link[plm]{plm}}) estimating a
+Correlated Random Effect Individual Slope model without including the covariates' means
+(\code{type="art3"}).}
 \item{call}{the matched call.}
-\item{robust}{logical. If \code{TRUE} cluster robust standard errors were used.}
+\item{robust}{logical. If \code{TRUE} cluster robust standard errors were used
+(Default is \code{FALSE}.}
 \item{formula}{an object of class "\code{Formula}" describing the model.}
 \item{type}{the type of performed test(s).}
 }
@@ -42,28 +52,37 @@ The Hausmann test can be computed by estimating a correlated random effects mode
 estimating a Mundlak \insertCite{Mundlak.1978.0}{feisr} specification using random effects models
 with \code{\link[plm]{plm}}.
 Subsequently, \code{feistest} tests whether the time-constant variables / slope variables are correlated with
-the unobserved heterogeneity by using a Wald-test with \code{\link[aod]{wald.test}}.
+the unobserved heterogeneity by using a Wald chi-squared test with \code{\link[aod]{wald.test}}.
 
-While \code{type="art2"} estimates the conventional regression-based Hausmann test
-\insertCite{@as described in @Wooldridge.2010.384, pp. 328-334}{feisr} comparing conventional
-fixed effects models against random effects models, \code{type="art1"} estimates an extended
-regression-based Hausmann test comparing fixed effects individual slope models and conventional
-fixed effects model. For "\code{art1} the Mundlak-specification includes the person-specific averages,
+\code{type="art1"} estimates an extended regression-based Hausmann test comparing fixed effects
+individual slope models and conventional fixed effects models. For \code{art1} the
+Mundlak-specification \insertCite{Mundlak.1978.0}{feisr} includes the person-specific averages,
 but additionally the person-specific slope estimates used for "detrending" in \code{\link[feisr]{feis}}.
-The Wald test of \code{type="art1"} is applied to the slope variables only.
+This allows to test whether we can omit the estimated values based on the slopes and reduce the model
+to a conventional FE model. The Wald test of \code{type="art1"} is applied to the slope variables only.
+\code{type="art2"} estimates the conventional regression-based Hausmann test
+\insertCite{@as described in @Wooldridge.2010.384, pp. 328-334}{feisr} comparing conventional
+fixed effects models against random effects models.
+\code{type="art3"} estimates a regression-based Hausmann test comparing FEIS directly against RE,
+thereby testing for inconsistency of the RE model due to either heterogeneous slopes or time-constant
+omitted heterogeneity. For \code{art3} the Mundlak-specification includes only the person-specific
+slopes, and no averages. This allows to test whether we can omit the estimated values based on
+the slopes and reduce the model to a conventional RE model.
 
-If specified, \code{feistest} uses panel-robust standard errors.
+
+If specified (\code{robust=TRUE}), \code{feistest} uses panel-robust standard errors.
 }
 \examples{
 data("Produc", package = "plm")
 feis.mod <- feis(log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp | year,
                  data = Produc, id = "state", robust = TRUE)
-ht <- feistest(feis.mod, robust = TRUE, type = "both")
+ht <- feistest(feis.mod, robust = TRUE, type = "all")
 summary(ht)
 }
 \references{
 \insertAllCited{}
 }
 \seealso{
-\code{\link[feisr]{feis}}, \code{\link[plm]{plm}}, \code{\link[aod]{wald.test}}, \code{\link[plm]{phtest}}
+\code{\link[feisr]{feis}}, \code{\link[feisr]{bsfeistest}}, \code{\link[plm]{plm}},
+\code{\link[aod]{wald.test}}, \code{\link[plm]{phtest}}
 }

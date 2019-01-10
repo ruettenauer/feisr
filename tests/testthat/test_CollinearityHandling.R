@@ -23,8 +23,8 @@ feis1b.mod <- feis(lwage ~ ed + sex + exp + bluecol + ind + smsa +  married + wk
                   data = Wages, id = "id", robust = F, intercept = T)
 
 
-ht1 <- feistest(feis1.mod, robust=F, type = "both")
-ht1b <- feistest(feis1b.mod, robust=F, type = "both")
+ht1 <- feistest(feis1.mod, robust=F, type = "all")
+ht1b <- feistest(feis1b.mod, robust=F, type = "all")
 
 
 vars <- c("bluecolyes", "ind", "smsayes", "marriedyes", "wks")

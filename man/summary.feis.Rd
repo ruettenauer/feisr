@@ -18,11 +18,11 @@ An object of class "\code{summary.feis}", containing the elements
 of the feis object (see \code{\link[feisr]{feis}}). The following objects
 are modified:
 \item{coefficients}{a matrix with the estimated coefficients, standard errors,
-t-values, and p-values, if argument vcov was set to non-NULL the standard errors
+t-values, and p-values, if argument vcov is NULL the standard errors
 are calculated by the \code{vcov} in the input object.}
 \item{r.squared}{a vector containing R squared and adjusted R squared.}
 }
 \description{
-The summary method for feis objects generates some more information
-about estimated feis models
+The summary method for feis objects generates some additional information
+about estimated feis models.
 }

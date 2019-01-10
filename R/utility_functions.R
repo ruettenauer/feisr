@@ -73,10 +73,13 @@ hatm <- function(y, x, checkcol=TRUE, ...){
 ############################
 
 cleani <- function(x, ...){
-  x <- gsub(".*I\\(\\s*|\\).*", "", x)
+  # x <- gsub(".*I\\(\\s*|\\).*", "", x)
+  x <- gsub("^I\\(", "", x)
+  x <- gsub("\\(", "_", x)
+  x <- gsub("\\)", "_", x)
   x <- gsub("[[:punct:]]", "_", x)
   x <- sub("_$", "", x)
-
+  return(x)
 }
 
 
@@ -158,7 +161,7 @@ tss.feis <- function(x, ...){
 #### Function R squared ####
 ############################
 
-r.sq.feis <- function(object, adj=FALSE, df=NULL){
+r.sq.feis <- function(object, adj=FALSE, df=NULL, intercept=FALSE){
   z <- object
   r <- z$residuals
   n <- length(r)
@@ -170,9 +173,10 @@ r.sq.feis <- function(object, adj=FALSE, df=NULL){
     rdf <- df
   }
 
-  if (attr(z$terms, "intercept")){
+  if(intercept == TRUE){
     mss <- sum((f - mean(f))^2)
     df.int <- 1L
+    rdf <- rdf + 1
   } else{
     mss <- sum(f^2)
     df.int <- 0L

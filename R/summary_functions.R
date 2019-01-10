@@ -31,8 +31,8 @@ describe <- function(x,
 #' @title Summary for feis objects
 #'
 #' @description
-#' The summary method for feis objects generates some more information
-#' about estimated feis models
+#' The summary method for feis objects generates some additional information
+#' about estimated feis models.
 #'
 #' @param object an object of class "\code{plm}".
 #' @param vcov a variance-covariance matrix furnished by the user or a function to calculate one.
@@ -42,7 +42,7 @@ describe <- function(x,
 #' of the feis object (see \code{\link[feisr]{feis}}). The following objects
 #' are modified:
 #' \item{coefficients}{a matrix with the estimated coefficients, standard errors,
-#' t-values, and p-values, if argument vcov was set to non-NULL the standard errors
+#' t-values, and p-values, if argument vcov is NULL the standard errors
 #' are calculated by the \code{vcov} in the input object.}
 #' \item{r.squared}{a vector containing R squared and adjusted R squared.}
 #'
@@ -158,6 +158,7 @@ print.summary.feistest <- function(x, digits = max(3, getOption("digits") - 2),
 
   wt_feis <- x$wald_feis
   wt_fe <- x$wald_fe
+  wt_re <- x$wald_re
 
   Terms1  <-  wt_feis[["Terms"]]
   b1  <-  wt_feis[["b"]]
@@ -171,8 +172,15 @@ print.summary.feistest <- function(x, digits = max(3, getOption("digits") - 2),
   v2  <-  wt_fe[["result"]][["chi2"]]
   df2  <-  wt_fe[["df"]]
 
+  Terms3  <-  wt_re[["Terms"]]
+  b3  <-  wt_re[["b"]]
+  H03  <-  wt_re[["H0"]]
+  v3  <-  wt_re[["result"]][["chi2"]]
+  df3  <-  wt_re[["df"]]
+
   names1 <- names(wt_feis$b)[Terms1]
   names2 <- names(wt_fe$b)[Terms2]
+  names3 <- names(wt_re$b)[Terms3]
 
 
   cat("\n")
@@ -184,30 +192,46 @@ print.summary.feistest <- function(x, digits = max(3, getOption("digits") - 2),
   cat("\n")
 
   # FEIS-FE
-  if(!type=="art2"){
+  if(!type %in% c("art2", "art3")){
     cat("FEIS vs. FE:\n", "------------\n", sep = "")
     cat("H0: FEIS and FE estimates consistent", "\n")
     cat("Alternative H1: FE inconsistent", "\n")
-    cat("Model constraints:", paste(names1, collapse = ", "), "= 0","\n")
-    cat("\nChi-squared test:\n")
+    cat("Model constraints:", names1, "= 0","\n", fill = TRUE)
+    cat("Chi-squared test:\n")
     cat("Chisq = ", format(v1["chi2"], digits = digits, nsmall = 1), ", df = ", v1["df"],
         ", P(> X2) = ", format(v1["P"], digits = digits, nsmall = 1), "\n", sep = "")
   }
 
-  if(type == "both"){
+  if(type == "all"){
     cat("\n")
     cat("\n")
   }
 
   # FE-RE
-  if(!type == "art1"){
+  if(!type %in% c("art1", "art3")){
     cat("FE vs. RE:\n", "------------\n", sep = "")
     cat("H0: FE and RE estimates consistent", "\n")
     cat("Alternative H1: RE inconsistent", "\n")
-    cat("Model constraints:", paste(names2, collapse = ", "), "= 0","\n")
-    cat("\nChi-squared test:\n")
+    cat("Model constraints:", names2, "= 0","\n", fill = TRUE)
+    cat("Chi-squared test:\n")
     cat("Chisq = ", format(v2["chi2"], digits = digits, nsmall = 1), ", df = ", v2["df"],
         ", P(> X2) = ", format(v2["P"], digits = digits, nsmall = 1), "\n", sep = "")
+  }
+
+  if(type == "all"){
+    cat("\n")
+    cat("\n")
+  }
+
+  # FEIS-RE
+  if(!type %in% c("art1", "art2")){
+    cat("FEIS vs. RE:\n", "------------\n", sep = "")
+    cat("H0: FEIS and RE estimates consistent", "\n")
+    cat("Alternative H1: RE inconsistent", "\n")
+    cat("Model constraints:", names3, "= 0","\n", fill = TRUE)
+    cat("Chi-squared test:\n")
+    cat("Chisq = ", format(v3["chi2"], digits = digits, nsmall = 1), ", df = ", v3["df"],
+        ", P(> X2) = ", format(v3["P"], digits = digits, nsmall = 1), "\n", sep = "")
   }
 
 
@@ -217,6 +241,110 @@ print.summary.feistest <- function(x, digits = max(3, getOption("digits") - 2),
 
 
 
+######################################################
+#### Print Bootstrapped Regression Test FEIS - FE ####
+######################################################
+
+#' @export
+summary.bsfeistest <- function(object, ...){
+  class(object) <- c("summary.bsfeistest", "bsfeistest")
+  object
+}
+
+
+#' @export
+print.summary.bsfeistest <- function(x, digits = max(3, getOption("digits") - 2),
+                                   width=getOption("width"),  ...){
+
+  cl <- x$call
+  type <- x$type
+
+  name <- "Bootstrapped Hausman Test"
+
+  wt_feis <- x$wald_feis
+  wt_fe <- x$wald_fe
+  wt_re <- x$wald_re
+
+  Terms1  <-  wt_feis[["Terms"]]
+  b1  <-  wt_feis[["b"]]
+  H01  <-  wt_feis[["H0"]]
+  v1  <-  wt_feis[["result"]][["chi2"]]
+  df1  <-  wt_feis[["df"]]
+
+  Terms2  <-  wt_fe[["Terms"]]
+  b2  <-  wt_fe[["b"]]
+  H02  <-  wt_fe[["H0"]]
+  v2  <-  wt_fe[["result"]][["chi2"]]
+  df2  <-  wt_fe[["df"]]
+
+  Terms3  <-  wt_re[["Terms"]]
+  b3  <-  wt_re[["b"]]
+  H03  <-  wt_re[["H0"]]
+  v3  <-  wt_re[["result"]][["chi2"]]
+  df3  <-  wt_re[["df"]]
+
+  names1 <- names(wt_feis$b)[Terms1]
+  names2 <- names(wt_fe$b)[Terms2]
+  names3 <- names(wt_re$b)[Terms3]
+
+
+  cat("\n")
+  cat("\nCall:\n")
+  print(cl)
+  cat("\n")
+
+  cat(name, "\n")
+  cat("Repetitions:", nrow(x$bscoef.feis), "\n")
+  cat("\n")
+
+  # FEIS-FE
+  if(!type %in% c("bs2", "bs3")){
+    cat("FEIS vs. FE:\n", "------------\n", sep = "")
+    cat("H0: FEIS and FE estimates consistent", "\n")
+    cat("Alternative H1: FE inconsistent", "\n")
+    cat("Model constraints:", "beta_FEIS", "=", "beta_FE", "\n", fill = TRUE)
+    cat("Chi-squared test:\n")
+    cat("Chisq = ", format(v1["chi2"], digits = digits, nsmall = 1), ", df = ", v1["df"],
+        ", P(> X2) = ", format(v1["P"], digits = digits, nsmall = 1), "\n", sep = "")
+  }
+
+  if(type == "all"){
+    cat("\n")
+    cat("\n")
+  }
+
+  # FE-RE
+  if(!type %in% c("bs1", "bs3")){
+    cat("FE vs. RE:\n", "------------\n", sep = "")
+    cat("H0: FE and RE estimates consistent", "\n")
+    cat("Alternative H1: RE inconsistent", "\n")
+    cat("Model constraints:", "beta_FE", "=", "beta_RE", "\n", fill = TRUE)
+    cat("Chi-squared test:\n")
+    cat("Chisq = ", format(v2["chi2"], digits = digits, nsmall = 1), ", df = ", v2["df"],
+        ", P(> X2) = ", format(v2["P"], digits = digits, nsmall = 1), "\n", sep = "")
+  }
+
+  if(type == "all"){
+    cat("\n")
+    cat("\n")
+  }
+
+  # FEIS-RE
+  if(!type %in% c("bs1", "bs2")){
+    cat("FEIS vs. RE:\n", "------------\n", sep = "")
+    cat("H0: FEIS and RE estimates consistent", "\n")
+    cat("Alternative H1: RE inconsistent", "\n")
+    cat("Model constraints:", "beta_FEIS", "=", "beta_RE", "\n", fill = TRUE)
+    cat("Chi-squared test:\n")
+    cat("Chisq = ", format(v3["chi2"], digits = digits, nsmall = 1), ", df = ", v3["df"],
+        ", P(> X2) = ", format(v3["P"], digits = digits, nsmall = 1), "\n", sep = "")
+  }
+
+  invisible(x)
+
+}
+
+
 #######################################
 #### Extract Function (for texreg) ####
 #######################################
@@ -224,7 +352,7 @@ print.summary.feistest <- function(x, digits = max(3, getOption("digits") - 2),
 #' @title Extract method for \code{feis}-class
 #'
 #' @description
-#' Provides extract method for usage of \code{\link[texreg]{texreg}} with \code{feis}-class
+#' Provides an extract method for usage of \code{\link[texreg]{texreg}} with \code{feis}-class.
 #'
 #'@seealso \code{\link[texreg]{texreg}}, \code{\link[texreg]{screenreg}}
 #'

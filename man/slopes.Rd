@@ -12,14 +12,17 @@ slopes(model = NA, ...)
 \item{...}{further arguments.}
 }
 \value{
-A \code{N x J} matrix containing the individual slopes for each cluster unit \code{N}
+An \code{N x J} matrix containing the individual slopes for each cluster unit \code{N}
 and slope variable \code{J}. Rownames indicate the cluster id.
 }
 \description{
-Extracts the individual slopes \code{alpha_i} from a \code{feis} object created by
-\code{\link[feisr]{feis}}
+Extracts the individual slopes (\code{alpha_i}) from a \code{feis} object created by
+\code{\link[feisr]{feis}}.
 }
 \details{
+The function extracts a matrix containing the individual slope parameters (\code{alpha_i}),
+which equals the coefficient(s) of regressing the depenent variable on the slope parameter(s).
+
 If slope variables are perfectly collinear within a cluster, one variable is dropped
 and the function returns \code{0} for the respective slope and cluster.
 }

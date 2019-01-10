@@ -8,7 +8,7 @@ feis(formula, data, id, robust = FALSE, intercept = FALSE,
   dropgroups = FALSE, ...)
 }
 \arguments{
-\item{formula}{a symbolic description for the model to be fitted.}
+\item{formula}{a symbolic description for the model to be fitted (see Details).}
 
 \item{data}{a \code{data.frame} containing the specified variables.}
 
@@ -33,7 +33,7 @@ An object of class "\code{feis}", containing the following elements:
 \item{model}{the original model frame as a \code{data.frame} containing the original
   variables used for estimation.}
 \item{modelhat}{a constructed model frame as a \code{data.frame} containing the predicted
-  values from the first stage regression using the slope variable as predictor.}
+  values from the first stage regression using the slope variable(s) as predictor(s).}
 \item{modeltrans}{a constructed model frame as a \code{data.frame} containing the "detrended"
   variables used for the final model estimation and the untransformed slope variables.}
 \item{response}{the vector of the "detrended" response variable.}
@@ -41,7 +41,8 @@ An object of class "\code{feis}", containing the following elements:
 \item{id}{a vector containing the unique person identifier.}
 \item{call}{the matched call.}
 \item{assign}{assign attributes of the formula.}
-\item{na.omit}{(where relevant) a vector of the omitted observations. Only handling of \code{NA}s is "\code{omit}".}
+\item{na.omit}{(where relevant) a vector of the omitted observations. The only handling method
+ of \code{NA}s is "\code{omit}".}
 \item{contrasts}{(only where relevant) the contrasts used.}
 \item{arg}{a list containing the used methods. Only "\code{feis}" and "\code{individual}" effects available.}
 \item{slopevars}{a character vector containing the names of the slope variables.}
@@ -62,7 +63,7 @@ the predicted indivdiual slope of each person
 Estimation requires at least \code{q+1} observations per unit, where \code{q} is the number of slope
 parameters (including a constant).
 \code{feis} automatically selects only those groups from the current data set which have at least \code{q+1} observations.
-The function draws a warning if units with \code{<q+1} observations are dropped.
+The function returns a warning if units with \code{<q+1} observations are dropped.
 
 The function requires a two-part formula, in which the second part indicates the slope parameter(s).
 If, for example, the model is \code{y ~ x1 + x2}, with the slope variables \code{x3} and \code{x4},
@@ -72,9 +73,9 @@ the model can be estimated with:
 }
 If the second part is not specified (and individual "slopes" are estimated only by an intercept),
 the model reduces to a conventional fixed effects (within) model. In this case please use
-the well-established \code{\link[plm]{plm}} (\code{model="within"}) instead of \code{feis}.
+the well-established \code{\link[plm]{plm}} (\code{model="within"}) function instead of \code{feis}.
 
-If specified, \code{feis} estimated panel-robust standard errors. Panel-robust standard errors are
+If specified, \code{feis} estimates panel-robust standard errors. Panel-robust standard errors are
 robust to arbitrary forms of serial correlation within groups formed by \code{id} as well as
 heteroscedasticity across groups \insertCite{@see @Wooldridge.2010.384, pp. 379-381}{feisr}.
 }

@@ -1,6 +1,6 @@
 Package: feisr
 Title: Estimating Fixed Effects Individual Slope Models
-Version: 0.0.0.9002
+Version: 0.0.0.9100
 URL: https://github.com/ruettenauer/feisr
 BugReports: https://github.com/ruettenauer/feisr/issues
 Author: Tobias Ruettenauer [aut, cre],

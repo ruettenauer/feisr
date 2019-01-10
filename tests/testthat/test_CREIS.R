@@ -13,20 +13,35 @@ data("Produc", package = "plm")
 feis1.mod <- feis(log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp | year,
                  data = Produc, id="state", robust = F)
 
-ht1 <- feistest(feis1.mod, robust = F, type = "both")
+ht1 <- feistest(feis1.mod, robust = F, type = "all")
+ht1.rob <- feistest(feis1.mod, robust = T, type = "all")
+
 
 ht1.cre <- ht1$CRE
 ht1.creis <- ht1$CREIS
+ht1.creis2 <- ht1$CREIS2
 
 # Test for sufficient coefficients
 coefs <- feisr:::cleani(names(feis1.mod$coefficients))
 coefs1 <- c(coefs, paste(coefs, "mean", sep = "_"), feis1.mod$slopevars) # year_mean constant (dropped)
 coefs2 <- c(coefs, paste(coefs, "hat", sep = "_"), paste(coefs, "mean", sep = "_"),
             feis1.mod$slopevars) # year_mean constant (dropped)
+coefs3 <- c(coefs, paste(coefs, "hat", sep = "_"),
+            feis1.mod$slopevars) # year_mean constant (dropped)
 
 test_that("CRE + CREIS specification (Produc)", {
   expect_identical(names(ht1.cre$coefficients)[-1], coefs1)
-  expect_identical(names(ht1.creis$coefficients), coefs2)
+  expect_identical(names(ht1.creis$coefficients)[-1], coefs2)
+  expect_identical(names(ht1.creis2$coefficients)[-1], coefs3)
+})
+
+
+# Compare with Stata results
+
+test_that("feistest compare Stata (Produc)", {
+  expect_equal(unname(ht1.rob$wald_feis$result$chi2)[1], 16.59, tolerance = .02)
+  expect_equal(unname(ht1.rob$wald_fe$result$chi2)[1], 35.17, tolerance = .02)
+
 })
 
 
@@ -67,11 +82,13 @@ test_that("CRE vs. plm within (Produc)", {
 })
 
 test_that("CREIS ht vs. plm CREIS", {
-  expect_equal(unname(ht1.creis$coefficients)[1:4], unname(plm.creis1.mod$coefficients[2:5]), tolerance = .000001)
+  expect_equal(unname(ht1.creis$coefficients)[2:5], unname(plm.creis1.mod$coefficients[2:5]), tolerance = .000001)
+  expect_equal(unname(ht1.creis2$coefficients)[2:5], unname(plm.creis1.mod$coefficients[2:5]), tolerance = .000001)
 })
 
 test_that("CREIS ht vs. feis", {
-  expect_equal(unname(ht1.creis$coefficients)[1:4], unname(feis1.mod$coefficients), tolerance = .000001)
+  expect_equal(unname(ht1.creis$coefficients)[2:5], unname(feis1.mod$coefficients), tolerance = .000001)
+  expect_equal(unname(ht1.creis2$coefficients)[2:5], unname(feis1.mod$coefficients), tolerance = .000001)
   expect_equal(unname(plm.creis1.mod$coefficients[2:5]), unname(feis1.mod$coefficients), tolerance = .000001)
 
 })
@@ -92,22 +109,32 @@ Hedonic$pys <- ave(Hedonic$mv, Hedonic$townid, FUN = function(x) length(x[!is.na
 expect_warning(feis2.mod <- feis(mv ~ crim + chas + nox + rm + age + dis + blacks | lstat,
                                    data = Hedonic, id = "townid", robust = F))
 
-ht2 <- feistest(feis2.mod, robust = F, type = "both")
+ht2 <- feistest(feis2.mod, robust = T, type = "all")
 
 ht2.cre <- ht2$CRE
 ht2.creis <- ht2$CREIS
+ht2.creis2 <- ht2$CREIS2
 
 # Test for sufficient coefficients
 coefs <- cleani(names(feis2.mod$coefficients))
 coefs1 <- c(coefs, paste(coefs, "mean", sep = "_"), feis2.mod$slopevars, paste(feis2.mod$slopevars, "mean", sep = "_"))
 coefs2 <- c(coefs, paste(coefs, "hat", sep = "_"), paste(coefs, "mean", sep = "_"),
             feis2.mod$slopevars, paste(feis2.mod$slopevars, "mean", sep = "_"))
+coefs3 <- c(coefs, paste(coefs, "hat", sep = "_"), feis2.mod$slopevars )
 
 test_that("CRE + CREIS specification (Hedonic)", {
   expect_identical(names(ht2.cre$coefficients)[-1], coefs1)
-  expect_identical(names(ht2.creis$coefficients), coefs2)
+  expect_identical(names(ht2.creis$coefficients)[-1], coefs2)
+  expect_identical(names(ht2.creis2$coefficients)[-1], coefs3)
 })
 
+
+# Compare with Stata results
+test_that("feistest compare Stata (Hedonic)", {
+  expect_equal(unname(ht2$wald_feis$result$chi2)[1], 28.21, tolerance = .02)
+  expect_equal(unname(ht2$wald_fe$result$chi2)[1], 42.29, tolerance = .02)
+
+})
 
 
 # Estimation within model with plm
@@ -142,14 +169,17 @@ plm.creis2.mod<-plm(mv ~ crim + chas + nox + rm + age + dis + blacks + lstat
 
 test_that("CRE vs. plm within (Hedonic)", {
   expect_equal(unname(ht2.cre$coefficients)[2:8], unname(plm2.mod$coefficients)[1:7], tolerance = .000001)
+
 })
 
 test_that("CREIS ht vs. plm CREIS", {
-  expect_equal(unname(ht2.creis$coefficients)[1:7], unname(plm.creis2.mod$coefficients[2:8]), tolerance = .000001)
+  expect_equal(unname(ht2.creis$coefficients)[2:8], unname(plm.creis2.mod$coefficients[2:8]), tolerance = .000001)
+  expect_equal(unname(ht2.creis2$coefficients)[2:8], unname(plm.creis2.mod$coefficients[2:8]), tolerance = .000001)
 })
 
 test_that("CREIS ht vs. feis", {
-  expect_equal(unname(ht2.creis$coefficients)[1:7], unname(feis2.mod$coefficients), tolerance = .000001)
+  expect_equal(unname(ht2.creis$coefficients)[2:8], unname(feis2.mod$coefficients), tolerance = .000001)
+  expect_equal(unname(ht2.creis2$coefficients)[2:8], unname(feis2.mod$coefficients), tolerance = .000001)
   expect_equal(unname(plm.creis2.mod$coefficients[2:8]), unname(feis2.mod$coefficients), tolerance = .000001)
 
 })
