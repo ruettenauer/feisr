@@ -105,7 +105,7 @@ feistest <- function(model = NA, robust = FALSE, type = c("all", "art1", "art2",
 
   X <- model.matrix(formula, data, rhs = 1, lhs = 0, cstcovar.rm = "all")
   colnames(X) <- cleani(colnames(X))
-  X <- X[, which(colnames(X) %in% cleani(cv))]
+  X <- X[, which(colnames(X) %in% cleani(cv)), drop = F]
 
   S <- model.matrix(formula, data, rhs = 2, lhs = 0, cstcovar.rm = "all")
   S <- S[, -1, drop = FALSE]
@@ -374,7 +374,7 @@ bsfeistest <- function(model = NA, type = c("all", "bs1", "bs2", "bs3"),
 
   X <- model.matrix(formula, data, rhs = 1, lhs = 0, cstcovar.rm = "all")
   colnames(X) <- cleani(colnames(X))
-  X <- X[, which(colnames(X) %in% cleani(cv))]
+  X <- X[, which(colnames(X) %in% cleani(cv)), drop = F]
 
   S <- model.matrix(formula, data, rhs = 2, lhs = 0, cstcovar.rm = "all")
   S <- S[, -1, drop = FALSE]
