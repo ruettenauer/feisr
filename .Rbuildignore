@@ -1,4 +1,5 @@
 ^.*\.Rproj$
+^.*\.pdf$
 ^\.Rproj\.user$
 ^\.git$
 ^\.travis\.yml$
