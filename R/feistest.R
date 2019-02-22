@@ -72,9 +72,9 @@
 #' \insertAllCited{}
 #'
 #' @examples
-#' data("Produc", package = "plm")
-#' feis.mod <- feis(log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp | year,
-#'                  data = Produc, id = "state", robust = TRUE)
+#' data("mwp", package = "feisr")
+#' feis.mod <- feis(lnw ~ marry + enrol | year,
+#'                  data = mwp, id = "id", robust = TRUE)
 #' ht <- feistest(feis.mod, robust = TRUE, type = "all")
 #' summary(ht)
 #' @export
@@ -332,10 +332,10 @@ feistest <- function(model = NA, robust = FALSE, type = c("all", "art1", "art2",
 #' \insertAllCited{}
 #'
 #' @examples
-#' data("Produc", package = "plm")
-#' feis.mod <- feis(log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp | year,
-#'                  data = Produc, id = "state", robust = TRUE)
-#' bsht <- bsfeistest(feis.mod, type = "all", rep = 10, seed = 1234)
+#' data("mwp", package = "feisr")
+#' feis.mod <- feis(lnw ~ marry + enrol | year,
+#'                  data = mwp, id = "id", robust = TRUE)
+#' bsht <- bsfeistest(feis.mod, type = "bs1", rep = 5, seed = 1234, prog = FALSE)
 #' summary(bsht)
 #' @export
 
@@ -406,14 +406,14 @@ bsfeistest <- function(model = NA, type = c("all", "bs1", "bs2", "bs3"),
                        effect = "individual", model = "within")
 
     coef.fe <- fe.mod$coefficients
-  }
+  } else {coef.fe <- NA}
 
   # FEIS
   if(!type == "bs2"){
     feis.mod <- feis(fm.feis, data = df, id = "id")
 
     coef.feis <- feis.mod$coefficients
-  }
+  } else {coef.feis <- NA}
 
   # RE
   if(!type=="bs1"){
@@ -426,7 +426,7 @@ bsfeistest <- function(model = NA, type = c("all", "bs1", "bs2", "bs3"),
       drop <- which(names(coef.re) == "(Intercept)")
       coef.re <- coef.re[-drop]
     }
-  }
+  } else {coef.re <- NA}
 
 
   ### Set up results matrices for bs coefs

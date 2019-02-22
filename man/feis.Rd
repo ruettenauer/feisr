@@ -80,9 +80,9 @@ robust to arbitrary forms of serial correlation within groups formed by \code{id
 heteroscedasticity across groups \insertCite{@see @Wooldridge.2010.384, pp. 379-381}{feisr}.
 }
 \examples{
-data("Produc", package = "plm")
-feis.mod <- feis("log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp | year",
-                 data = Produc, id = "state", robust = TRUE)
+data("mwp", package = "feisr")
+feis.mod <- feis(lnw ~ marry + enrol + as.factor(yeargr) | exp + I(exp^2),
+                 data = mwp, id = "id", robust = TRUE)
 summary(feis.mod)
 }
 \references{

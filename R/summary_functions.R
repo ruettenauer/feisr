@@ -354,7 +354,7 @@ print.summary.bsfeistest <- function(x, digits = max(3, getOption("digits") - 2)
 #' @description
 #' Provides an extract method for usage of \code{\link[texreg]{texreg}} with \code{feis}-class.
 #'
-#'@seealso \code{\link[texreg]{texreg}}, \code{\link[texreg]{screenreg}}
+#'@seealso \code{\link[texreg]{texreg}}
 #'
 #' @param model	an object of class \code{feis}
 #' @param include.rsquared logical. If \code{TRUE} (default) R squared is reported.
@@ -368,13 +368,14 @@ print.summary.bsfeistest <- function(x, digits = max(3, getOption("digits") - 2)
 #' library(texreg)
 #'
 #' setMethod("extract", signature = className("feis", "feisr"),
-#' definition = extract.feis)
+#'           definition = extract.feis)
 #'
-#' data("Produc", package = "plm")
-#' feis1.mod <- feis("log(gsp) ~ log(pcap) | year",
-#'                  data = Produc, id = "state", robust = TRUE)
-#' feis2.mod <- feis("log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp | year",
-#'                  data = Produc, id = "state", robust = TRUE)
+#' data("mwp", package = "feisr")
+#' feis1.mod <- feis(lnw ~ marry + as.factor(yeargr)
+#'                   | exp + I(exp^2), data = mwp, id = "id")
+#'
+#' feis2.mod <- feis(lnw ~ marry + enrol + as.factor(yeargr)
+#'                   | exp + I(exp^2), data = mwp, id = "id")
 #' screenreg(list(feis1.mod, feis2.mod))
 #'
 #'@export

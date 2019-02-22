@@ -73,9 +73,9 @@ the slopes and reduce the model to a conventional RE model.
 If specified (\code{robust=TRUE}), \code{feistest} uses panel-robust standard errors.
 }
 \examples{
-data("Produc", package = "plm")
-feis.mod <- feis(log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp | year,
-                 data = Produc, id = "state", robust = TRUE)
+data("mwp", package = "feisr")
+feis.mod <- feis(lnw ~ marry + enrol | year,
+                 data = mwp, id = "id", robust = TRUE)
 ht <- feistest(feis.mod, robust = TRUE, type = "all")
 summary(ht)
 }

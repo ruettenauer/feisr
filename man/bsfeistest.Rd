@@ -4,8 +4,8 @@
 \alias{bsfeistest}
 \title{Bootstrapped Regression Test}
 \usage{
-bsfeistest(model = NA, type = c("all", "bs1", "bs2", "bs3"), rep = 500,
-  seed = NULL, prog = TRUE, ...)
+bsfeistest(model = NA, type = c("all", "bs1", "bs2", "bs3"),
+  rep = 500, seed = NULL, prog = TRUE, ...)
 }
 \arguments{
 \item{model}{an object of class "\code{feis}".}
@@ -69,10 +69,10 @@ the number of groups in the original dataset. \code{\link[aod]{wald.test}} is us
 chi-squared test on the differences between coefficients.
 }
 \examples{
-data("Produc", package = "plm")
-feis.mod <- feis(log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp | year,
-                 data = Produc, id = "state", robust = TRUE)
-bsht <- bsfeistest(feis.mod, type = "all", rep = 10, seed = 1234)
+data("mwp", package = "feisr")
+feis.mod <- feis(lnw ~ marry + enrol | year,
+                 data = mwp, id = "id", robust = TRUE)
+bsht <- bsfeistest(feis.mod, type = "bs1", rep = 5, seed = 1234, prog = FALSE)
 summary(bsht)
 }
 \references{

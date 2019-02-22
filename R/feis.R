@@ -77,9 +77,9 @@
 #' \insertAllCited{}
 #'
 #' @examples
-#' data("Produc", package = "plm")
-#' feis.mod <- feis("log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp | year",
-#'                  data = Produc, id = "state", robust = TRUE)
+#' data("mwp", package = "feisr")
+#' feis.mod <- feis(lnw ~ marry + enrol + as.factor(yeargr) | exp + I(exp^2),
+#'                  data = mwp, id = "id", robust = TRUE)
 #' summary(feis.mod)
 #' @export
 feis <- function(formula, data, id, robust = FALSE, intercept = FALSE, dropgroups = FALSE, ...){
