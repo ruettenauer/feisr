@@ -158,7 +158,7 @@ feis <- function(formula, data, id, robust = FALSE, intercept = FALSE, dropgroup
     warning(paste(nom, "groups without any within variance on slope variable(s) dropped"),
             call. = TRUE, immediate. = TRUE)
 
-    # reduce sample
+    # Reduce sample
     data <- data[-which(novar), ]
     i <- i[-which(novar)]
 
@@ -170,7 +170,7 @@ feis <- function(formula, data, id, robust = FALSE, intercept = FALSE, dropgroup
   names(omitted) <- orig_rownames[-as.numeric(row.names(data))]
   attr(omitted, "class")<-"omit"
 
-  # preserve original row.names
+  # Preserve original row.names
   row.names(data)  <-  orig_rownames[as.numeric(row.names(data))]
 
 

@@ -135,6 +135,7 @@ feistest <- function(model = NA, robust = FALSE, type = c("all", "art1", "art2",
   i2 <- ave(1:length(i), i, FUN = function(u) seq_along(u))
   df <- data.frame(id = i, id2 = i2, Y, X, X_hat, X_mean, S, S_mean)
 
+  # FEIS vs FE
   if(!type %in% c("art2", "art3")){
     ### Set up formula
 
@@ -169,7 +170,7 @@ feistest <- function(model = NA, robust = FALSE, type = c("all", "art1", "art2",
   } else{wt_feis <- NULL; vcov1 <- NULL; creis.mod <- NULL}
 
 
-
+  # FE vs RE
   if(!type %in% c("art1", "art3")){
     ### Set up formula
 
@@ -203,7 +204,7 @@ feistest <- function(model = NA, robust = FALSE, type = c("all", "art1", "art2",
   } else{wt_fe <- NULL; vcov2 <- NULL; cre.mod <- NULL}
 
 
-
+  # FEIS vs RE
   if(!type %in% c("art1", "art2")){
     ### Set up formula
 

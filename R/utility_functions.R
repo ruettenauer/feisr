@@ -63,7 +63,7 @@ hatm <- function(y, x, checkcol=TRUE, ...){
     }
   }
 
-  res <- x %*% solve( t(x) %*% x) %*% t(x) %*% as.matrix(y)
+  res <- x %*% solve(t(x) %*% x) %*% t(x) %*% as.matrix(y)
   return(res)
 }
 
