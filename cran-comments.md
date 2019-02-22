@@ -2,7 +2,6 @@
 * local WIN7 64Bit, R 3.5.2, devel
 * Travis-CI: Ubuntu 14.04, R 3.5.2
 * Travis-CI: Mac OS X 10.13.3, R 3.5.2
-* win-builder (devel and release)
 
 ## R CMD check results
 
