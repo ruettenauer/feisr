@@ -9,7 +9,7 @@ Maintainer: Tobias Ruettenauer <ruettenauer@sowi.uni-kl.de>
 Authors@R: c(	person("Tobias", "Ruettenauer", email = "ruettenauer@sowi.uni-kl.de", role = c("aut", "cre")),
 				person("Volker", "Ludwig", email = "ludwig@sowi.uni-kl.de", role = c("aut")))
 Description: Provides a function to estimate fixed effects individual slope models.
-Depends: R (>= 3.5.0)
+Depends: R (>= 3.4.0)
 License: GPL (>= 2)
 Encoding: UTF-8
 LazyData: true
