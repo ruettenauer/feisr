@@ -349,106 +349,93 @@ print.summary.bsfeistest <- function(x, digits = max(3, getOption("digits") - 2)
 #### Extract Function (for texreg) ####
 #######################################
 
-#' @title Extract method for \code{feis}-class
-#'
-#' @description
-#' Provides an extract method for usage of \code{\link[texreg]{texreg}} with \code{feis}-class.
-#'
-#'@seealso \code{\link[texreg]{texreg}}
-#'
-#' @param model	an object of class \code{feis}
-#' @param include.rsquared logical. If \code{TRUE} (default) R squared is reported.
-#' @param include.adjrs logical. If \code{TRUE} (default) adjusted R squared is reported.
-#' @param include.nobs logical. If \code{TRUE} number of observations is reported.
-#' @param include.groups logical. If \code{TRUE} number of groups is reported.
-#' @param include.rmse logical. If \code{TRUE} RMSE is reported.
-#' @param ...	further arguments.
-#'
-#' @examples
-#' library(texreg)
-#'
-#' setMethod("extract", signature = className("feis", "feisr"),
-#'           definition = extract.feis)
-#'
-#' data("mwp", package = "feisr")
-#' feis1.mod <- feis(lnw ~ marry + as.factor(yeargr)
-#'                   | exp + I(exp^2), data = mwp, id = "id")
-#'
-#' feis2.mod <- feis(lnw ~ marry + enrol + as.factor(yeargr)
-#'                   | exp + I(exp^2), data = mwp, id = "id")
-#' screenreg(list(feis1.mod, feis2.mod))
-#'
-#'@export
-#'
-extract.feis <- function(model, include.rsquared = TRUE, include.adjrs = TRUE,
-                         include.nobs = TRUE, include.groups = TRUE,
-                         include.rmse = TRUE, ...) {
-  s <- summary(model, ...)
-
-  coefficient.names <- rownames(coef(s))
-  coefficients <- coef(s)[, 1]
-  standard.errors <- coef(s)[, 2]
-  significance <- coef(s)[, 4]
-
-  rs <- s$r.squared[1]
-  adj <- s$r.squared[2]
-  n <- length(model$residuals)
-
-  gof <- numeric()
-  gof.names <- character()
-  gof.decimal <- logical()
-  if (include.rsquared == TRUE) {
-    gof <- c(gof, rs)
-    gof.names <- c(gof.names, "R$^2$")
-    gof.decimal <- c(gof.decimal, TRUE)
-  }
-  if (include.adjrs == TRUE) {
-    gof <- c(gof, adj)
-    gof.names <- c(gof.names, "Adj.\ R$^2$")
-    gof.decimal <- c(gof.decimal, TRUE)
-  }
-  if (include.nobs == TRUE) {
-    gof <- c(gof, n)
-    gof.names <- c(gof.names, "Num.\ obs.")
-    gof.decimal <- c(gof.decimal, FALSE)
-  }
-  if (include.groups == TRUE) {
-    grps <-length(unique(model$id))
-    grp.names <- model$call[[match(c("id"), names(model$call))]]
-    grp.names <- paste("Num.\ groups:", grp.names)
-    gof <- c(gof, grps)
-    gof.names <- c(gof.names, grp.names)
-    gof.decimal <- c(gof.decimal, FALSE)
-  }
-  if (include.rmse == TRUE) {
-    rmse <- sqrt(sum((model$residuals * model$residuals)) / model$df.residual)
-    gof <- c(gof, rmse)
-    gof.names <- c(gof.names, "RMSE")
-    gof.decimal <- c(gof.decimal, TRUE)
-  }
-
-  tr <- texreg::createTexreg(
-    coef.names = coefficient.names,
-    coef = coefficients,
-    se = standard.errors,
-    pvalues = significance,
-    gof.names = gof.names,
-    gof = gof,
-    gof.decimal = gof.decimal
-  )
-  return(tr)
-}
-
-# #' Method extract.
-# #' @name extract
-# #' @rdname extract_feis
-# #' @exportMethod extract
-# #' @export
-# setGeneric("extract", function(model, ...) standardGeneric("extract"),
-#            package = "texreg")
+# #' @title Extract method for \code{feis}-class
+# #'
+# #' @description
+# #' Provides an extract method for usage of \code{\link[texreg]{texreg}} with \code{feis}-class.
+# #'
+# #'@seealso \code{\link[texreg]{texreg}}
+# #'
+# #' @param model	an object of class \code{feis}
+# #' @param include.rsquared logical. If \code{TRUE} (default) R squared is reported.
+# #' @param include.adjrs logical. If \code{TRUE} (default) adjusted R squared is reported.
+# #' @param include.nobs logical. If \code{TRUE} number of observations is reported.
+# #' @param include.groups logical. If \code{TRUE} number of groups is reported.
+# #' @param include.rmse logical. If \code{TRUE} RMSE is reported.
+# #' @param ...	further arguments.
+# #'
+# #' @examples
+# #' library(texreg)
+# #'
+# #' setMethod("extract", signature = className("feis", "feisr"),
+# #'           definition = extract.feis)
+# #'
+# #' data("mwp", package = "feisr")
+# #' feis1.mod <- feis(lnw ~ marry + as.factor(yeargr)
+# #'                   | exp + I(exp^2), data = mwp, id = "id")
+# #'
+# #' feis2.mod <- feis(lnw ~ marry + enrol + as.factor(yeargr)
+# #'                   | exp + I(exp^2), data = mwp, id = "id")
+# #' screenreg(list(feis1.mod, feis2.mod))
+# #'
+# #'@export
+# #'
+# extract.feis <- function(model, include.rsquared = TRUE, include.adjrs = TRUE,
+#                          include.nobs = TRUE, include.groups = TRUE,
+#                          include.rmse = TRUE, ...) {
+#   s <- summary(model, ...)
 #
-# #' @rdname extract_feis
-# #' @aliases extract,feis-method
-# #' @export
-# setMethod("extract", signature = className("feis", "feisr"),
-#           definition = extract.feis)
+#   coefficient.names <- rownames(coef(s))
+#   coefficients <- coef(s)[, 1]
+#   standard.errors <- coef(s)[, 2]
+#   significance <- coef(s)[, 4]
+#
+#   rs <- s$r.squared[1]
+#   adj <- s$r.squared[2]
+#   n <- length(model$residuals)
+#
+#   gof <- numeric()
+#   gof.names <- character()
+#   gof.decimal <- logical()
+#   if (include.rsquared == TRUE) {
+#     gof <- c(gof, rs)
+#     gof.names <- c(gof.names, "R$^2$")
+#     gof.decimal <- c(gof.decimal, TRUE)
+#   }
+#   if (include.adjrs == TRUE) {
+#     gof <- c(gof, adj)
+#     gof.names <- c(gof.names, "Adj.\ R$^2$")
+#     gof.decimal <- c(gof.decimal, TRUE)
+#   }
+#   if (include.nobs == TRUE) {
+#     gof <- c(gof, n)
+#     gof.names <- c(gof.names, "Num.\ obs.")
+#     gof.decimal <- c(gof.decimal, FALSE)
+#   }
+#   if (include.groups == TRUE) {
+#     grps <-length(unique(model$id))
+#     grp.names <- model$call[[match(c("id"), names(model$call))]]
+#     grp.names <- paste("Num.\ groups:", grp.names)
+#     gof <- c(gof, grps)
+#     gof.names <- c(gof.names, grp.names)
+#     gof.decimal <- c(gof.decimal, FALSE)
+#   }
+#   if (include.rmse == TRUE) {
+#     rmse <- sqrt(sum((model$residuals * model$residuals)) / model$df.residual)
+#     gof <- c(gof, rmse)
+#     gof.names <- c(gof.names, "RMSE")
+#     gof.decimal <- c(gof.decimal, TRUE)
+#   }
+#
+#   tr <- texreg::createTexreg(
+#     coef.names = coefficient.names,
+#     coef = coefficients,
+#     se = standard.errors,
+#     pvalues = significance,
+#     gof.names = gof.names,
+#     gof = gof,
+#     gof.decimal = gof.decimal
+#   )
+#   return(tr)
+# }
+
