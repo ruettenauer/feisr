@@ -1,0 +1,42 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "README-"
+)
+```
+
+# feisr
+
+The packages feisr provides a function to estimate fixed effects individual slope (FEIS) models in R. FEIS models constitute a more general version of the often used conventional fixed effects (FE) panel models. In contrast to conventional fixed effects models, data are not person 'demeaned', but 'detrended' by the predicted individual slope of each person, which relaxes the assumptions of parallel trends between treated and untreated groups. 
+
+## Installation
+
+You can install feisr from github with:
+
+```{r gh-installation, eval = FALSE}
+# install.packages("devtools")
+devtools::install_github("ruettenauer/feisr")
+```
+
+## Example
+
+The following example investigates the 'marriage wage premium': we test whether marriage leads to an increase in the hourly wage for men. The packages provides the function feis to estimate fixed effects individual slope models, which control for the hypothesis that those men who marry earlier also have a steeper wage growth over time. Similar to the  plm function, feis requires to indicate a unique person / group identifier. To include individual-specific slopes, feis uses two-part formulas (expr | slope_expr), where slope_expr gives the expression for modelling the individual slopes. In our example, we use work experience (exp) and squared work experience as the slope variables:
+```{r example1}
+library(feisr)
+data("mwp", package = "feisr")
+feis.mod <- feis(lnw ~ marry + enrol + yeduc + as.factor(yeargr)
+                   | exp + I(exp^2), data = mwp, id = "id")
+summary(feis.mod)
+```
+The package also comes with an artificial regression test, which performs a Hausman-like test comparing FEIS against FE, FEIS against random effects (RE), and FE against RE models. The option feistest can be used with cluster-robust standard errors:
+```{r example2}
+ht <- feistest(feis.mod, robust = TRUE, type = "all")
+summary(ht)
+```
