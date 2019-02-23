@@ -380,62 +380,62 @@ print.summary.bsfeistest <- function(x, digits = max(3, getOption("digits") - 2)
 # #'
 # #'@export
 # #'
-# extract.feis <- function(model, include.rsquared = TRUE, include.adjrs = TRUE,
-#                          include.nobs = TRUE, include.groups = TRUE,
-#                          include.rmse = TRUE, ...) {
-#   s <- summary(model, ...)
-#
-#   coefficient.names <- rownames(coef(s))
-#   coefficients <- coef(s)[, 1]
-#   standard.errors <- coef(s)[, 2]
-#   significance <- coef(s)[, 4]
-#
-#   rs <- s$r.squared[1]
-#   adj <- s$r.squared[2]
-#   n <- length(model$residuals)
-#
-#   gof <- numeric()
-#   gof.names <- character()
-#   gof.decimal <- logical()
-#   if (include.rsquared == TRUE) {
-#     gof <- c(gof, rs)
-#     gof.names <- c(gof.names, "R$^2$")
-#     gof.decimal <- c(gof.decimal, TRUE)
-#   }
-#   if (include.adjrs == TRUE) {
-#     gof <- c(gof, adj)
-#     gof.names <- c(gof.names, "Adj.\ R$^2$")
-#     gof.decimal <- c(gof.decimal, TRUE)
-#   }
-#   if (include.nobs == TRUE) {
-#     gof <- c(gof, n)
-#     gof.names <- c(gof.names, "Num.\ obs.")
-#     gof.decimal <- c(gof.decimal, FALSE)
-#   }
-#   if (include.groups == TRUE) {
-#     grps <-length(unique(model$id))
-#     grp.names <- model$call[[match(c("id"), names(model$call))]]
-#     grp.names <- paste("Num.\ groups:", grp.names)
-#     gof <- c(gof, grps)
-#     gof.names <- c(gof.names, grp.names)
-#     gof.decimal <- c(gof.decimal, FALSE)
-#   }
-#   if (include.rmse == TRUE) {
-#     rmse <- sqrt(sum((model$residuals * model$residuals)) / model$df.residual)
-#     gof <- c(gof, rmse)
-#     gof.names <- c(gof.names, "RMSE")
-#     gof.decimal <- c(gof.decimal, TRUE)
-#   }
-#
-#   tr <- texreg::createTexreg(
-#     coef.names = coefficient.names,
-#     coef = coefficients,
-#     se = standard.errors,
-#     pvalues = significance,
-#     gof.names = gof.names,
-#     gof = gof,
-#     gof.decimal = gof.decimal
-#   )
-#   return(tr)
-# }
+extract.feis <- function(model, include.rsquared = TRUE, include.adjrs = TRUE,
+                         include.nobs = TRUE, include.groups = TRUE,
+                         include.rmse = TRUE, ...) {
+  s <- summary(model, ...)
+
+  coefficient.names <- rownames(coef(s))
+  coefficients <- coef(s)[, 1]
+  standard.errors <- coef(s)[, 2]
+  significance <- coef(s)[, 4]
+
+  rs <- s$r.squared[1]
+  adj <- s$r.squared[2]
+  n <- length(model$residuals)
+
+  gof <- numeric()
+  gof.names <- character()
+  gof.decimal <- logical()
+  if (include.rsquared == TRUE) {
+    gof <- c(gof, rs)
+    gof.names <- c(gof.names, "R$^2$")
+    gof.decimal <- c(gof.decimal, TRUE)
+  }
+  if (include.adjrs == TRUE) {
+    gof <- c(gof, adj)
+    gof.names <- c(gof.names, "Adj.\ R$^2$")
+    gof.decimal <- c(gof.decimal, TRUE)
+  }
+  if (include.nobs == TRUE) {
+    gof <- c(gof, n)
+    gof.names <- c(gof.names, "Num.\ obs.")
+    gof.decimal <- c(gof.decimal, FALSE)
+  }
+  if (include.groups == TRUE) {
+    grps <-length(unique(model$id))
+    grp.names <- model$call[[match(c("id"), names(model$call))]]
+    grp.names <- paste("Num.\ groups:", grp.names)
+    gof <- c(gof, grps)
+    gof.names <- c(gof.names, grp.names)
+    gof.decimal <- c(gof.decimal, FALSE)
+  }
+  if (include.rmse == TRUE) {
+    rmse <- sqrt(sum((model$residuals * model$residuals)) / model$df.residual)
+    gof <- c(gof, rmse)
+    gof.names <- c(gof.names, "RMSE")
+    gof.decimal <- c(gof.decimal, TRUE)
+  }
+
+  tr <- texreg::createTexreg(
+    coef.names = coefficient.names,
+    coef = coefficients,
+    se = standard.errors,
+    pvalues = significance,
+    gof.names = gof.names,
+    gof = gof,
+    gof.decimal = gof.decimal
+  )
+  return(tr)
+}
 
