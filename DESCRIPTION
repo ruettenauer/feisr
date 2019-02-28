@@ -8,7 +8,7 @@ Author: Tobias Ruettenauer [aut, cre],
 Maintainer: Tobias Ruettenauer <ruettenauer@sowi.uni-kl.de>
 Authors@R: c(	person("Tobias", "Ruettenauer", email = "ruettenauer@sowi.uni-kl.de", role = c("aut", "cre")),
 				person("Volker", "Ludwig", email = "ludwig@sowi.uni-kl.de", role = c("aut")))
-Description: Provides a function to estimate fixed effects individual slope models.
+Description: Provides a function ('feis') to estimate fixed effects individual slope (FEIS) models. The FEIS model constitutes a more general version of the often-used fixed effects (FE) panel model, as implemented in the package 'plm' by Croissant and Millo (2008) <doi:10.18637/jss.v027.i02>. In FEIS models, data are not only person 'demeaned' like in conventional FE models, but 'detrended' by the predicted individual slope of each person or group. Estimation is performed by applying least squares ('lm') to the transformed data. For more details on FEIS models see Bruederl and Ludwig (2015, ISBN:1446252442); Frees (2001) <doi:10.2307/3316008>; Polachek and Kim (1994) <doi:10.1016/0304-4076(94)90075-2>; Wooldridge (2010, ISBN:0262294354). To test the consistency of conventional FE and random effects estimators against heterogeneous slopes, the package also provides an artificial regression test ('feistest') and a bootstrapped version ('bsfeistest') of the Hausman test.
 Depends: R (>= 3.4.0)
 License: GPL (>= 2)
 Encoding: UTF-8

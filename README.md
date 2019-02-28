@@ -9,7 +9,8 @@ general version of the often used conventional fixed effects (FE) panel
 models. In contrast to conventional fixed effects models, data are not
 person ‘demeaned’, but ‘detrended’ by the predicted individual slope of
 each person, which relaxes the assumptions of parallel trends between
-treated and untreated groups.
+treated and untreated groups. For more information see Bruederl and
+Ludwig (2015); Frees (2001); Polachek and Kim (1994); Wooldridge (2010).
 
 ## Installation
 
@@ -119,3 +120,20 @@ summary(ht)
 #> Chi-squared test:
 #> Chisq = 55.231, df = 7, P(> X2) = 1.342e-09
 ```
+
+## References
+
+Bruederl J, Ludwig V (2015). “Fixed-Effects Panel Regression.” In H
+Best, C Wolf (eds.), The Sage Handbook of Regression Analysis and Causal
+Inference, pp. 327-357. Sage, Los Angeles. ISBN 1446252442.
+
+Frees EW (2001). “Omitted Variables in Longitudinal Data Models.”
+Canadian Journal of Statistics, 29(4), 573-595.
+<http://dx.doi.org/10.2307/3316008>.
+
+Polachek SW, Kim MK (1994). “Panel Estimates of the Gender Earnings
+Gap.” Journal of Econometrics, 61(1), 23-42.
+<http://dx.doi.org/10.1016/0304-4076(94)90075-2>.
+
+Wooldridge JM (2010). Econometric Analysis of Cross Section and Panel
+Data}. MIT Press, Cambridge, Mass. ISBN 0262294354.

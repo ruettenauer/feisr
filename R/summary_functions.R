@@ -46,7 +46,11 @@ describe <- function(x,
 #' are calculated by the \code{vcov} in the input object.}
 #' \item{r.squared}{a vector containing R squared and adjusted R squared.}
 #'
-#'
+#' @examples
+#' data("mwp", package = "feisr")
+#' feis.mod <- feis(lnw ~ marry | exp,
+#'                  data = mwp, id = "id")
+#' summary(feis.mod)
 #' @export
 summary.feis <- function(object, vcov = NULL, ...){
 
