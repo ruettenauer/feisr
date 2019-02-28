@@ -1,8 +1,8 @@
-## Test environments
+## Resubmission
 This is a resubmission. Many thanks for comments on the initial version. I have:
 
-* Included a more detailed explanation (plus references) in the description section of the DESCRIPTION file
-* Included a small example in summary.feis.Rd
+* Included a more detailed explanation (plus references) in the description section of the DESCRIPTION file,
+* Included a small example in summary.feis.Rd.
 
 Best, Tobias
 

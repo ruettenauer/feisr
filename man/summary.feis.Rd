@@ -26,3 +26,9 @@ are calculated by the \code{vcov} in the input object.}
 The summary method for feis objects generates some additional information
 about estimated feis models.
 }
+\examples{
+data("mwp", package = "feisr")
+feis.mod <- feis(lnw ~ marry | exp,
+                 data = mwp, id = "id")
+summary(feis.mod)
+}
