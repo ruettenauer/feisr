@@ -14,7 +14,13 @@ Ludwig (2015); Frees (2001); Polachek and Kim (1994); Wooldridge (2010).
 
 ## Installation
 
-You can install feisr from github with:
+You can install feisr from cran with:
+
+``` r
+install.packages("feisr")
+```
+
+You can install the latest development version from github with:
 
 ``` r
 # install.packages("devtools")

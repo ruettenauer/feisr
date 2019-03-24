@@ -1,7 +1,7 @@
 ## Resubmission 2
-This is a resubmission. Thannk you for making me aware about the quotation conventions. I have:
+This is a resubmission. Thank you for making me aware about the quotation conventions. I have:
 
-* changed the quotation marks in description field following your suggestions
+* changed the quotation marks in the description field following your suggestions
 
 Best, Tobias
 

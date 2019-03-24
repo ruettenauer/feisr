@@ -18,7 +18,13 @@ The packages feisr provides a function to estimate fixed effects individual slop
 
 ## Installation
 
-You can install feisr from github with:
+You can install feisr from cran with:
+
+```{r cran-installation, eval = FALSE}
+install.packages("feisr")
+```
+
+You can install the latest development version from github with:
 
 ```{r gh-installation, eval = FALSE}
 # install.packages("devtools")
