@@ -200,7 +200,7 @@ print.summary.feistest <- function(x, digits = max(3, getOption("digits") - 2),
     cat("FEIS vs. FE:\n", "------------\n", sep = "")
     cat("H0: FEIS and FE estimates consistent", "\n")
     cat("Alternative H1: FE inconsistent", "\n")
-    cat("Model constraints:", names1, "= 0","\n", fill = TRUE)
+    cat("Model constraints:", paste(names1, collapse = ", "), "= 0","\n", fill = TRUE)
     cat("Chi-squared test:\n")
     cat("Chisq = ", format(v1["chi2"], digits = digits, nsmall = 1), ", df = ", v1["df"],
         ", P(> X2) = ", format(v1["P"], digits = digits, nsmall = 1), "\n", sep = "")
@@ -216,7 +216,7 @@ print.summary.feistest <- function(x, digits = max(3, getOption("digits") - 2),
     cat("FE vs. RE:\n", "------------\n", sep = "")
     cat("H0: FE and RE estimates consistent", "\n")
     cat("Alternative H1: RE inconsistent", "\n")
-    cat("Model constraints:", names2, "= 0","\n", fill = TRUE)
+    cat("Model constraints:", paste(names2, collapse = ", "), "= 0","\n", fill = TRUE)
     cat("Chi-squared test:\n")
     cat("Chisq = ", format(v2["chi2"], digits = digits, nsmall = 1), ", df = ", v2["df"],
         ", P(> X2) = ", format(v2["P"], digits = digits, nsmall = 1), "\n", sep = "")
@@ -232,7 +232,7 @@ print.summary.feistest <- function(x, digits = max(3, getOption("digits") - 2),
     cat("FEIS vs. RE:\n", "------------\n", sep = "")
     cat("H0: FEIS and RE estimates consistent", "\n")
     cat("Alternative H1: RE inconsistent", "\n")
-    cat("Model constraints:", names3, "= 0","\n", fill = TRUE)
+    cat("Model constraints:", paste(names3, collapse = ", "), "= 0","\n", fill = TRUE)
     cat("Chi-squared test:\n")
     cat("Chisq = ", format(v3["chi2"], digits = digits, nsmall = 1), ", df = ", v3["df"],
         ", P(> X2) = ", format(v3["P"], digits = digits, nsmall = 1), "\n", sep = "")
