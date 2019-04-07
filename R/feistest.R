@@ -577,19 +577,19 @@ bsfeistest <- function(model = NA, type = c("all", "bs1", "bs2", "bs3"),
   result <- list(wald_feis    = H.bs1,
                  wald_fe      = H.bs2,
                  wald_re      = H.bs3,
-                 vcov.b1        = V.bs1,
-                 vcov.b2        = V.bs2,
-                 vcov.b3        = V.bs3,
+                 vcov.b1      = V.bs1,
+                 vcov.b2      = V.bs2,
+                 vcov.b3      = V.bs3,
                  bscoef.feis  = mat.coef.feis,
                  bscoef.fe    = mat.coef.fe,
                  bscoef.re    = mat.coef.re)
-  result$call <- cl
+  result$call    <- cl
   result$formula <- formula
-  result$type <- type
+  result$type    <- type
   result$samples <- sample
-  result$seed <- seed
+  result$seed    <- seed
 
-  class(result)  <-  c("bsfeistest")
+  class(result) <- c("bsfeistest")
 
 
   return(result)
