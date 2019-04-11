@@ -48,7 +48,7 @@ Estimates a regression-based Hausmann test for fixed effects individual slope mo
 }
 \details{
 The Hausmann test can be computed by estimating a correlated random effects model
-\insertCite{@see @Wooldridge.2010.384, pp. 328-334}{feisr}. This is achieved by
+\insertCite{@see @Wooldridge.2010.384, pp. 328-334, @Ruttenauer.2019}{feisr}. This is achieved by
 estimating a Mundlak \insertCite{Mundlak.1978.0}{feisr} specification using random effects models
 with \code{\link[plm]{plm}}.
 Subsequently, \code{feistest} tests whether the time-constant variables / slope variables are correlated with

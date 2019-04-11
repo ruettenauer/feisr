@@ -1,0 +1,21 @@
+bibentry(bibtype = "Misc",
+  title        = "feisr: An R Package for Estimating Fixed Effects Individual Slope Models",
+  author       = c(person(given = "Tobias",
+                          family = "Ruettenauer",
+                          email = "ruettenauer@sowi.uni-kl.de"),
+                   person(given = "Volker",
+                          family = "Ludwig",
+                          email = "ludwig@sowi.uni-kl.de")),
+  year         = "2019",
+  doi          = "10.31235/osf.io/k4rnu",
+  journal      = "SocArXiv",
+  
+  textVersion = 
+         paste("Ruettenauer T, Ludwig V (2019).", 
+               "feisr: An R Package for Estimating Fixed Effects Individual Slope Models",
+               "SocArXiv.",
+	       "URL https://osf.io/preprints/socarxiv/py4hz/"),
+		   
+  header       = "To cite feisr in publications use:"
+)
+

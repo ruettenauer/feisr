@@ -53,7 +53,7 @@ Estimates a bootstrapped Hausmann test for fixed effects individual slope models
 }
 \details{
 The function computes a bootstrapped version of the Hausman test \insertCite{Hausman.1978.0}{feisr}.
-Pairs cluster bootstrapping \insertCite{Cameron.2008}{feisr} is used to obtain the empirical
+Pairs cluster bootstrapping \insertCite{Cameron.2008,Ruttenauer.2019}{feisr} is used to obtain the empirical
 variance-covariance matrix of the estimators, either for FEIS and conventional FE, convention FE and RE,
 or FEIS and RE.
 

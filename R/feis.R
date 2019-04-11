@@ -14,7 +14,7 @@
 #' \code{feis} is a special function to estimate linear fixed effects models with individual-specific slopes.
 #' In contrast to conventional fixed effects models, data are not person "demeaned", but "detrended" by
 #' the predicted individual slope of each person
-#' \insertCite{Bruderl.2015.387,Wooldridge.2010.384}{feisr}.
+#' \insertCite{Bruderl.2015.387,Ruttenauer.2019,Wooldridge.2010.384}{feisr}.
 #'
 #' Estimation requires at least \code{q+1} observations per unit, where \code{q} is the number of slope
 #' parameters (including a constant).

@@ -10,7 +10,7 @@
 #'
 #' @details
 #' The Hausmann test can be computed by estimating a correlated random effects model
-#' \insertCite{@see @Wooldridge.2010.384, pp. 328-334}{feisr}. This is achieved by
+#' \insertCite{@see @Wooldridge.2010.384, pp. 328-334, @Ruttenauer.2019}{feisr}. This is achieved by
 #' estimating a Mundlak \insertCite{Mundlak.1978.0}{feisr} specification using random effects models
 #' with \code{\link[plm]{plm}}.
 #' Subsequently, \code{feistest} tests whether the time-constant variables / slope variables are correlated with
@@ -276,7 +276,7 @@ feistest <- function(model = NA, robust = FALSE, type = c("all", "art1", "art2",
 #'
 #' @details
 #' The function computes a bootstrapped version of the Hausman test \insertCite{Hausman.1978.0}{feisr}.
-#' Pairs cluster bootstrapping \insertCite{Cameron.2008}{feisr} is used to obtain the empirical
+#' Pairs cluster bootstrapping \insertCite{Cameron.2008,Ruttenauer.2019}{feisr} is used to obtain the empirical
 #' variance-covariance matrix of the estimators, either for FEIS and conventional FE, convention FE and RE,
 #' or FEIS and RE.
 #'
