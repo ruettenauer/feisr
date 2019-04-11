@@ -10,7 +10,8 @@ models. In contrast to conventional fixed effects models, data are not
 person ‘demeaned’, but ‘detrended’ by the predicted individual slope of
 each person, which relaxes the assumptions of parallel trends between
 treated and untreated groups. For more information see Bruederl and
-Ludwig (2015); Frees (2001); Polachek and Kim (1994); Wooldridge (2010).
+Ludwig (2015); Frees (2001); Polachek and Kim (1994); Rüttenauer and
+Ludwig (2019); Wooldridge (2010).
 
 ## Installation
 
@@ -53,11 +54,11 @@ summary(feis.mod)
 #>     exp + I(exp^2), data = mwp, id = "id")
 #> 
 #> 
-#> Residuals :
+#> Residuals:
 #>       Min.    1st Qu.     Median    3rd Qu.       Max. 
 #> -2.0790815 -0.1050450  0.0046876  0.1112708  1.9412090 
 #> 
-#> Coefficients :
+#> Coefficients:
 #>                      Estimate Std. Error t-value  Pr(>|t|)    
 #> marry               0.0134582  0.0273006  0.4930    0.6221    
 #> enrol              -0.1181725  0.0234275 -5.0442 4.913e-07 ***
@@ -79,7 +80,7 @@ summary(feis.mod)
 
 The package also comes with an artificial regression test, which
 performs a Hausman-like test comparing FEIS against FE, FEIS against
-random effects (RE), and FE against RE models. The option feistest can
+random effects (RE), and FE against RE models. The function feistest can
 be used with cluster-robust standard errors:
 
 ``` r
@@ -141,5 +142,9 @@ Polachek SW, Kim MK (1994). “Panel Estimates of the Gender Earnings
 Gap.” Journal of Econometrics, 61(1), 23-42.
 <http://dx.doi.org/10.1016/0304-4076(94)90075-2>.
 
+Rüttenauer T, Ludwig V (2019). feisr: An R Package for Estimating Fixed
+Effects Individual Slope Models. SocArXiv
+<https://doi.org/10.31235/osf.io/k4rnu>.
+
 Wooldridge JM (2010). Econometric Analysis of Cross Section and Panel
-Data}. MIT Press, Cambridge, Mass. ISBN 0262294354.
+Data. MIT Press, Cambridge, Mass. ISBN 0262294354.
