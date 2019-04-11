@@ -10,11 +10,11 @@ feis1.mod <- feis(lnw ~ marry
 feis2.mod <- feis(lnw ~ marry + enrol + as.factor(yeargr)
                   | exp, data = mwp, id = "id")
 
-sr1 <- screenreg(list(feis1.mod, feis2.mod), digits = 3)
-tr1 <- texreg(list(feis1.mod, feis2.mod), digits = 3)
+sr1 <- screenreg(list(feis1.mod, feis2.mod), digits = 4)
+tr1 <- texreg(list(feis1.mod, feis2.mod), digits = 4)
 
-# saveRDS(sr1, file = "./tests/files/feisr_screenreg.rds")
-# saveRDS(tr1, file = "./tests/files/feisr_texreg.rds")
+# saveRDS(sr1, file = "./tests/files/feisr_screenreg.RDS")
+# saveRDS(tr1, file = "./tests/files/feisr_texreg.RDS")
 
 expect_equal(sr1,
              readRDS("../files/feisr_screenreg.RDS"))
