@@ -17,6 +17,6 @@ tr1 <- texreg(list(feis1.mod, feis2.mod), digits = 4)
 # saveRDS(tr1, file = "./tests/files/feisr_texreg.RDS")
 
 expect_equal(sr1,
-             readRDS("../files/feisr_screenreg.RDS"))
+             readRDS(system.file("tests", "files", "feisr_screenreg.RDS", package="feisr")))
 expect_equal(tr1,
-             readRDS("../files/feisr_texreg.RDS"))
+             readRDS(system.file("tests", "files", "feisr_texreg.RDS", package="feisr")))
