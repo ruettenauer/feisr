@@ -130,6 +130,15 @@ feistest <- function(model = NA, robust = FALSE, type = c("all", "art1", "art2",
   }
   colnames(S_mean) <- paste(colnames(S_mean), "_mean", sep = "")
 
+  # Check for and drop NA coef columns
+  if(any(is.na(model$coefficients))){
+    drop <- which(is.na(model$coefficients))
+
+    X <- X[, -drop, drop = FALSE]
+    X_hat <- X_hat[, -drop, drop = FALSE]
+    X_mean <- X_mean[, -drop, drop = FALSE]
+
+  }
 
   # Combine (with fake year)
   i2 <- ave(1:length(i), i, FUN = function(u) seq_along(u))
@@ -380,6 +389,13 @@ bsfeistest <- function(model = NA, type = c("all", "bs1", "bs2", "bs3"),
   S <- model.matrix(formula, data, rhs = 2, lhs = 0, cstcovar.rm = "all")
   S <- S[, -1, drop = FALSE]
   colnames(S) <- cleani(colnames(S))
+
+  # Check for and drop NA coef columns
+  if(any(is.na(model$coefficients))){
+    drop <- which(is.na(model$coefficients))
+
+    X <- X[, -drop, drop = FALSE]
+  }
 
   # Combine (with fake year)
   i2 <- ave(1:length(i), i, FUN = function(u) seq_along(u))
