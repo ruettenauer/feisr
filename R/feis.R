@@ -285,22 +285,53 @@ feis <- function(formula, data, id, robust = FALSE, intercept = FALSE, dropgroup
 
   ### Standard errors
 
-  if(!robust){
-    sigma <- sum((u * u)) / (df)
-    vcov <- sigma * solve(t(X) %*% X)
-    se <- sqrt(diag(vcov))
-  }
 
-  # Cluster robust SEs
-  if(robust){
-    mxu <- X * u
-    e <- rowsum(mxu, i)
-    dfc <- ((length(unique(i)) / (length(unique(i)) - 1))
-            * ((length(i) - 1) / (length(i) - (ncol(X1) + ncol(X)))))
-    vcovCL <- dfc * (solve(t(X) %*% X) %*% t(e) %*% e %*% solve(t(X) %*% X))
-    se <- sqrt(diag(vcovCL))
+  # Check for NAs in beta, and drop vars from for SE calculation
+  if(any(is.na(beta))){
+    Xn <- X[, -which(is.na(beta))]
 
-    vcov <- vcovCL
+    vcov <- matrix(NA, ncol = ncol(X), nrow = ncol(X))
+    colnames(vcov) <- colnames(X)
+    rownames(vcov) <- colnames(X)
+
+    if(!robust){
+      sigma <- sum((u * u)) / (df)
+      tmp <- sigma * solve(t(Xn) %*% Xn)
+      vcov[rownames(tmp), colnames(tmp)] <- tmp
+      se <- sqrt(diag(vcov))
+    }
+
+    # Cluster robust SEs
+    if(robust){
+      mxu <- Xn * u
+      e <- rowsum(mxu, i)
+      dfc <- ((length(unique(i)) / (length(unique(i)) - 1))
+              * ((length(i) - 1) / (length(i) - (ncol(X1) + ncol(Xn)))))
+      vcovCL <- dfc * (solve(t(Xn) %*% Xn) %*% t(e) %*% e %*% solve(t(Xn) %*% Xn))
+
+      vcov[rownames(vcovCL), colnames(vcovCL)] <- vcovCL
+
+      se <- sqrt(diag(vcov))
+    }
+
+  }else{
+    if(!robust){
+      sigma <- sum((u * u)) / (df)
+      vcov <- sigma * solve(t(X) %*% X)
+      se <- sqrt(diag(vcov))
+    }
+
+    # Cluster robust SEs
+    if(robust){
+      mxu <- X * u
+      e <- rowsum(mxu, i)
+      dfc <- ((length(unique(i)) / (length(unique(i)) - 1))
+              * ((length(i) - 1) / (length(i) - (ncol(X1) + ncol(X)))))
+      vcovCL <- dfc * (solve(t(X) %*% X) %*% t(e) %*% e %*% solve(t(X) %*% X))
+      se <- sqrt(diag(vcovCL))
+
+      vcov <- vcovCL
+    }
   }
 
 

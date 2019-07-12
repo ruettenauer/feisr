@@ -59,7 +59,7 @@ hatm <- function(y, x, checkcol=TRUE, ...){
     x.qr <- qr(x)
     if(x.qr$rank < ncol(x)){
       vars <- x.qr$pivot[1:x.qr$rank]
-      x <- x[, vars]
+      x <- x[, vars, drop = FALSE]
     }
   }
 
