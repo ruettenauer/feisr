@@ -449,6 +449,14 @@ slopes <- function(model=NA, ...){
     X <- X[, -1, drop = FALSE]
   }
 
+  # Check for and drop NA coef columns
+  if(any(is.na(coefs))){
+    drop <- which(is.na(coefs))
+
+    X <- X[, -drop, drop = FALSE]
+    coefs <- coefs[-drop, drop = FALSE]
+  }
+
   i <- model$id
 
   # Test order
