@@ -5,7 +5,7 @@
 \title{Artificial Regression Test}
 \usage{
 feistest(model = NA, robust = FALSE, type = c("all", "art1", "art2",
-  "art3"), ...)
+  "art3"), terms = NULL, ...)
 }
 \arguments{
 \item{model}{an object of class "\code{feis}".}
@@ -15,6 +15,10 @@ feistest(model = NA, robust = FALSE, type = c("all", "art1", "art2",
 \item{type}{one of "\code{all}" (the Default), "\code{art1}" for test of FEIS against FE only,
 "\code{art2}" for test of FE against RE only, and "\code{art3}" for test of FEIS against RE only
 (see also Details).}
+
+\item{terms}{An optional character vector specifying which coefficients should be jointly tested.
+By default, all covariates are included in the Wchi-squared test. For "\code{type=art2}", the
+slope variable is always included in "\code{terms}".}
 
 \item{...}{further arguments.}
 }
@@ -78,6 +82,9 @@ feis.mod <- feis(lnw ~ marry + enrol | year,
                  data = mwp, id = "id", robust = TRUE)
 ht <- feistest(feis.mod, robust = TRUE, type = "all")
 summary(ht)
+# Only for marry coefficient
+ht2 <- feistest(feis.mod, robust = TRUE, type = "all", terms = c("marry"))
+summary(ht2)
 }
 \references{
 \insertAllCited{}

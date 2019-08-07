@@ -139,9 +139,9 @@ print.summary.feis <- function(x, digits = max(3, getOption("digits") - 2),
 
 
 
-###################################################
-#### Print Augmented Regression Test FEIS - FE ####
-###################################################
+#####################################################
+#### Print Artificial  Regression Test FEIS - FE ####
+#####################################################
 
 #' @export
 summary.feistest <- function(object, ...){
@@ -157,7 +157,7 @@ print.summary.feistest <- function(x, digits = max(3, getOption("digits") - 2),
   cl <- x$call
   type <- x$type
 
-  name <- "Augmented Regression Test"
+  name <- "Artificial Regression Test"
   if(x$robust == T){name <- paste("Robust", name)}
 
   wt_feis <- x$wald_feis

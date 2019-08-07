@@ -43,6 +43,9 @@
 #' @param type one of "\code{all}" (the Default), "\code{art1}" for test of FEIS against FE only,
 #' "\code{art2}" for test of FE against RE only, and "\code{art3}" for test of FEIS against RE only
 #' (see also Details).
+#' @param terms An optional character vector specifying which coefficients should be jointly tested.
+#' By default, all covariates are included in the Wchi-squared test. For "\code{type=art2}", the
+#' slope variable is always included in "\code{terms}".
 #' @param ...	further arguments.
 #'
 #' @return An object of class "\code{feistest}", containing the following elements:
@@ -77,11 +80,15 @@
 #'                  data = mwp, id = "id", robust = TRUE)
 #' ht <- feistest(feis.mod, robust = TRUE, type = "all")
 #' summary(ht)
+#' # Only for marry coefficient
+#' ht2 <- feistest(feis.mod, robust = TRUE, type = "all", terms = c("marry"))
+#' summary(ht2)
 #' @export
 
 
 #' @export
-feistest <- function(model = NA, robust = FALSE, type = c("all", "art1", "art2", "art3"), ...){
+feistest <- function(model = NA, robust = FALSE, type = c("all", "art1", "art2", "art3"),
+                     terms = NULL, ...){
 
 
   formula  <- model$formula
@@ -110,6 +117,17 @@ feistest <- function(model = NA, robust = FALSE, type = c("all", "art1", "art2",
   S <- model.matrix(formula, data, rhs = 2, lhs = 0, cstcovar.rm = "all")
   S <- S[, -1, drop = FALSE]
   colnames(S) <- cleani(colnames(S))
+
+  # Check if terms fit colnames
+  if(!is.null(terms)){
+    terms <- cleani(terms)
+    incl <- which(terms %in% colnames(X))
+    if(length(incl) != length(terms)){
+      excl <- terms[-incl]
+      stop(paste("All terms must be included in model. Could not find:", "\n",
+                 paste(excl, collapse = ", ")))
+    }
+  }
 
   # Transformed variables
   X_hat <- data.frame(model$modelhat)
@@ -144,7 +162,7 @@ feistest <- function(model = NA, robust = FALSE, type = c("all", "art1", "art2",
   i2 <- ave(1:length(i), i, FUN = function(u) seq_along(u))
   df <- data.frame(id = i, id2 = i2, Y, X, X_hat, X_mean, S, S_mean)
 
-  # FEIS vs FE
+  ### FEIS vs FE
   if(!type %in% c("art2", "art3")){
     ### Set up formula
 
@@ -170,16 +188,18 @@ feistest <- function(model = NA, robust = FALSE, type = c("all", "art1", "art2",
 
     ### Perform wald test
 
-    v_hat <- colnames(X_hat)
-    v_mean <- colnames(X_mean)
-    v_smean <- colnames(S_mean)
+    if(is.null(terms)){
+      v_hat <- colnames(X_hat)
+    }else{
+      v_hat <- paste(terms, "_hat", sep = "")
+    }
 
     wt_feis <- aod::wald.test(b = coef(creis.mod), Sigma = vcov1,
                               Terms = which(names(creis.mod$coefficients) %in% v_hat))
   } else{wt_feis <- NULL; vcov1 <- NULL; creis.mod <- NULL}
 
 
-  # FE vs RE
+  ### FE vs RE
   if(!type %in% c("art1", "art3")){
     ### Set up formula
 
@@ -204,8 +224,13 @@ feistest <- function(model = NA, robust = FALSE, type = c("all", "art1", "art2",
 
     ### Perform wald test
 
-    v_mean <- colnames(X_mean)
-    v_smean <- colnames(S_mean)
+    if(is.null(terms)){
+      v_mean <- colnames(X_mean)
+      v_smean <- colnames(S_mean)
+    }else{
+      v_mean <- paste(terms, "_mean", sep = "")
+      v_smean <- colnames(S_mean) # Makes sense to always include?
+    }
 
     # FE-RE
     wt_fe <- aod::wald.test(b = coef(cre.mod), Sigma = vcov2,
@@ -213,7 +238,7 @@ feistest <- function(model = NA, robust = FALSE, type = c("all", "art1", "art2",
   } else{wt_fe <- NULL; vcov2 <- NULL; cre.mod <- NULL}
 
 
-  # FEIS vs RE
+  ### FEIS vs RE
   if(!type %in% c("art1", "art2")){
     ### Set up formula
 
@@ -237,7 +262,11 @@ feistest <- function(model = NA, robust = FALSE, type = c("all", "art1", "art2",
 
     ### Perform wald test
 
-    v_hat <- colnames(X_hat)
+    if(is.null(terms)){
+      v_hat <- colnames(X_hat)
+    }else{
+      v_hat <- paste(terms, "_hat", sep = "")
+    }
 
     # FEIS - RE
     wt_re <- aod::wald.test(b = coef(creis2.mod), Sigma = vcov3,
