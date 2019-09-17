@@ -28,11 +28,13 @@ License: GPL (>= 2)
 Encoding: UTF-8
 LazyData: true
 RdMacros: Rdpack
-Imports: aod, 
-	Formula,
-	plm,	
-	Rdpack,
-	stats
+Imports: 
+    aod,
+    Formula,
+    plm,
+    Rdpack,
+    stats,
+    dplyr
 Suggests: texreg,
     testthat
 RoxygenNote: 6.1.1

@@ -195,12 +195,18 @@ feis <- function(formula, data, id, robust = FALSE, intercept = FALSE, dropgroup
 
   df_step1<-cbind(X1, Y1)
 
-  dhat <- by(df_step1, i, FUN=function(u) hatm(y = u[, (nx + 1):(nx + ny)], x = u[, 1:nx],
-                                               checkcol = !dropgroups))
-  dhat <- do.call(rbind, lapply(dhat, as.matrix))
+  dhat <- by(df_step1, i, FUN=function(u) data.frame(hatm(y = u[, (nx + 1):(nx + ny)], x = u[, 1:nx],
+                                               checkcol = !dropgroups)))
+
+  # dhat <- do.call(rbind, lapply(dhat, as.matrix)) # use dplyr for more efficiency
+
+  rn<- unlist(sapply(dhat, FUN = function(x) rownames(x)))
+  dhat <- dplyr::bind_rows(dhat, .id = NULL)
+  rownames(dhat) <- rn
+  colnames(dhat) <- colnames(df_step1)[(nx + 1):(nx + ny)] # Keep orig col names
 
   # Ensure original order
-  dhat <- dhat[match(rownames(data), rownames(dhat)), ]
+  dhat <- as.matrix(dhat[match(rownames(data), rownames(dhat)), ])
 
 
   ### De-trend Data
