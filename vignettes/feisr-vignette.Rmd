@@ -77,8 +77,8 @@ To illustrate the usage of the `feisr` package, we exemplary investigate the 'ma
 
 In the most simple setting, we just regress the wage (`lnw`) on the dichotomous marriage indicator (`marry`) and the control variable `year`. Instead of controlling for a common linear time trend (`lnw ~ marry + year`), we use `year` as slope variable in `feis()` and thus allow each individual in our dataset to have their own linear time trend (`lnw ~ marry | year`). Therefore the `feis()` function addionally requires the specification of the group id variable:
 ```{r feis0, width = 70}
-# wages.feis0 <- feis(lnw ~ marry | year, data = mwp, id = "id")
-# summary(wages.feis0)
+wages.feis0 <- feis(lnw ~ marry | year, data = mwp, id = "id")
+summary(wages.feis0)
 ```
 The `summary()` function prints the model output with the conventional information. The result of this simple model suggests that marriage increases the wage above what we would have expected based on each individual's linear time trend. Note however that the assumption of a linear time trend or a linear effect of other control variables might be spurious. In our example, it is highly unlikely that wages are linearly increasing with time / age. Thus, more complex transformations of the slope variable(s) might be necessary in many applications [see e.g. @Kneip.2009; @Wolfers.2006 for further examples].
 
