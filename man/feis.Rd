@@ -4,8 +4,16 @@
 \alias{feis}
 \title{Fixed Effects Individual Slope Estimator}
 \usage{
-feis(formula, data, id, robust = FALSE, intercept = FALSE,
-  dropgroups = FALSE, ...)
+feis(
+  formula,
+  data,
+  id,
+  robust = FALSE,
+  intercept = FALSE,
+  dropgroups = FALSE,
+  tol = .Machine$double.eps,
+  ...
+)
 }
 \arguments{
 \item{formula}{a symbolic description for the model to be fitted (see Details).}
@@ -20,6 +28,8 @@ feis(formula, data, id, robust = FALSE, intercept = FALSE,
 
 \item{dropgroups}{logical. If \code{TRUE} groups without any within variance on a slope variable are dropped
 , if \code{FALSE} those variables are omitted for the respective groups only (default is \code{FALSE}).}
+
+\item{tol}{the tolerance for detecting linear dependencies in slopes (see \code{\link[base]{solve}}).}
 
 \item{...}{further arguments.}
 }
@@ -58,7 +68,7 @@ to "detrended" data.
 \code{feis} is a special function to estimate linear fixed effects models with individual-specific slopes.
 In contrast to conventional fixed effects models, data are not person "demeaned", but "detrended" by
 the predicted individual slope of each person
-\insertCite{Bruderl.2015.387,Ruttenauer.2019,Wooldridge.2010.384}{feisr}.
+\insertCite{Bruderl.2015.387,Ruttenauer.2020,Wooldridge.2010.384}{feisr}.
 
 Estimation requires at least \code{q+1} observations per unit, where \code{q} is the number of slope
 parameters (including a constant).

@@ -51,7 +51,7 @@ resm <- function(x, ...){
 #### Function Predicted maker ####
 ##################################
 
-hatm <- function(y, x, checkcol=TRUE, ...){
+hatm <- function(y, x, checkcol=TRUE, tol = .Machine$double.eps, ...){
   x <- as.matrix(x)
 
   # Check for perfect collinearity within groups
@@ -63,7 +63,7 @@ hatm <- function(y, x, checkcol=TRUE, ...){
     }
   }
 
-  res <- x %*% solve(t(x) %*% x) %*% t(x) %*% as.matrix(y)
+  res <- x %*% solve(t(x) %*% x, tol = tol) %*% t(x) %*% as.matrix(y)
   return(res)
 }
 

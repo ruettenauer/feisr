@@ -1,0 +1,187 @@
+---
+title: "Fixed Effects Individual Slopes using feisr"
+author: "Tobias Rüttenauer and Volker Ludwig"
+date: "`r Sys.Date()`"
+bibliography: ../inst/REFERENCES.bib
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{feisr-vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+\newcommand{\Exp}{\mathrm{E}}
+\newcommand\given[1][]{\:#1\vert\:}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\rank}{\mathrm{rank}}
+\newcommand{\bm}[1]{\boldsymbol{\mathbf{#1}}}
+
+
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+The main purpose of the package `feisr` is the estimation of fixed effects individual slopes models and respective test statistics. The fixed effects individual slopes (FEIS) estimator is a more general version of the well-known fixed effects estimator (FE), which allows to control for heterogeneous slopes in addition to time-constant heterogeneity [e.g. @Bruderl.2015.387; @Frees.2001.0; @Lemieux.1998; @Polachek.1994.0; @Ruttenauer.2020; @Wooldridge.2010.384]. Formally, the FEIS estimator can be expressed as 
+
+$$
+\begin{align} 
+\bm y_{i} =& \bm X_{i}\bm\beta + \bm W_i \bm\alpha_i + \bm \epsilon_{i},
+\end{align}
+$$
+where $\bm y_{i}$ is $T \times 1$, $\bm X_{i}$ is $T \times K$, and $\bm\epsilon_{i}$ is $T \times 1$. $\bm W_i$ is a $T \times J$ matrix of slope variables, and $\bm\alpha_i$ a $J \times 1$ vector of individual-specific slope parameters, for $J$ slope parameters including a constant term. If $\bm W_i$ consists of a constant term only, $\bm W_i = \bm 1$, thus $\bm\alpha_i$ reduces to $\alpha_{i1}$, and the above equation represents the well-known formula of a conventional FE model with individual fixed effects.
+
+As with the conventional FE, FEIS can be estimated using `lm()` by including $N-1$ individual-specific dummies and interaction terms of each slope variable and the $N-1$ individual-specific dummies ($(N-1) *J$ controls). This is however highly inefficient. As with the conventional FE estimator, we can achieve the same result by running an `lm()` on pre-transformed data. Therefore, specify the 'residual maker' matrix $\bm M_i = \bm I_T - \bm W_i(\bm W^\intercal_i \bm W_i)^{-1}\bm W^\intercal_i$, and estimate
+$$
+\begin{align} 
+y_{it} - \hat{y}_{it} =& (\bm x_{it} - \hat{\bm x}_{it})\bm\beta + \epsilon_{it} - \hat{\epsilon}_{it}, \\
+\bm M_i \bm y_i =& \bm M_i \bm X_i\bm\beta + \bm M_i \bm \epsilon_{i}, \\
+\tilde{\bm y}_{i} =& \tilde{\bm X}_{i}\bm\beta + \tilde{\bm \epsilon}_{i},
+\end{align} 
+$$
+where $\tilde{\bm y}_{i}$, $\tilde{\bm X}_{i}$, and $\tilde{\bm \epsilon}_{i}$ are the residuals of regressing $\bm y_{i}$, each column-vector of $\bm X_{i}$, and $\bm \epsilon_{i}$ on $\bm W_i$. Intuitively, we (1) estimate the individual-specific predicted values for the dependent variable and each covariate based on an individual intercept and the additional slope variables of $\bm W_i$, (2) 'detrend' the original data by these individual-specific predicted values, and (3) run an OLS model on the residual data. Similarly, we can estimate a correlated random effects (CRE) model [@Chamberlain.1982; @Mundlak.1978.0; @Wooldridge.2010.384] including the individual specific predictions $\hat{\bm X}_{i}$ to obtain the FEIS estimator:
+$$
+\begin{align} 
+\bm y_{i} =& \bm X_{i}\bm\beta + \hat{\bm X}_{i}\bm\rho + \bm \epsilon_{i}.
+\end{align}
+$$
+We use this transformation of the FEIS estimator to derive a Hausman-like Artificial Regression Test (ART) for hetergeneous slopes in panel or otherwise nested models.
+
+The main functions of the `feisr` package are:
+
+* `feis()`: Estimates fixed effects individual slope estimators by applying linear `lm` models to 'detrended' data.
+
+* `feistest()`: Estimates a regression-based Hausman test for fixed effects individual slope models.
+
+* `bsfeistest()`: Estimates a bootstrapped Hausman test for fixed effects individual slope models.
+
+The functions included in the R package `feisr` are also available in the [xtfeis ado](https://www.stata.com/meeting/germany10/germany10_ludwig.pdf) for Stata. The package [plm](https://CRAN.R-project.org/package=plm) provides esimation of related models, as for instance the mean group (MG) or common correlated effects mean groups (CCEMG) estimator via `pmg()` function.
+
+## Estimating `feis` models
+
+We demonstrate the most important functions of the `feisr` package by conducting an exemplary replication of the results presented in @Ludwig.2018.0. We therefore use the `mwp` panel data, containing information on wages and family status of 268 men. This is a random sample drawn from the National Longitudinal Survey of Youth [@NLSY79.2012], and more details on the selection of observations and variable construction can be found in @Ludwig.2018.0. To load package and data use:
+
+```{r setup}
+library(feisr)
+data("mwp", package = "feisr")
+head(mwp)
+```
+
+The data set contains a unique person identifier (`id`) and survey year indicator (`year`). Furthermore, we have information about the log hourly wage rate (`lnwage`), work experience (`exp`), family status (`marry`), enrollment in current education (`enrol`), years of formal education education (`yeduc`), age (`age`), birth cohort (`cohort`), and a grouped year indicator (`yeargr`).
+
+To illustrate the usage of the `feisr` package, we exemplary investigate the 'marriage wage premium': we analyze whether marriage leads to an increase in the hourly wage for men. We use the function `feis` to estimate fixed effects individual slope models to control for the hypothesis that those men who marry earlier also have a steeper wage growth over time. Similar to the  `plm` function, `feis` requires to indicate a unique person / group identifier. To include individual-specific slopes, `feis` uses two-part formulas `(expr | slope_expr)`, where `slope_expr` gives the expression for modelling the individual slopes. 
+
+In the most simple setting, we just regress the wage (`lnw`) on the dichotomous marriage indicator (`marry`) and the control variable `year`. Instead of controlling for a common linear time trend (`lnw ~ marry + year`), we use `year` as slope variable in `feis()` and thus allow each individual in our dataset to have their own linear time trend (`lnw ~ marry | year`). Therefore the `feis()` function addionally requires the specification of the group id variable:
+```{r feis0, width = 70}
+wages.feis0 <- feis(lnw ~ marry | year, data = mwp, id = "id")
+summary(wages.feis0)
+```
+The `summary()` function prints the model output with the conventional information. The result of this simple model suggests that marriage increases the wage above what we would have expected based on each individual's linear time trend. Note however that the assumption of a linear time trend or a linear effect of other control variables might be spurious. In our example, it is highly unlikely that wages are linearly increasing with time / age. Thus, more complex transformations of the slope variable(s) might be necessary in many applications [see e.g. @Kneip.2009; @Wolfers.2006 for further examples].
+
+An advantage of FEIS is that it allows to use any observed variable to be specified as individual-specific covariate. The formula in `feis()` also allows 'as is' transformations of original variables using `I()`. To replicate the analysis of @Ludwig.2018.0, we use work experience (`exp`) and squared work experience as the slope variables:
+```{r feis, width = 70}
+wages.feis <- feis(lnw ~ marry + enrol + yeduc + as.factor(yeargr)
+                   | exp + I(exp^2), data = mwp, id = "id")
+summary(wages.feis)
+```
+
+```{r coef, echo = FALSE , results = "hide"}
+coef1 <- unname(round(wages.feis$coefficients[1], 3))
+```
+
+In the example above, we can see that marriage has only a small effect of `r coef1`, and is not statistically significant. Note that the (first stage) slope regression, 'detrending' the data, always includes an intercept to control for constant person-specific differences. The regression on the detrended data, by default, does not contain an intercept. This can be changed by setting the option `intercept = TRUE`. Using the option `robust = TRUE` performs the same analysis but returns panel-robust standard errors [e.g. @Arellano.1993;  @Wooldridge.2010.384]:
+```{r feis2, width = 70}
+wages.feis.rob <- feis(lnw ~ marry + enrol + yeduc + as.factor(yeargr)
+                       | exp + I(exp^2), data = mwp, id = "id",
+                       robust = TRUE)
+```
+
+To compare the results with a conventional fixed effects and random effects models, we use the well-known [plm](https://CRAN.R-project.org/package=plm) [@Croissant.2008.0] package and estimate a `within` and a `random` effects model. Note that the `feis()` function would produce identical results to a `plm(..., effect = "whitin")` model if specified with an intercept in the slope variables only (without any additional slope variables). However, for this case, we recommend using the well-established `plm` package instead.
+```{r fe, width = 70}
+library(plm)
+wages.fe <- plm(lnw ~ marry + enrol + yeduc + as.factor(yeargr)
+                + exp + I(exp^2), data = mwp, index = c("id", "year"),
+                model = "within", effect = "individual")
+wages.re <- plm(lnw ~ marry + enrol + yeduc + as.factor(yeargr)
+                + exp + I(exp^2), data = mwp, index = c("id", "year"),
+                model = "random", effect = "individual")
+```
+
+The difference between the three models produced above can be visualized using the `screenreg()` and `texreg()` functions of the [texreg](https://CRAN.R-project.org/package=texreg) package [@Leifeld.2013]. Since version *1.37.1*, the `texreg` packages comes with an extract method for `feis` models.
+```{r compare, width = 70}
+library(texreg)
+screenreg(list(wages.feis, wages.feis.rob, wages.fe, wages.re), digits = 3,
+          custom.model.names = c("FEIS", "FEIS robust", "FE", "RE"))
+```
+```{r coef2, echo = FALSE , results = "hide"}
+coef2 <- unname(round(wages.fe$coefficients[1], 3))
+coef3 <- unname(round(wages.re$coefficients[2], 3))
+diff <- coef2 - coef1
+diff2 <- coef3 - coef1
+rel <- round(coef3/coef1, 1)
+r2.fe <- unname(round(summary(wages.fe)$r.squared[1], 3))
+r2.feis <- unname(round(wages.feis$r2, 3))
+```
+
+The most striking difference here is the effect of marriage on wage. The FE returns a highly significant effect of marriage on the logarithmic wage of `r coef2`, which exceeds the prediction of the FEIS by `r diff`. Consequently, according to the FE, we would conclude that there really is a 'marital wage premium' for men. The random effects model produces results, which are relatively similar to the results of the conventional FE model. However, the FEIS revises this conclusion by showing that substantial part of the effect stems from the fact that men with a steeper wage growth tend to marry earlier (those men with a stronger effect of experience on wage also exhibit a stronger effect of experience on marriage). In consequence, we can conclude that the 'marital wage premium' mainly stems from selection on growth rather than from a causal effect of marriage on wage. A second interesting difference is the explained variance: an $R^2$ of `r r2.fe` in the FE compared to `r r2.feis` in the FEIS model. However, this seems quite plausible, given that we have 'discarded' all the variance in wages, which can be explained by individual work experience in the FEIS model.
+
+## Hausman-like specification tests
+
+The example above illustrates how heterogeneous growth curves related to the covariates can drastically influence the conclusions drawn in conventional fixed effects models. For applied research, we thus propose to test for the presence of heterogeneous slopes when using panel models. Therefore, the function `feistest()` provides a Hausman-like artificial regression test [as discussed in @Ruttenauer.2020], which estimates the Mundlak specification [@Mundlak.1978.0] of the FEIS model and performs a Wald $\chi^2$ test on the coefficients of the predicted values using the [aod](https://CRAN.R-project.org/package=aod) package [@Lesnoff.2012]. The test can be performed on the FEIS model estimated by `feis()`, and no further model specifications are necessary. By default, the test is jointly performed on all covariates given on the right side of the formula. If required, the test can also be restricted to specified covariates only by the option `terms` (e.g. `feistest(..., terms = c("marry", "enrol"))`). With the option `type = "all"`, the function `feistest()` provides a test of FEIS against FE, the regression-based version of the well-known Hausman test comparing FE against RE [@Hausman.1978.0; @Wooldridge.2010.384], and a third test comparing the FEIS directly against the RE model. In the example below, we use cluster-robust standard errors for the artificial regression test. A summary method is provided in the package:
+```{r feistes, width = 70}
+ht <- feistest(wages.feis, robust = TRUE, type = "all")
+summary(ht)
+```
+
+```{r coef3, echo = FALSE , results = "hide"}
+chi2_feis <- round(unname(ht$wald_feis$result$chi2[1]), 3)
+chi2_fe <- round(unname(ht$wald_fe$result$chi2[1]), 3)
+p_fe <- round(unname(ht$wald_fe$result$chi2[3]), 3)
+chi2_re <- round(unname(ht$wald_re$result$chi2[1]), 3)
+p_re <- round(unname(ht$wald_re$result$chi2[3]), 3)
+```
+
+Alternatively, we can also use a bootstrapped Hausman test to compare the FEIS, the FE, and the RE model. The function `bsfeistest()` performs bootstrapping by pairs cluster resampling from the original dataset with replacement, meaning that we run a `feis`, a `plm` 'within' model, and a `plm` 'random' model for each `rep` random sample. Note that resampling is perfomed on the cluster ids. Thus, for unbalanced samples, only the number of clusters is identical in each replication while the total number of observations can vary. This method is analogue to the 'bootstrap-se' method described in @Cameron.2008, allowing us to receive an empirical estimate of the variance-covariance matrix ${\bm V}_{\hat{\bm \beta}_1 - \hat{\bm \beta}_0}$ and to perform the original version of the Hausman test [@Hausman.1978.0].
+```{r bsfeistes, width = 70}
+bsht <- bsfeistest(wages.feis, type = "all", rep = 100, seed = 91020104)
+summary(bsht)
+```
+
+```{r coef4, echo = FALSE , results = "hide"}
+bschi2_feis <- round(unname(bsht$wald_feis$result$chi2[1]), 3)
+bschi2_fe <- round(unname(bsht$wald_fe$result$chi2[1]), 3)
+bsp_fe <- round(unname(bsht$wald_fe$result$chi2[3]), 3)
+bschi2_re <- round(unname(bsht$wald_re$result$chi2[1]), 3)
+bsp_re <- round(unname(bsht$wald_re$result$chi2[3]), 3)
+```
+
+The first test comparing FEIS against FE offers a clear rejection of the null- hypothesis that FE is consistent. A highly significant $\chi^2$ of `r chi2_feis` (`r bschi2_feis` in the bootstrapped version) indicates that estimates of the conventional FE are inconsistent because of heterogeneous slopes. Thus, we should use FEIS instead of FE. Interestingly, the second test of FE against RE gives a non-significant $\chi^2$ of `r chi2_fe` with p=`r p_fe` (or `r bschi2_fe` with p=`r bsp_fe` respectively), indicating that we could use an RE model instead of a conventional FE model. This result is in line with the fact that RE and FE produce relatively similar coefficients in our example.
+
+Thus, when RE is the preferred model, we highly recommend to test the RE against the FE *and* against the FEIS model. The third test statistic of `feistest()` and `bsfeistest()` offers a direct comparison of FEIS against RE: both versions -- artificial regression based and bootstrapped -- show a highly significant $\chi^2$ of `r chi2_re` with p=`r p_re` (or `r bschi2_re` with p=`r bsp_re` respectively), thereby indicating that we should reject the null-hypothesis of consistent estimates in the RE model. In sum, when ignoring the possibility of heterogeneous slopes, we would lean towards using a conventional RE model, thereby relying on an effect of marriage which equals `r rel` times the effect obtained in a model accounting for individual-specific slopes.
+
+## Extracting individual slopes
+
+The fact that we observe an overestimation of the effect in the conventional FE model and receive a highly significant value in the specification tests indicates that the data exhibit a positive covariance between the effect of experience on wages and the effect of experience on marriage: $\Cov(\ddot{\bm \delta},\ddot{\bm \alpha}_2)> 0$. To directly test this hypothesis we can extract the individual slope parameters $\bm \alpha_{i2}$ using the `slopes()` function and compute the $\bm \delta_i$ vectors in a loop of individual regressions:
+```{r slope, width = 70}
+alpha2 <- data.frame(slopes(wages.feis))
+
+delta <- alpha2
+delta[, 1:ncol(delta)] <- NA
+
+for(i in rownames(alpha2)){
+  tmp <- mwp[mwp$id == i, ]
+  lm <- lm(lnw ~ exp + I(exp^2), data = tmp)
+  delta[i, ] <- t(lm$coefficients)
+}
+
+cov(alpha2$exp, delta$exp)
+cov(alpha2$I.exp.2., delta$I.exp.2.)
+```
+
+This confirms that those individuals with a steeper slope in marriage also have a steeper slope in wages: men with a stronger wage growth marry earlier. This positive covariance leads to an upwardly biased point estimate in conventional FE and RE models. In more detail, this is shown analytically and by Monte Carlo simulations in @Ruttenauer.2020.
+
+## References

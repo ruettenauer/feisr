@@ -1,21 +1,22 @@
-bibentry(bibtype = "Misc",
-  title        = "feisr: An R Package for Estimating Fixed Effects Individual Slope Models",
+bibentry(bibtype = "Article",
+  title        = "Fixed Effects Individual Slopes: Accounting and Testing for Heterogeneous Effects in Panel Data or Other Multilevel Models",
   author       = c(person(given = "Tobias",
                           family = "Ruettenauer",
-                          email = "ruettenauer@sowi.uni-kl.de"),
+                          email = "tobias.ruttenauer@nuffield.ox.ac.uk"),
                    person(given = "Volker",
                           family = "Ludwig",
                           email = "ludwig@sowi.uni-kl.de")),
-  year         = "2019",
-  doi          = "10.31235/osf.io/k4rnu",
-  address      = "SocArXiv",
+  year         = "2020",
+  journal      = "Sociological Methods and Research",
+  volume       = "Forthcoming",
+  doi          = "10.1177/0049124120926211",
+  url          = "https://osf.io/preprints/socarxiv/py4hz/",
   
   textVersion = 
-         paste("Ruettenauer T, Ludwig V (2019).", 
-               "feisr: An R Package for Estimating Fixed Effects Individual Slope Models",
-               "SocArXiv.",
-	       "URL https://osf.io/preprints/socarxiv/py4hz/"),
+         paste("Ruettenauer T, Ludwig V (2020).", 
+               "Fixed Effects Individual Slopes: Accounting and Testing for Heterogeneous Effects in Panel Data or Other Multilevel Models",
+               "Sociological Methods and Research. Forthcoming. 10.1177/0049124120926211"),
 		   
-  header       = "To cite feisr in publications use:"
+  header       = "To cite feisr in publications please use:"
 )
 

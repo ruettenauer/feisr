@@ -14,7 +14,7 @@
 #' \code{feis} is a special function to estimate linear fixed effects models with individual-specific slopes.
 #' In contrast to conventional fixed effects models, data are not person "demeaned", but "detrended" by
 #' the predicted individual slope of each person
-#' \insertCite{Bruderl.2015.387,Ruttenauer.2019,Wooldridge.2010.384}{feisr}.
+#' \insertCite{Bruderl.2015.387,Ruttenauer.2020,Wooldridge.2010.384}{feisr}.
 #'
 #' Estimation requires at least \code{q+1} observations per unit, where \code{q} is the number of slope
 #' parameters (including a constant).
@@ -45,6 +45,7 @@
 #' @param intercept logical. If \code{TRUE} estimates the model with an intercept (default is \code{FALSE}).
 #' @param dropgroups logical. If \code{TRUE} groups without any within variance on a slope variable are dropped
 #'  , if \code{FALSE} those variables are omitted for the respective groups only (default is \code{FALSE}).
+#' @param tol	the tolerance for detecting linear dependencies in slopes (see \code{\link[base]{solve}}).
 #' @param ...	further arguments.
 #'
 #' @return An object of class "\code{feis}", containing the following elements:
@@ -82,7 +83,8 @@
 #'                  data = mwp, id = "id", robust = TRUE)
 #' summary(feis.mod)
 #' @export
-feis <- function(formula, data, id, robust = FALSE, intercept = FALSE, dropgroups = FALSE, ...){
+feis <- function(formula, data, id, robust = FALSE, intercept = FALSE,
+                 dropgroups = FALSE, tol = .Machine$double.eps, ...){
 
   if(!is.character(formula)){
     formula <- Formula::Formula(formula)
@@ -168,7 +170,7 @@ feis <- function(formula, data, id, robust = FALSE, intercept = FALSE, dropgroup
   # Save omitted rows
   omitted <- new_rownames[-as.numeric(row.names(data))]
   names(omitted) <- orig_rownames[-as.numeric(row.names(data))]
-  attr(omitted, "class")<-"omit"
+  attr(omitted, "class") <- "omit"
 
   # Preserve original row.names
   row.names(data)  <-  orig_rownames[as.numeric(row.names(data))]
@@ -193,14 +195,14 @@ feis <- function(formula, data, id, robust = FALSE, intercept = FALSE, dropgroup
   ny <- ncol(Y1)
   nx <- ncol(X1)
 
-  df_step1<-cbind(X1, Y1)
+  df_step1 <- cbind(X1, Y1)
 
-  dhat <- by(df_step1, i, FUN=function(u) data.frame(hatm(y = u[, (nx + 1):(nx + ny)], x = u[, 1:nx],
-                                               checkcol = !dropgroups)))
+  dhat <- by(df_step1, i, FUN = function(u) data.frame(hatm(y = u[, (nx + 1):(nx + ny)], x = u[, 1:nx],
+                                               checkcol = !dropgroups, tol = tol)))
 
   # dhat <- do.call(rbind, lapply(dhat, as.matrix)) # use dplyr for more efficiency
 
-  rn<- unlist(sapply(dhat, FUN = function(x) rownames(x)))
+  rn <- unlist(lapply(dhat, FUN = function(x) rownames(x)))
   dhat <- dplyr::bind_rows(dhat, .id = NULL)
   rownames(dhat) <- rn
   colnames(dhat) <- colnames(df_step1)[(nx + 1):(nx + ny)] # Keep orig col names

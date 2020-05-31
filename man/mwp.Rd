@@ -4,7 +4,8 @@
 \name{mwp}
 \alias{mwp}
 \title{Panel data including wages and family status}
-\format{A data frame with 3100 observations and 17 variables:
+\format{
+A data frame with 3100 observations and 17 variables:
 \describe{
  \item{id}{unique person identifier}
  \item{year}{survey year}
@@ -23,7 +24,8 @@
  \item{yeargr3}{dummy indicating grouped year=3}
  \item{yeargr4}{dummy indicating grouped year=4}
  \item{yeargr5}{dummy indicating grouped year=5}
-}}
+}
+}
 \source{
 \insertCite{Ludwig.2018.0;textual}{feisr}
 }

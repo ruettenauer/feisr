@@ -5,31 +5,33 @@
 #' @title Artificial Regression Test
 #'
 #' @description
-#' Estimates a regression-based Hausmann test for fixed effects individual slope models.
+#' Estimates a regression-based Hausman test for fixed effects individual slope models.
 #'
 #'
 #' @details
-#' The Hausmann test can be computed by estimating a correlated random effects model
-#' \insertCite{@see @Wooldridge.2010.384, pp. 328-334, @Ruttenauer.2019}{feisr}. This is achieved by
+#' The Hausman test can be computed by estimating a correlated random effects model
+#' \insertCite{@see @Wooldridge.2010.384, pp. 328-334, @Ruttenauer.2020}{feisr}. This is achieved by
 #' estimating a Mundlak \insertCite{Mundlak.1978.0}{feisr} specification using random effects models
 #' with \code{\link[plm]{plm}}.
 #' Subsequently, \code{feistest} tests whether the time-constant variables / slope variables are correlated with
 #' the unobserved heterogeneity by using a Wald chi-squared test with \code{\link[aod]{wald.test}}.
 #'
-#' \code{type="art1"} estimates an extended regression-based Hausmann test comparing fixed effects
+#' \code{type="art1"} estimates an extended regression-based Hausman test comparing fixed effects
 #' individual slope models and conventional fixed effects models. For \code{art1} the
 #' Mundlak-specification \insertCite{Mundlak.1978.0}{feisr} includes the person-specific averages,
 #' but additionally the person-specific slope estimates used for "detrending" in \code{\link[feisr]{feis}}.
 #' This allows to test whether we can omit the estimated values based on the slopes and reduce the model
 #' to a conventional FE model. The Wald test of \code{type="art1"} is applied to the slope variables only.
-#' \code{type="art2"} estimates the conventional regression-based Hausmann test
+#' \code{type="art2"} estimates the conventional regression-based Hausman test
 #' \insertCite{@as described in @Wooldridge.2010.384, pp. 328-334}{feisr} comparing conventional
 #' fixed effects models against random effects models.
-#' \code{type="art3"} estimates a regression-based Hausmann test comparing FEIS directly against RE,
+#' \code{type="art3"} estimates a regression-based Hausman test comparing FEIS directly against RE,
 #' thereby testing for inconsistency of the RE model due to either heterogeneous slopes or time-constant
 #' omitted heterogeneity. For \code{art3} the Mundlak-specification includes only the person-specific
 #' slopes, and no averages. This allows to test whether we can omit the estimated values based on
 #' the slopes and reduce the model to a conventional RE model.
+#' \insertCite{@for a formal description please see @Ruttenauer.2020}{feisr}.
+#'
 #'
 #'
 #' If specified (\code{robust=TRUE}), \code{feistest} uses panel-robust standard errors.
@@ -309,19 +311,19 @@ feistest <- function(model = NA, robust = FALSE, type = c("all", "art1", "art2",
 #' @title Bootstrapped Regression Test
 #'
 #' @description
-#' Estimates a bootstrapped Hausmann test for fixed effects individual slope models.
+#' Estimates a bootstrapped Hausman test for fixed effects individual slope models.
 #'
 #'
 #' @details
 #' The function computes a bootstrapped version of the Hausman test \insertCite{Hausman.1978.0}{feisr}.
-#' Pairs cluster bootstrapping \insertCite{Cameron.2008,Ruttenauer.2019}{feisr} is used to obtain the empirical
+#' Pairs cluster bootstrapping \insertCite{Cameron.2008,Ruttenauer.2020}{feisr} is used to obtain the empirical
 #' variance-covariance matrix of the estimators, either for FEIS and conventional FE, convention FE and RE,
 #' or FEIS and RE.
 #'
-#' \code{type="bs1"} estimates a bootstrapped Hausmann test comparing fixed effects individual slope
+#' \code{type="bs1"} estimates a bootstrapped Hausman test comparing fixed effects individual slope
 #' models and conventional fixed effects models. In this case, \code{bsfeistest} tests for
 #' inconsistency of the convetional FE model due to heterogeneous slopes.
-#' \code{type="bs2"} estimates a bootstrapped version of the well-known Hausmann test comparing conventional
+#' \code{type="bs2"} estimates a bootstrapped version of the well-known Hausman test comparing conventional
 #' fixed effects models against random effects models.
 #' \code{type="bs3"} estimates a bootstrapped Hausman directly comparing FEIS against RE, thereby testing
 #' for inconsistency of the RE model due to either heterogeneous slopes or time-constant omitted heterogeneity.
