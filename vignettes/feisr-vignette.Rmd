@@ -1,6 +1,6 @@
 ---
 title: "Fixed Effects Individual Slopes using feisr"
-author: "Tobias Rüttenauer and Volker Ludwig"
+author: "Tobias Ruettenauer and Volker Ludwig"
 date: "`r Sys.Date()`"
 bibliography: ../inst/REFERENCES.bib
 output: rmarkdown::html_vignette
