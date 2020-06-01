@@ -34,9 +34,9 @@ Imports:
     plm,
     Rdpack,
     stats,
-    dplyr
+    dplyr (>= 1.0.0)
 Suggests: 
-    texreg,
+    texreg (>= 1.37.1),
     testthat,
     knitr,
     rmarkdown

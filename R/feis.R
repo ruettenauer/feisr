@@ -202,9 +202,9 @@ feis <- function(formula, data, id, robust = FALSE, intercept = FALSE,
 
   # dhat <- do.call(rbind, lapply(dhat, as.matrix)) # use dplyr for more efficiency
 
-  rn <- unlist(lapply(dhat, FUN = function(x) rownames(x)))
-  dhat <- dplyr::bind_rows(dhat, .id = NULL)
-  rownames(dhat) <- rn
+  # rn <- unlist(lapply(dhat, FUN = function(x) rownames(x))) # Rownames preserved in dplyr 1.0.0
+  dhat <- dplyr::bind_rows(rbind(dhat), .id = NULL)
+  # rownames(dhat) <- rn
   colnames(dhat) <- colnames(df_step1)[(nx + 1):(nx + ny)] # Keep orig col names
 
   # Ensure original order

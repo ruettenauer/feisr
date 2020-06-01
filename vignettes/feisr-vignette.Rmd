@@ -5,7 +5,7 @@ date: "`r Sys.Date()`"
 bibliography: ../inst/REFERENCES.bib
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{feisr-vignette}
+  %\VignetteIndexEntry{Fixed Effects Individual Slopes using feisr}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
