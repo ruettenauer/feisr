@@ -9,9 +9,9 @@ general version of the often used conventional fixed effects (FE) panel
 models. In contrast to conventional fixed effects models, data are not
 person ‘demeaned’, but ‘detrended’ by the predicted individual slope of
 each person, which relaxes the assumptions of parallel trends between
-treated and untreated groups. For more information see Bruederl and
+treated and untreated groups. For more information see Brüderl and
 Ludwig (2015); Frees (2001); Polachek and Kim (1994); Rüttenauer and
-Ludwig (2019); Wooldridge (2010).
+Ludwig (2020); Wooldridge (2010).
 
 ## Installation
 
@@ -92,14 +92,14 @@ summary(ht)
 #> feis(formula = lnw ~ marry + enrol + yeduc + as.factor(yeargr) | 
 #>     exp + I(exp^2), data = mwp, id = "id")
 #> 
-#> Robust Augmented Regression Test 
+#> Robust Artificial Regression Test 
 #> 
 #> FEIS vs. FE:
 #> ------------
 #> H0: FEIS and FE estimates consistent 
 #> Alternative H1: FE inconsistent 
-#> Model constraints: marry_hat enrol_hat yeduc_hat as_factor_yeargr_2_hat 
-#> as_factor_yeargr_3_hat as_factor_yeargr_4_hat as_factor_yeargr_5_hat = 0 
+#> Model constraints: marry_hat,  enrol_hat,  yeduc_hat,  as_factor_yeargr_2_hat,  
+#> as_factor_yeargr_3_hat,  as_factor_yeargr_4_hat,  as_factor_yeargr_5_hat = 0 
 #> 
 #> Chi-squared test:
 #> Chisq = 49.558, df = 7, P(> X2) = 1.7639e-08
@@ -109,9 +109,9 @@ summary(ht)
 #> ------------
 #> H0: FE and RE estimates consistent 
 #> Alternative H1: RE inconsistent 
-#> Model constraints: marry_mean enrol_mean yeduc_mean 
-#> as_factor_yeargr_2_mean as_factor_yeargr_3_mean as_factor_yeargr_4_mean 
-#> as_factor_yeargr_5_mean exp_mean exp_2_mean = 0 
+#> Model constraints: marry_mean,  enrol_mean,  yeduc_mean,  
+#> as_factor_yeargr_2_mean,  as_factor_yeargr_3_mean,  as_factor_yeargr_4_mean,  
+#> as_factor_yeargr_5_mean,  exp_mean,  exp_2_mean = 0 
 #> 
 #> Chi-squared test:
 #> Chisq = 13.087, df = 9, P(> X2) = 0.15872
@@ -121,8 +121,8 @@ summary(ht)
 #> ------------
 #> H0: FEIS and RE estimates consistent 
 #> Alternative H1: RE inconsistent 
-#> Model constraints: marry_hat enrol_hat yeduc_hat as_factor_yeargr_2_hat 
-#> as_factor_yeargr_3_hat as_factor_yeargr_4_hat as_factor_yeargr_5_hat = 0 
+#> Model constraints: marry_hat,  enrol_hat,  yeduc_hat,  as_factor_yeargr_2_hat,  
+#> as_factor_yeargr_3_hat,  as_factor_yeargr_4_hat,  as_factor_yeargr_5_hat = 0 
 #> 
 #> Chi-squared test:
 #> Chisq = 55.231, df = 7, P(> X2) = 1.342e-09
@@ -130,21 +130,22 @@ summary(ht)
 
 ## References
 
-Bruederl J, Ludwig V (2015). “Fixed-Effects Panel Regression.” In H
-Best, C Wolf (eds.), The Sage Handbook of Regression Analysis and Causal
+Brüderl J, Ludwig V (2015). “Fixed-Effects Panel Regression.” In H Best,
+C Wolf (eds.), The Sage Handbook of Regression Analysis and Causal
 Inference, pp. 327-357. Sage, Los Angeles. ISBN 1446252442.
 
 Frees EW (2001). “Omitted Variables in Longitudinal Data Models.”
 Canadian Journal of Statistics, 29(4), 573-595.
-<http://dx.doi.org/10.2307/3316008>.
+<https://doi.org/10.2307/3316008>.
 
 Polachek SW, Kim MK (1994). “Panel Estimates of the Gender Earnings
 Gap.” Journal of Econometrics, 61(1), 23-42.
-<http://dx.doi.org/10.1016/0304-4076(94)90075-2>.
+<https://doi.org/10.1016/0304-4076(94)90075-2>.
 
-Rüttenauer T, Ludwig V (2019). feisr: An R Package for Estimating Fixed
-Effects Individual Slope Models. SocArXiv
-<https://doi.org/10.31235/osf.io/k4rnu>.
+Rüttenauer T, Ludwig V (2020). “Fixed Effects Individual Slopes:
+Accounting and Testing for Heterogeneous Effects in Panel Data or Other
+Multilevel Models.” Sociological Methods and Research, Forthcoming.
+<https://doi.org/10.1177/0049124120926211>.
 
-Wooldridge JM (2010). Econometric Analysis of Cross Section and Panel
-Data. MIT Press, Cambridge, Mass. ISBN 0262294354.
+Wooldridge JM (2010). “Econometric Analysis of Cross Section and Panel
+Data.” MIT Press, Cambridge, Mass. ISBN 0262294354.
