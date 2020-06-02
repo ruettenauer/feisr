@@ -1,27 +1,43 @@
 #' Estimating Fixed Effects Individual Slope Models
 #'
-#' \pkg{feisr} provides the function `feis()` to estimate fixed effects individual
-#' slopes (FEIS) models. The FEIS model constitutes a more general version of
-#' the often-used fixed effects (FE) panel model, as implemented in the
-#' package \code{\link[plm]{plm}} . In FEIS models, data are not only person
-#' demeaned like in conventional FE models, but detrended by the predicted
-#' individual slope of each person or group. Estimation is performed by
-#' applying least squares `lm()` to the transformed data.
-#' To test consistency of conventional FE
-#' and random effects estimators against heterogeneous slopes, the package
-#' also provides the functions `feistest()` for an artificial regression test
-#' and `bsfeistest()` for a bootstrapped version of the Hausman test.
+#' The main purpose of the package `feisr` is the estimation of fixed
+#' effects individual slopes models and respective test statistics.
+#' The fixed effects individual slopes (FEIS) estimator is a more general
+#' version of the well-known fixed effects estimator (FE), which allows to
+#' control for heterogeneous slopes in addition to time-constant heterogeneity
+#' [e.g. @Bruderl.2015.387; @Frees.2001.0; @Lemieux.1998; @Polachek.1994.0; @Ruttenauer.2020; @Wooldridge.2010.384].
+#' This is done by running an `lm()` model on pre-transformed data, where
+#' we (1) estimate the individual-specific predicted values for the dependent
+#' variable and each covariate based on an individual intercept and the additional
+#' slope variables, (2) detrend the original data by these individual-specific
+#' predicted values, and (3) run an OLS model on the residual data. The package
+#' also provides two specification test for heterogeneous slopes.
+#'
+#' The main functions of the `feisr` package are:
+#'
+#' * `feis()`: Estimates fixed effects individual slope estimators by
+#' applying linear `lm` models to 'detrended' data.
+#'
+#' * `feistest()`: Estimates a regression-based Hausman test for fixed effects
+#' individual slope models.
+#'
+#' * `bsfeistest()`: Estimates a bootstrapped Hausman test for fixed effects
+#' individual slope models.
+#'
+#' The functions included in the R package `feisr` are also available in the
+#' [xtfeis ado](https://www.stata.com/meeting/germany10/germany10_ludwig.pdf)
+#' for Stata. The package [plm](https://CRAN.R-project.org/package=plm) provides
+#' esimation of related models, as for instance the mean group (MG) or common
+#' correlated effects mean groups (CCEMG) estimator via `pmg()` function and
+#' the estimator of models with variable coefficients via `pvcm()`.
 #'
 #' @author Tobias Ruettenauer
 #' @author Volker Ludwig
 #'
 #' @seealso \code{\link[plm]{plm}}, \code{\link[plm]{pvcm}}, \code{\link[plm]{pmg}}
 #'
-#' @references Ruettenauer T, Ludwig V (2020).
-#'   Fixed Effects Individual Slopes: Accounting and Testing for Heterogeneous
-#'   Effects in Panel Data or Other Multilevel Models.
-#'   Sociological Methods and Research. Forthcoming.
-#'   \url{https://www.doi.org/10.1177/0049124120926211}.
+#' @references
+#' \insertAllCited{}
 #'
 #' @docType package
 #' @name feisr-package

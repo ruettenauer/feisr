@@ -12,6 +12,8 @@
 
 - Added `tol` option to `feis()` for detecting linear dependencies in slopes.
 
+- Added S3 methods for`feis()`: coef, deviance, df.residual, fitted, formula, nobs, predict, residuals, terms, vcov
+
 - Drop export of extract. Method now available in texreg (>= 1.37.1). Added test to keep compatibility.
 
 

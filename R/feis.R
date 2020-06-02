@@ -1,4 +1,4 @@
-#####################
+#######################
 #### Function FEIS ####
 #######################
 #' @importFrom Rdpack reprompt
@@ -35,12 +35,13 @@
 #' robust to arbitrary forms of serial correlation within groups formed by \code{id} as well as
 #' heteroscedasticity across groups \insertCite{@see @Wooldridge.2010.384, pp. 379-381}{feisr}.
 #'
-#' The model output can be exported using \code{\link[texreg]{texreg}}.
+#' The model output can be exported using the \code{\link[texreg]{texreg}} package.
 #'
 #' @seealso \code{\link[feisr]{summary.feis}}, \code{\link[plm]{plm}}, \code{\link[plm]{pvcm}},
 #' \code{\link[plm]{pmg}}, \code{\link[feisr]{feistest}}
 #'
 #' @param formula	a symbolic description for the model to be fitted (see Details).
+#' @param object,x	an object of class "\code{feis}".
 #' @param data a \code{data.frame} containing the specified variables.
 #' @param id the name of a unique group / person identifier (as string).
 #' @param robust logical. If \code{TRUE} estimates cluster robust standard errors (default is \code{FALSE}).
@@ -48,6 +49,8 @@
 #' @param dropgroups logical. If \code{TRUE} groups without any within variance on a slope variable are dropped
 #'  , if \code{FALSE} those variables are omitted for the respective groups only (default is \code{FALSE}).
 #' @param tol	the tolerance for detecting linear dependencies in slopes (see \code{\link[base]{solve}}).
+#' @param newdata the new data set for the predict method.
+#' @param lhs,rhs indexes of the left- and right-hand side for the methods formula and terms.
 #' @param ...	further arguments.
 #'
 #' @return An object of class "\code{feis}", containing the following elements:
