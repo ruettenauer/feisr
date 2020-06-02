@@ -72,14 +72,21 @@ fitted.feis <- function(object,...){
 #' @rdname feis
 #' @export
 predict.feis <- function(object, newdata = NULL, ...){
-  f <- formula(object$formula, rhs = 1, lhs = 0)
+  f <- formula(object, rhs = 1, lhs = 0)
   tt <- terms(f)
   if (is.null(newdata)){
     result <- fitted(object, ...)
   }
   else{
-    Terms <- delete.response(tt)
-    m <- model.frame(Terms, newdata)
+    av <- match(all.vars(tt), colnames(newdata))
+    # Stop if variable in terms not included in newdata
+    # TR: handle NA coefficients (see predict.lm)?
+    if(any(is.na(av))){
+      nf <- which(is.na(av))
+      stop(paste("Variable(s)", paste(all.vars(tt)[nf], collapse = ", "),
+                 "not found in newdata"))
+    }
+    m <- model.frame(tt, newdata)
     X <- model.matrix(f, m, rhs = 1, lhs = 0, cstcovar.rm = "all")
     oo <- match(object$assign, attr(X, "assign"))
     X <- X[, oo, drop = FALSE]
