@@ -88,6 +88,8 @@ the well-established \code{\link[plm]{plm}} (\code{model="within"}) function ins
 If specified, \code{feis} estimates panel-robust standard errors. Panel-robust standard errors are
 robust to arbitrary forms of serial correlation within groups formed by \code{id} as well as
 heteroscedasticity across groups \insertCite{@see @Wooldridge.2010.384, pp. 379-381}{feisr}.
+
+The model output can be exported using \code{\link[texreg]{texreg}}.
 }
 \examples{
 data("mwp", package = "feisr")
@@ -100,5 +102,6 @@ summary(feis.mod)
 \insertAllCited{}
 }
 \seealso{
-\code{\link[feisr]{summary.feis}}, \code{\link[plm]{plm}}, \code{\link[plm]{pvcm}}, \code{\link[plm]{pmg}}, \code{\link[feisr]{feistest}}
+\code{\link[feisr]{summary.feis}}, \code{\link[plm]{plm}}, \code{\link[plm]{pvcm}},
+\code{\link[plm]{pmg}}, \code{\link[feisr]{feistest}}
 }

@@ -209,3 +209,24 @@ test_that("Robust standard errors test 3 (Hedonic)", {
 
 
 
+
+### Test extract method (use texreg test to check compatibility)
+
+test_that("extract feis (for texreg)", {
+  data("mwp", package = "feisr")
+  feis1.mod <- feis(lnw ~ marry | exp, data = mwp, id = "id")
+  feis2.mod <- feis(lnw ~ marry + enrol + as.factor(yeargr) | exp,
+                    data = mwp,
+                    id = "id")
+  tr <- feisr:::extract.feis(feis1.mod)
+  expect_equivalent(tr@coef, 0.056, tolerance = 1e-3)
+  expect_equivalent(tr@se, 0.0234, tolerance = 1e-3)
+  expect_equivalent(tr@pvalues, 0.0165, tolerance = 1e-3)
+  expect_equivalent(tr@gof, c(0.002, 0.002, 3100, 268, 0.312), tolerance = 1e-3)
+  expect_length(tr@gof.names, 5)
+  tr2 <- feisr:::extract.feis(feis2.mod)
+  expect_length(tr2@coef, 6)
+  expect_length(which(tr2@pvalues < 0.05), 2)
+  expect_length(which(tr2@gof.decimal), 3)
+})
+
