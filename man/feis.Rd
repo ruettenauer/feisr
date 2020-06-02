@@ -94,10 +94,11 @@ data("mwp", package = "feisr")
 feis.mod <- feis(lnw ~ marry + enrol + as.factor(yeargr) | exp + I(exp^2),
                  data = mwp, id = "id", robust = TRUE)
 summary(feis.mod)
+
 }
 \references{
 \insertAllCited{}
 }
 \seealso{
-\code{\link[plm]{plm}}, \code{\link[feisr]{feistest}}
+\code{\link[plm]{plm}}, \code{\link[plm]{pvcm}}, \code{\link[plm]{pmg}}, \code{\link[feisr]{feistest}}
 }

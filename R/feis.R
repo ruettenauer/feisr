@@ -1,4 +1,4 @@
-#######################
+#####################
 #### Function FEIS ####
 #######################
 #' @importFrom Rdpack reprompt
@@ -36,7 +36,7 @@
 #' heteroscedasticity across groups \insertCite{@see @Wooldridge.2010.384, pp. 379-381}{feisr}.
 
 #'
-#' @seealso \code{\link[plm]{plm}}, \code{\link[feisr]{feistest}}
+#' @seealso \code{\link[plm]{plm}}, \code{\link[plm]{pvcm}}, \code{\link[plm]{pmg}}, \code{\link[feisr]{feistest}}
 #'
 #' @param formula	a symbolic description for the model to be fitted (see Details).
 #' @param data a \code{data.frame} containing the specified variables.
@@ -82,7 +82,9 @@
 #' feis.mod <- feis(lnw ~ marry + enrol + as.factor(yeargr) | exp + I(exp^2),
 #'                  data = mwp, id = "id", robust = TRUE)
 #' summary(feis.mod)
+#'
 #' @export
+#'
 feis <- function(formula, data, id, robust = FALSE, intercept = FALSE,
                  dropgroups = FALSE, tol = .Machine$double.eps, ...){
 
@@ -439,8 +441,9 @@ slpmk <- function(Y=NA, X=NA, Z=NA, beta=NA, checkcol = TRUE){
 #' feis.mod <- feis("log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp | year",
 #'                  data = Produc, id = "state", robust = TRUE)
 #' slps <- slopes(feis.mod)
+#'
 #' @export
-
+#'
 slopes <- function(model=NA, ...){
 
   data <- model$model

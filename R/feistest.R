@@ -85,10 +85,9 @@
 #' # Only for marry coefficient
 #' ht2 <- feistest(feis.mod, robust = TRUE, type = "all", terms = c("marry"))
 #' summary(ht2)
+#'
 #' @export
-
-
-#' @export
+#'
 feistest <- function(model = NA, robust = FALSE, type = c("all", "art1", "art2", "art3"),
                      terms = NULL, ...){
 
@@ -377,10 +376,9 @@ feistest <- function(model = NA, robust = FALSE, type = c("all", "art1", "art2",
 #'                  data = mwp, id = "id", robust = TRUE)
 #' bsht <- bsfeistest(feis.mod, type = "bs1", rep = 5, seed = 1234, prog = FALSE)
 #' summary(bsht)
+#'
 #' @export
-
-
-#' @export
+#'
 bsfeistest <- function(model = NA, type = c("all", "bs1", "bs2", "bs3"),
                      rep = 500, seed = NULL, prog = TRUE, ...){
 

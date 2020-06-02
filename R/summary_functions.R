@@ -51,7 +51,9 @@ describe <- function(x,
 #' feis.mod <- feis(lnw ~ marry | exp,
 #'                  data = mwp, id = "id")
 #' summary(feis.mod)
+#'
 #' @export
+#'
 summary.feis <- function(object, vcov = NULL, ...){
 
   if(is.null(vcov)){
@@ -94,6 +96,7 @@ summary.feis <- function(object, vcov = NULL, ...){
 ############################
 
 #' @export
+#'
 print.summary.feis <- function(x, digits = max(3, getOption("digits") - 2),
                                width=getOption("width"), subset=NULL,  ...){
   formula <- formula(x)
@@ -144,6 +147,7 @@ print.summary.feis <- function(x, digits = max(3, getOption("digits") - 2),
 #####################################################
 
 #' @export
+#'
 summary.feistest <- function(object, ...){
   class(object) <- c("summary.feistest", "feistest")
   object
@@ -151,6 +155,7 @@ summary.feistest <- function(object, ...){
 
 
 #' @export
+#'
 print.summary.feistest <- function(x, digits = max(3, getOption("digits") - 2),
                          width=getOption("width"),  ...){
 
@@ -250,6 +255,7 @@ print.summary.feistest <- function(x, digits = max(3, getOption("digits") - 2),
 ######################################################
 
 #' @export
+#'
 summary.bsfeistest <- function(object, ...){
   class(object) <- c("summary.bsfeistest", "bsfeistest")
   object
@@ -257,6 +263,7 @@ summary.bsfeistest <- function(object, ...){
 
 
 #' @export
+#'
 print.summary.bsfeistest <- function(x, digits = max(3, getOption("digits") - 2),
                                    width=getOption("width"),  ...){
 

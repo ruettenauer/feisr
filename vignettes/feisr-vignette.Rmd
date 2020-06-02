@@ -59,7 +59,7 @@ The main functions of the `feisr` package are:
 
 * `bsfeistest()`: Estimates a bootstrapped Hausman test for fixed effects individual slope models.
 
-The functions included in the R package `feisr` are also available in the [xtfeis ado](https://www.stata.com/meeting/germany10/germany10_ludwig.pdf) for Stata. The package [plm](https://CRAN.R-project.org/package=plm) provides esimation of related models, as for instance the mean group (MG) or common correlated effects mean groups (CCEMG) estimator via `pmg()` function.
+The functions included in the R package `feisr` are also available in the [xtfeis ado](https://www.stata.com/meeting/germany10/germany10_ludwig.pdf) for Stata. The package [plm](https://CRAN.R-project.org/package=plm) provides esimation of related models, as for instance the mean group (MG) or common correlated effects mean groups (CCEMG) estimator via `pmg()` function and the estimator of models with variable coefficients via `pvcm()`.
 
 ## Estimating `feis` models
 

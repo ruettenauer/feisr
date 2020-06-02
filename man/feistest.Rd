@@ -92,6 +92,7 @@ summary(ht)
 # Only for marry coefficient
 ht2 <- feistest(feis.mod, robust = TRUE, type = "all", terms = c("marry"))
 summary(ht2)
+
 }
 \references{
 \insertAllCited{}

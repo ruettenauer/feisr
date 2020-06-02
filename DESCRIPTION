@@ -9,7 +9,7 @@ Maintainer: Tobias Ruettenauer <ruettenauer@sowi.uni-kl.de>
 Authors@R: c(	person("Tobias", "Ruettenauer", email = "ruettenauer@sowi.uni-kl.de", role = c("aut", "cre")),
 				person("Volker", "Ludwig", email = "ludwig@sowi.uni-kl.de", role = c("aut")))
 Description: Provides the function feis() to estimate fixed effects individual 
-    slope (FEIS) models. The FEIS model constitutes a more general version of 
+    slopes (FEIS) models. The FEIS model constitutes a more general version of 
     the often-used fixed effects (FE) panel model, as implemented in the 
     package 'plm' by Croissant and Millo (2008) <doi:10.18637/jss.v027.i02>. 
     In FEIS models, data are not only person demeaned like in conventional 
