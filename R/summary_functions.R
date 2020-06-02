@@ -1,6 +1,7 @@
 ###########################
 #### Describe function ####
 ###########################
+# From package plm
 #' @importFrom Rdpack reprompt
 
 
@@ -34,13 +35,20 @@ describe <- function(x,
 #' The summary method for feis objects generates some additional information
 #' about estimated feis models.
 #'
-#' @param object an object of class "\code{plm}".
+#' @seealso \code{\link[feisr]{feis}}
+#'
+#' @param object an object of class "\code{feis}".
+#' @param x an object of class "\code{summary.feis}".
 #' @param vcov a variance-covariance matrix furnished by the user or a function to calculate one.
+#' @param digits number of digits for printed output.
+#' @param width the maximum length of the lines in the printed output.
+#' @param subset a character or numeric vector indicating a subset of
+#'     the table of coefficients to be printed.
 #' @param ...	further arguments.
 #'
 #' @return An object of class "\code{summary.feis}", containing the elements
-#' of the feis object (see \code{\link[feisr]{feis}}). The following objects
-#' are modified:
+#' of the feis object (see \code{\link[feisr]{feis}}). The object is forwarded to
+#' print method. The following objects are modified:
 #' \item{coefficients}{a matrix with the estimated coefficients, standard errors,
 #' t-values, and p-values, if argument vcov is NULL the standard errors
 #' are calculated by the \code{vcov} in the input object.}
@@ -85,7 +93,7 @@ summary.feis <- function(object, vcov = NULL, ...){
 
 
 
-  class(object) <- c("summary.feis", "feis")
+  class(object) <- c("summary.feis")
   object
 }
 
@@ -95,6 +103,7 @@ summary.feis <- function(object, vcov = NULL, ...){
 #### Print Summary FEIS ####
 ############################
 
+#' @rdname summary.feis
 #' @export
 #'
 print.summary.feis <- function(x, digits = max(3, getOption("digits") - 2),
@@ -146,6 +155,32 @@ print.summary.feis <- function(x, digits = max(3, getOption("digits") - 2),
 #### Print Artificial  Regression Test FEIS - FE ####
 #####################################################
 
+
+#' @title Summary for feistest and bsfeistest objects
+#'
+#' @description
+#' The summary method for feistest and bsfeistest objects prints the results
+#' of Artificial Regression Tests or Bootstrapped Hausman Tests for FEIS models.
+#'
+#' @seealso \code{\link[feisr]{feistest}}, \code{\link[feisr]{bsfeistest}}
+#'
+#' @param object an object of class "\code{feistest}" or "\code{bsfeistest}".
+#' @param x an object of class "\code{summary.feistest}" or "\code{summary.bsfeistest}".
+#' @param digits number of digits for printed output.
+#' @param width the maximum length of the lines in the printed output.
+#' @param ...	further arguments.
+#'
+#' @return An object of class "\code{summary.feistest}" or "\code{summary.bsfeistest}",
+#' equal to the original input object (see \code{\link[feisr]{feistest}} and
+#' \code{\link[feisr]{bsfeistest}}). The object is forwarded to print method.
+#'
+#' @examples
+#' data("mwp", package = "feisr")
+#' feis.mod <- feis(lnw ~ marry | exp,
+#'                  data = mwp, id = "id")
+#' ht <- feistest(feis.mod, robust = TRUE, type = "all")
+#' summary(ht)
+#'
 #' @export
 #'
 summary.feistest <- function(object, ...){
@@ -154,6 +189,7 @@ summary.feistest <- function(object, ...){
 }
 
 
+#' @rdname summary.feistest
 #' @export
 #'
 print.summary.feistest <- function(x, digits = max(3, getOption("digits") - 2),
@@ -254,6 +290,7 @@ print.summary.feistest <- function(x, digits = max(3, getOption("digits") - 2),
 #### Print Bootstrapped Regression Test FEIS - FE ####
 ######################################################
 
+#' @rdname summary.feistest
 #' @export
 #'
 summary.bsfeistest <- function(object, ...){
@@ -261,7 +298,7 @@ summary.bsfeistest <- function(object, ...){
   object
 }
 
-
+#' @rdname summary.feistest
 #' @export
 #'
 print.summary.bsfeistest <- function(x, digits = max(3, getOption("digits") - 2),

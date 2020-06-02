@@ -100,5 +100,5 @@ summary(feis.mod)
 \insertAllCited{}
 }
 \seealso{
-\code{\link[plm]{plm}}, \code{\link[plm]{pvcm}}, \code{\link[plm]{pmg}}, \code{\link[feisr]{feistest}}
+\code{\link[feisr]{summary.feis}}, \code{\link[plm]{plm}}, \code{\link[plm]{pvcm}}, \code{\link[plm]{pmg}}, \code{\link[feisr]{feistest}}
 }

@@ -2,21 +2,39 @@
 % Please edit documentation in R/summary_functions.R
 \name{summary.feis}
 \alias{summary.feis}
+\alias{print.summary.feis}
 \title{Summary for feis objects}
 \usage{
 \method{summary}{feis}(object, vcov = NULL, ...)
+
+\method{print}{summary.feis}(
+  x,
+  digits = max(3, getOption("digits") - 2),
+  width = getOption("width"),
+  subset = NULL,
+  ...
+)
 }
 \arguments{
-\item{object}{an object of class "\code{plm}".}
+\item{object}{an object of class "\code{feis}".}
 
 \item{vcov}{a variance-covariance matrix furnished by the user or a function to calculate one.}
 
 \item{...}{further arguments.}
+
+\item{x}{an object of class "\code{summary.feis}".}
+
+\item{digits}{number of digits for printed output.}
+
+\item{width}{the maximum length of the lines in the printed output.}
+
+\item{subset}{a character or numeric vector indicating a subset of
+the table of coefficients to be printed.}
 }
 \value{
 An object of class "\code{summary.feis}", containing the elements
-of the feis object (see \code{\link[feisr]{feis}}). The following objects
-are modified:
+of the feis object (see \code{\link[feisr]{feis}}). The object is forwarded to
+print method. The following objects are modified:
 \item{coefficients}{a matrix with the estimated coefficients, standard errors,
 t-values, and p-values, if argument vcov is NULL the standard errors
 are calculated by the \code{vcov} in the input object.}
@@ -32,4 +50,7 @@ feis.mod <- feis(lnw ~ marry | exp,
                  data = mwp, id = "id")
 summary(feis.mod)
 
+}
+\seealso{
+\code{\link[feisr]{feis}}
 }

@@ -34,9 +34,9 @@
 #' If specified, \code{feis} estimates panel-robust standard errors. Panel-robust standard errors are
 #' robust to arbitrary forms of serial correlation within groups formed by \code{id} as well as
 #' heteroscedasticity across groups \insertCite{@see @Wooldridge.2010.384, pp. 379-381}{feisr}.
-
 #'
-#' @seealso \code{\link[plm]{plm}}, \code{\link[plm]{pvcm}}, \code{\link[plm]{pmg}}, \code{\link[feisr]{feistest}}
+#'
+#' @seealso \code{\link[feisr]{summary.feis}}, \code{\link[plm]{plm}}, \code{\link[plm]{pvcm}}, \code{\link[plm]{pmg}}, \code{\link[feisr]{feistest}}
 #'
 #' @param formula	a symbolic description for the model to be fitted (see Details).
 #' @param data a \code{data.frame} containing the specified variables.
@@ -376,7 +376,6 @@ feis <- function(formula, data, id, robust = FALSE, intercept = FALSE,
 
   return(result)
 }
-#' @exportClass feis
 
 
 
