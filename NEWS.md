@@ -1,26 +1,26 @@
-# feisr 1.0.2
+# feisr 1.1.0
 
 ### Major Changes
 
-- Included dplyr `bind_rows()` for faster tranformation of large data (now depends on dplyr (>= 1.0.0)).
+- Included dplyr `bind_rows()` for faster tranformation of large data (depends on dplyr (>= 1.0.0)). Old verison available for dplyr < 1.0.0.
 
 - Added vignette.
 
 - Bug fix `feis()`, `feistest()`, `bsfeistest()`: Standard errors can be computed even if some coefficients are NA.
 
-- Added `terms` option to `feistest()` and `bsfeistest()`: Allows to perform Hausman / Chi_sq test on subset of coefficients.
+- `feistest()` and `bsfeistest()`: added `terms` option to perform Hausman / Chi_sq test on subset of coefficients.
 
-- Added `tol` option to `feis()` for detecting linear dependencies in slopes.
+- `feis()`: added `tol` option for detecting linear dependencies in slopes.
 
-- Added S3 methods for`feis()`: coef, deviance, df.residual, fitted, formula, nobs, predict, residuals, terms, vcov
+- `feis()`: now compatible with S3 methods for coef, deviance, df.residual, fitted, formula, model.matrix, nobs, predict, residuals, terms, vcov.
 
-- Drop export of extract. Method now available in texreg (>= 1.37.1). Added test to keep compatibility.
+- Added general info page `feisr-package`.
 
 
 ### Minor Changes
 
 - Manual updated, minor corrections.
 
-- Added citation.
+- Added citation for package.
 
-- Corrected linking / documentation of S3 methods.
+- Corrected linkage / documentation of S3 methods.

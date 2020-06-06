@@ -241,7 +241,7 @@ print.summary.feistest <- function(x, digits = max(3, getOption("digits") - 2),
     cat("FEIS vs. FE:\n", "------------\n", sep = "")
     cat("H0: FEIS and FE estimates consistent", "\n")
     cat("Alternative H1: FE inconsistent", "\n")
-    cat("Model constraints:", paste0(names1, c(rep(", ", (length(names1)-1)), "")), "= 0", "\n", fill = TRUE)
+    cat("Model constraints:", paste0(names1, c(rep(",", (length(names1)-1)), "")), "= 0", "\n", fill = TRUE)
     cat("Chi-squared test:\n")
     cat("Chisq = ", format(v1["chi2"], digits = digits, nsmall = 1), ", df = ", v1["df"],
         ", P(> X2) = ", format(v1["P"], digits = digits, nsmall = 1), "\n", sep = "")
@@ -257,7 +257,7 @@ print.summary.feistest <- function(x, digits = max(3, getOption("digits") - 2),
     cat("FE vs. RE:\n", "------------\n", sep = "")
     cat("H0: FE and RE estimates consistent", "\n")
     cat("Alternative H1: RE inconsistent", "\n")
-    cat("Model constraints:", paste0(names2, c(rep(", ", (length(names2)-1)), "")), "= 0", "\n", fill = TRUE)
+    cat("Model constraints:", paste0(names2, c(rep(",", (length(names2)-1)), "")), "= 0", "\n", fill = TRUE)
     cat("Chi-squared test:\n")
     cat("Chisq = ", format(v2["chi2"], digits = digits, nsmall = 1), ", df = ", v2["df"],
         ", P(> X2) = ", format(v2["P"], digits = digits, nsmall = 1), "\n", sep = "")
@@ -273,7 +273,7 @@ print.summary.feistest <- function(x, digits = max(3, getOption("digits") - 2),
     cat("FEIS vs. RE:\n", "------------\n", sep = "")
     cat("H0: FEIS and RE estimates consistent", "\n")
     cat("Alternative H1: RE inconsistent", "\n")
-    cat("Model constraints:", paste0(names3, c(rep(", ", (length(names3)-1)), "")), "= 0", "\n", fill = TRUE)
+    cat("Model constraints:", paste0(names3, c(rep(",", (length(names3)-1)), "")), "= 0", "\n", fill = TRUE)
     cat("Chi-squared test:\n")
     cat("Chisq = ", format(v3["chi2"], digits = digits, nsmall = 1), ", df = ", v3["df"],
         ", P(> X2) = ", format(v3["P"], digits = digits, nsmall = 1), "\n", sep = "")
@@ -350,7 +350,8 @@ print.summary.bsfeistest <- function(x, digits = max(3, getOption("digits") - 2)
     cat("FEIS vs. FE:\n", "------------\n", sep = "")
     cat("H0: FEIS and FE estimates consistent", "\n")
     cat("Alternative H1: FE inconsistent", "\n")
-    cat("Model constraints:", "beta_FEIS", "=", "beta_FE", "\n", fill = TRUE)
+    cat("Model constraints:", "beta_FEIS", "=", "beta_FE", "for:",
+        paste0(names1, c(rep(",", (length(names1)-1)), "")), "\n", fill = TRUE)
     cat("Chi-squared test:\n")
     cat("Chisq = ", format(v1["chi2"], digits = digits, nsmall = 1), ", df = ", v1["df"],
         ", P(> X2) = ", format(v1["P"], digits = digits, nsmall = 1), "\n", sep = "")
@@ -366,7 +367,8 @@ print.summary.bsfeistest <- function(x, digits = max(3, getOption("digits") - 2)
     cat("FE vs. RE:\n", "------------\n", sep = "")
     cat("H0: FE and RE estimates consistent", "\n")
     cat("Alternative H1: RE inconsistent", "\n")
-    cat("Model constraints:", "beta_FE", "=", "beta_RE", "\n", fill = TRUE)
+    cat("Model constraints:", "beta_FE", "=", "beta_RE", "for:",
+        paste0(names2, c(rep(",", (length(names2)-1)), "")), "\n", fill = TRUE)
     cat("Chi-squared test:\n")
     cat("Chisq = ", format(v2["chi2"], digits = digits, nsmall = 1), ", df = ", v2["df"],
         ", P(> X2) = ", format(v2["P"], digits = digits, nsmall = 1), "\n", sep = "")
@@ -382,7 +384,8 @@ print.summary.bsfeistest <- function(x, digits = max(3, getOption("digits") - 2)
     cat("FEIS vs. RE:\n", "------------\n", sep = "")
     cat("H0: FEIS and RE estimates consistent", "\n")
     cat("Alternative H1: RE inconsistent", "\n")
-    cat("Model constraints:", "beta_FEIS", "=", "beta_RE", "\n", fill = TRUE)
+    cat("Model constraints:", "beta_FEIS", "=", "beta_RE", "for:",
+        paste0(names3, c(rep(",", (length(names3)-1)), "")), "\n", fill = TRUE)
     cat("Chi-squared test:\n")
     cat("Chisq = ", format(v3["chi2"], digits = digits, nsmall = 1), ", df = ", v3["df"],
         ", P(> X2) = ", format(v3["P"], digits = digits, nsmall = 1), "\n", sep = "")

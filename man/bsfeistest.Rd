@@ -7,6 +7,7 @@
 bsfeistest(
   model = NA,
   type = c("all", "bs1", "bs2", "bs3"),
+  terms = NULL,
   rep = 500,
   seed = NULL,
   prog = TRUE,
@@ -19,6 +20,10 @@ bsfeistest(
 \item{type}{one of "\code{all}" (the Default), "\code{bs1}" for test of FEIS against FE only,
 "\code{bs2}" for test of FE against RE only, and "\code{bs3}" for test of FEIS against RE only
 (see also Details).}
+
+\item{terms}{An optional character vector specifying which coefficients should be jointly tested.
+By default, all covariates are included in the Wchi-squared test. For "\code{type=art2}", the
+slope variable is always included in "\code{terms}".}
 
 \item{rep}{the number of repetitions to be used in bootstrapping (default is 500).}
 
@@ -53,6 +58,7 @@ coefficients obtained from FEIS and RE (\code{type="bs3"}).}
 \item{type}{the type of performed test(s).}
 \item{sample}{a list containing the IDs sampled in each run.}
 \item{seed}{the seed used for bootstrapping.}
+\item{terms}{character vector of covariates are included in the Wchi-squared test.}
 }
 \description{
 Estimates a bootstrapped Hausman test for fixed effects individual slope models.

@@ -74,6 +74,7 @@
 #' (Default is \code{FALSE}.}
 #' \item{formula}{an object of class "\code{Formula}" describing the model.}
 #' \item{type}{the type of performed test(s).}
+#' \item{terms}{character vector of covariates are included in the Wchi-squared test.}
 #' @references
 #' \insertAllCited{}
 #'
@@ -125,9 +126,10 @@ feistest <- function(model = NA, robust = FALSE, type = c("all", "art1", "art2",
     terms <- cleani(terms)
     incl <- which(terms %in% colnames(X))
     if(length(incl) != length(terms)){
-      excl <- terms[-incl]
-      stop(paste("All terms must be included in model. Could not find:", "\n",
-                 paste(excl, collapse = ", ")))
+      excl <- terms[which(!terms %in% colnames(X))]
+      stop(paste("All terms must be included in model. Could not find:",
+                 paste(excl, collapse = ", "), "\n",
+                 "Available are:", paste(colnames(X), collapse = ", ")))
     }
   }
 
@@ -290,6 +292,7 @@ feistest <- function(model = NA, robust = FALSE, type = c("all", "art1", "art2",
   result$robust <- robust
   result$formula <- formula
   result$type <- type
+  result$terms <- terms
 
   class(result)  <-  c("feistest")
 
@@ -337,6 +340,9 @@ feistest <- function(model = NA, robust = FALSE, type = c("all", "art1", "art2",
 #' @param type one of "\code{all}" (the Default), "\code{bs1}" for test of FEIS against FE only,
 #' "\code{bs2}" for test of FE against RE only, and "\code{bs3}" for test of FEIS against RE only
 #' (see also Details).
+#' @param terms An optional character vector specifying which coefficients should be jointly tested.
+#' By default, all covariates are included in the Wchi-squared test. For "\code{type=art2}", the
+#' slope variable is always included in "\code{terms}".
 #' @param rep the number of repetitions to be used in bootstrapping (default is 500).
 #' @param seed the seed used for random sampling in bootstrapping. Needs to be a valid integer.
 #' If not specified, the current seed is used.
@@ -366,6 +372,7 @@ feistest <- function(model = NA, robust = FALSE, type = c("all", "art1", "art2",
 #' \item{type}{the type of performed test(s).}
 #' \item{sample}{a list containing the IDs sampled in each run.}
 #' \item{seed}{the seed used for bootstrapping.}
+#' \item{terms}{character vector of covariates are included in the Wchi-squared test.}
 #' @references
 #' \insertAllCited{}
 #'
@@ -379,7 +386,7 @@ feistest <- function(model = NA, robust = FALSE, type = c("all", "art1", "art2",
 #' @export
 #'
 bsfeistest <- function(model = NA, type = c("all", "bs1", "bs2", "bs3"),
-                     rep = 500, seed = NULL, prog = TRUE, ...){
+                       terms = NULL, rep = 500, seed = NULL, prog = TRUE, ...){
 
 
 
@@ -597,21 +604,48 @@ bsfeistest <- function(model = NA, type = c("all", "bs1", "bs2", "bs3"),
   bdiff.bs2 <- coef.fe - coef.re
   bdiff.bs3 <- coef.feis - coef.re[names(coef.feis)]
 
+  # Check if terms fit colnames
+  if(!is.null(terms)){
+    terms <- cleani(terms)
+    incl <- which(terms %in% names(bdiff.bs1))
+    if(length(incl) != length(terms)){
+      excl <- terms[which(!terms %in% names(bdiff.bs1))]
+      stop(paste("All terms must be included in model. Could not find:",
+                 paste(excl, collapse = ", "), "\n",
+                 "Available are:", paste(names(bdiff.bs1), collapse = ", ")))
+    }
+  }
+
   # H.bs1 <- t(bdiff.bs1) %*% solve(V.bs1) %*% bdiff.bs1
   # H.bs1 <- t(bdiff.bs2) %*% solve(V.bs2) %*% bdiff.bs2
   if(!type %in% c("bs2", "bs3")){
+    if(!is.null(terms)){
+      tt1 <- which(names(bdiff.bs1) %in% terms)
+    }else{
+      tt1 <- 1:length(bdiff.bs1)
+    }
     H.bs1 <- aod::wald.test(b = bdiff.bs1, Sigma = V.bs1,
-                            Terms = 1:length(bdiff.bs1))
+                            Terms = tt1)
   } else {H.bs1 <- NULL}
 
   if(!type %in% c("bs1", "bs3")){
+    if(!is.null(terms)){
+      tt2 <- which(names(bdiff.bs2) %in% c(terms, sv))
+    }else{
+      tt2 <- 1:length(bdiff.bs2)
+    }
     H.bs2 <- aod::wald.test(b = bdiff.bs2, Sigma = V.bs2,
-                            Terms = 1:length(bdiff.bs2))
+                            Terms = tt2)
   }else{H.bs2 <- NULL}
 
   if(!type %in% c("bs1", "bs2")){
+    if(!is.null(terms)){
+      tt3 <- which(names(bdiff.bs3) %in% terms)
+    }else{
+      tt3 <- 1:length(bdiff.bs3)
+    }
     H.bs3 <- aod::wald.test(b = bdiff.bs3, Sigma = V.bs3,
-                            Terms = 1:length(bdiff.bs3))
+                            Terms = tt3)
   }else{H.bs3 <- NULL}
 
 
@@ -632,6 +666,7 @@ bsfeistest <- function(model = NA, type = c("all", "bs1", "bs2", "bs3"),
   result$type    <- type
   result$samples <- sample
   result$seed    <- seed
+  result$terms   <- terms
 
   class(result) <- c("bsfeistest")
 

@@ -26,7 +26,7 @@
 #' individual slope models.
 #'
 #' The functions included in the R package \code{feisr} are also available in the
-#' xtfeis ado (\url{https://stata.com/meeting/germany10/germany10_ludwig.pdf})
+#' xtfeis ado (\url{https://ideas.repec.org/c/boc/bocode/s458045.html})
 #' for Stata. The \code{\link[plm]{plm-package}} provides functions
 #' for estimation of related models, like the mean group (MG) or common
 #' correlated effects mean groups (CCEMG) estimator via \code{\link[plm]{pmg}} or

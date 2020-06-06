@@ -51,6 +51,7 @@ Correlated Random Effect Individual Slope model without including the covariates
 (Default is \code{FALSE}.}
 \item{formula}{an object of class "\code{Formula}" describing the model.}
 \item{type}{the type of performed test(s).}
+\item{terms}{character vector of covariates are included in the Wchi-squared test.}
 }
 \description{
 Estimates a regression-based Hausman test for fixed effects individual slope models.

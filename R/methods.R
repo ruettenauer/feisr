@@ -97,3 +97,38 @@ predict.feis <- function(object, newdata = NULL, ...){
   result
 }
 
+
+
+#' @title model.matrix for feis objects
+#'
+#' @description
+#' Methods to extract transformed model matrix for "\code{feis}" objects.
+#'
+#' @details
+#' \code{model.matrix} for \code{feis} objects returns the model or design matrix
+#' of the respective FEIS model. This is the transformed (detrended) data,
+#' which is used for estimation of the model in \code{lm()}.
+#'
+#'
+#' @seealso \code{\link[feisr]{feis}}, \code{\link[stats]{model.matrix}}
+#'
+#' @param object an object of class "\code{feis}".
+#' @param ...	further arguments.
+#'
+#' @return
+#' An object of class "\code{matrix}" for \code{model.matrix}.
+#'
+#' @examples
+#' data("mwp", package = "feisr")
+#' feis.mod <- feis(lnw ~ marry + as.factor(yeargr) | exp,
+#'                  data = mwp, id = "id")
+#' mf <- model.frame(feis.mod)
+#' mm <- model.matrix(feis.mod)
+#'
+#' @export
+model.matrix.feis <- function(object, ...){
+  resp <- all.vars(terms(object, lhs = 1, rhs = 0))
+  data <- as.matrix(object$modeltrans)
+  data <- data[, which(colnames(data) != resp), drop = FALSE]
+  return(data)
+}

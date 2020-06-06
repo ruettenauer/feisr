@@ -1,13 +1,13 @@
 Package: feisr
 Title: Estimating Fixed Effects Individual Slope Models
-Version: 1.0.2
+Version: 1.1.0
 URL: https://github.com/ruettenauer/feisr
 BugReports: https://github.com/ruettenauer/feisr/issues
-Author: Tobias Ruettenauer [aut, cre],
-  Volker Ludwig [aut]
+Author: Tobias Ruettenauer [aut, cre] (<https://orcid.org/0000-0001-5747-9735>),
+  Volker Ludwig [aut] (<https://orcid.org/0000-0003-3118-3172>)
 Maintainer: Tobias Ruettenauer <ruettenauer@sowi.uni-kl.de>
-Authors@R: c(	person("Tobias", "Ruettenauer", email = "ruettenauer@sowi.uni-kl.de", role = c("aut", "cre")),
-				person("Volker", "Ludwig", email = "ludwig@sowi.uni-kl.de", role = c("aut")))
+Authors@R: c(	person("Tobias", "Ruettenauer", email = "ruettenauer@sowi.uni-kl.de", role = c("aut", "cre"), comment = c(ORCID = "0000-0001-5747-9735")),
+				person("Volker", "Ludwig", email = "ludwig@sowi.uni-kl.de", role = c("aut"), comment = c(ORCID = "0000-0003-3118-3172")))
 Description: Provides the function feis() to estimate fixed effects individual 
     slope (FEIS) models. The FEIS model constitutes a more general version of 
     the often-used fixed effects (FE) panel model, as implemented in the 
@@ -34,11 +34,12 @@ Imports:
     plm,
     Rdpack,
     stats,
-    dplyr (>= 1.0.0)
+    dplyr
 Suggests: 
-    texreg (>= 1.37.1),
+    texreg,
     testthat,
     knitr,
-    rmarkdown
+    rmarkdown,
+	ggplot2
 RoxygenNote: 7.1.0
 VignetteBuilder: knitr

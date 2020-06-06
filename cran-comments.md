@@ -1,22 +1,12 @@
-## Resubmission 2
-This is a resubmission. Thank you for making me aware about the quotation conventions. I have:
-
-* changed the quotation marks in the description field following your suggestions
-
-Best, Tobias
-
-## Resubmission
-This is a resubmission. Many thanks for comments on the initial version. I have:
-
-* Included a more detailed explanation (plus references) in the description section of the DESCRIPTION file,
-* Included a small example in summary.feis.Rd.
+## Submission feisr v.1.1.0
+This is the new version 1.1.0 of the package feisr.
 
 Best, Tobias
 
 ## Test environments
-* local WIN7 64Bit, R 3.4.0, R 3.5.2, devel
-* Travis-CI: Ubuntu 14.04, R 3.4.4, R 3.5.2, devel
-* Travis-CI: Mac OS X 10.13.3, R 3.4.4, R 3.5.2
+* local WIN7 64Bit, R 3.6.3, R 4.0.0, devel
+* Travis-CI: Ubuntu 14.04, R 3.6.3, R 4.0.0, devel
+* Travis-CI: Mac OS X 10.13.3, R 3.6.3, R 4.0.0
 
 ## R CMD check results
 
@@ -34,6 +24,6 @@ Note(s):
 
 ## Reverse dependencies
 
-This is a new release, so there are no reverse dependencies.
+R CMD check --as-cran was run on all reverse dependencies locally (insight, texreg). All tests related to feisr passed.
 
 
