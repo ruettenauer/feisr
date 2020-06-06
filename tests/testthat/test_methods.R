@@ -2,6 +2,8 @@
 #### S3 methods for feis ####
 #############################
 
+data("mwp", package = "feisr")
+
 ### Predict and fitted and residuals
 
 wages.feis <- feis(lnw ~ marry + enrol + yeduc + yeargr
