@@ -42,7 +42,7 @@
 #' \code{\link[plm]{pmg}}, \code{\link[feisr]{feistest}}
 #'
 #' @param formula	a symbolic description for the model to be fitted (see Details).
-#' @param object,x	an object of class "\code{feis}".
+#' @param object,x,model	an object of class "\code{feis}".
 #' @param data a \code{data.frame} containing the specified variables.
 #' @param id the name of a unique group / person identifier (as string).
 #' @param robust logical. If \code{TRUE} estimates cluster robust standard errors (default is \code{FALSE}).

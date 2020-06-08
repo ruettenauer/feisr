@@ -12,7 +12,6 @@
 \alias{nobs.feis}
 \alias{fitted.feis}
 \alias{predict.feis}
-\alias{estfun.feis}
 \alias{hatvalues.feis}
 \title{Fixed Effects Individual Slope Estimator}
 \usage{
@@ -47,9 +46,7 @@ feis(
 
 \method{predict}{feis}(object, newdata = NULL, ...)
 
-\method{estfun}{feis}(x, ...)
-
-\method{hatvalues}{feis}(x, ...)
+\method{hatvalues}{feis}(model, ...)
 }
 \arguments{
 \item{formula}{a symbolic description for the model to be fitted (see Details).}
@@ -71,7 +68,7 @@ feis(
 
 \item{lhs, rhs}{indexes of the left- and right-hand side for the methods formula and terms.}
 
-\item{object, x}{an object of class "\code{feis}".}
+\item{object, x, model}{an object of class "\code{feis}".}
 
 \item{newdata}{the new data set for the predict method.}
 }

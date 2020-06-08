@@ -1,8 +1,8 @@
 #############################
 #### S3 methods for feis ####
 #############################
-#' @importFrom stats delete.response formula model.frame terms residuals df.residual coef vcov deviance nobs fitted predict
-#' @importFrom sandwich estfun
+#' @importFrom stats delete.response formula model.frame terms residuals df.residual naresid coef vcov deviance nobs fitted predict sigma hatvalues
+# #' @importFrom sandwich estfun
 
 
 #' @rdname feis
@@ -90,7 +90,7 @@ vcov.feis <- function(object,..., scale = FALSE){
   }
   if(vcov_arg == "Cluster robust standard errors"){
     xmat <- model.matrix(object)
-    if(any(alias <- is.na(coef(x)))) xmat <- xmat[, !alias, drop = FALSE]
+    if(any(alias <- is.na(coef(object)))) xmat <- xmat[, !alias, drop = FALSE]
     if(scale == FALSE){
       res <- solve(crossprod(xmat))
     }else if(scale == TRUE){
@@ -193,8 +193,8 @@ model.matrix.feis <- function(object, ...){
 ### Methods for integration with vcovHC from package sandwich
 
 
-#' @rdname feis
-#' @export
+# #' @rdname feis
+# #' do not export, as sandwich::vcovHC uses incorrect df
 estfun.feis <- function(x, ...)
 {
   xmat <- model.matrix(x)
@@ -213,11 +213,11 @@ estfun.feis <- function(x, ...)
 
 #' @rdname feis
 #' @export
-hatvalues.feis <- function(x, ...)
+hatvalues.feis <- function(model, ...)
 {
-  xmat <- model.matrix(x)
-  xmat <- naresid(x$na.action, xmat)
-  if(any(alias <- is.na(coef(x)))) xmat <- xmat[, !alias, drop = FALSE]
+  xmat <- model.matrix(model)
+  xmat <- naresid(model$na.action, xmat)
+  if(any(alias <- is.na(coef(model)))) xmat <- xmat[, !alias, drop = FALSE]
   qr <- qr.default(xmat)
   Q <- qr.qy(qr, diag(1, nrow = nrow(qr$qr), ncol = qr$rank))
   hat <- diag(tcrossprod(Q))

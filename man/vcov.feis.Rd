@@ -11,7 +11,7 @@
 
 \item{...}{further arguments.}
 
-\item{scale}{logical. If \code{TRUE} returns scaled vcov (by sigma^2) (default is \code{FALSE}).}
+\item{scale}{logical. If \code{TRUE} returns scaled vcov by sigma^2 (default is \code{FALSE}).}
 }
 \value{
 A matrix of the estimated covariances between the parameter estimates in the fitted FEIS model.
@@ -22,7 +22,7 @@ By default, this is the unscaled variance-covariance matrix.
 }
 \details{
 By default, \code{vcov()} return the unscaled variance-covariance matrix of the fitted FEIS model.
-If set to \code{scale = TRUE}, the vcov is scaled by the nuisance parameter sigma
+If set to \code{scale = TRUE}, the vcov is scaled by the nuisance parameter sigma^2
 (as is \code{object$vcov}). Note that corrections for clustering (i.e. \code{robust = TRUE}
 in the fitted model) are ignored in \code{vcov()}. In this case, \code{object$vcov} will return
 the vcov with corrections for clustering.
