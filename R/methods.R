@@ -2,7 +2,7 @@
 #### S3 methods for feis ####
 #############################
 #' @importFrom stats delete.response formula model.frame terms residuals df.residual coef vcov deviance nobs fitted predict
-#' @importFrom sandwich estfun
+# #' @importFrom sandwich estfun
 
 
 #' @rdname feis
