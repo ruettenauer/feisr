@@ -318,7 +318,7 @@ feis <- function(formula, data, id, robust = FALSE, intercept = FALSE,
       sigma <- sum((u * u)) / (df)
       tmp <- sigma * solve(t(Xn) %*% Xn)
       vcov[rownames(tmp), colnames(tmp)] <- tmp
-      se <- sqrt(diag(vcov))
+      # se <- sqrt(diag(vcov))
     }
 
     # Cluster robust SEs
@@ -331,14 +331,14 @@ feis <- function(formula, data, id, robust = FALSE, intercept = FALSE,
 
       vcov[rownames(vcovCL), colnames(vcovCL)] <- vcovCL
 
-      se <- sqrt(diag(vcov))
+      # se <- sqrt(diag(vcov))
     }
 
   }else{
     if(!robust){
       sigma <- sum((u * u)) / (df)
       vcov <- sigma * solve(t(X) %*% X)
-      se <- sqrt(diag(vcov))
+      # se <- sqrt(diag(vcov))
     }
 
     # Cluster robust SEs
@@ -348,7 +348,7 @@ feis <- function(formula, data, id, robust = FALSE, intercept = FALSE,
       dfc <- ((length(unique(i)) / (length(unique(i)) - 1))
               * ((length(i) - 1) / (length(i) - (ncol(X1) + ncol(X)))))
       vcovCL <- dfc * (solve(t(X) %*% X) %*% t(e) %*% e %*% solve(t(X) %*% X))
-      se <- sqrt(diag(vcovCL))
+      # se <- sqrt(diag(vcovCL))
 
       vcov <- vcovCL
     }

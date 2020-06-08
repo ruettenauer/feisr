@@ -2,6 +2,7 @@
 #### S3 methods for feis ####
 #############################
 #' @importFrom stats delete.response formula model.frame terms residuals df.residual coef vcov deviance nobs fitted predict
+#' @importFrom sandwich estfun
 
 
 #' @rdname feis
@@ -132,3 +133,46 @@ model.matrix.feis <- function(object, ...){
   data <- data[, which(colnames(data) != resp), drop = FALSE]
   return(data)
 }
+
+
+
+### Methods for integration with vcovHC from package sandwich
+
+
+#' #' @rdname feis
+#' #' @export
+#' estfun.feis <- function(x, ...)
+#' {
+#'   xmat <- model.matrix(x)
+#'   xmat <- naresid(x$na.action, xmat)
+#'   if(any(alias <- is.na(coef(x)))) xmat <- xmat[, !alias, drop = FALSE]
+#'   # wts <- weights(x)
+#'   # if(is.null(wts)) wts <- 1
+#'   res <- residuals(x)
+#'   rval <- as.vector(res) * xmat
+#'   attr(rval, "assign") <- NULL
+#'   attr(rval, "contrasts") <- NULL
+#'   attr(rval, "id") <- x$id
+#'   return(rval)
+#' }
+#'
+#'
+#'
+#' #' @rdname feis
+#' #' @export
+#' hatvalues.feis <- function(x, ...)
+#' {
+#'   xmat <- model.matrix(x)
+#'   xmat <- naresid(x$na.action, xmat)
+#'   if(any(alias <- is.na(coef(x)))) xmat <- xmat[, !alias, drop = FALSE]
+#'
+#'   qr <- qr.default(xmat)
+#'   Q <- qr.qy(qr, diag(1, nrow = nrow(qr$qr), ncol = qr$rank))
+#'   hat <- diag(tcrossprod(Q))
+#'   names(hat) <- rownames(xmat)
+#'
+#'   return(hat)
+#' }
+
+
+
