@@ -316,7 +316,7 @@ feis <- function(formula, data, id, robust = FALSE, intercept = FALSE,
 
     if(!robust){
       sigma <- sum((u * u)) / (df)
-      tmp <- sigma * solve(t(Xn) %*% Xn)
+      tmp <- sigma * solve(crossprod(Xn))
       vcov[rownames(tmp), colnames(tmp)] <- tmp
       # se <- sqrt(diag(vcov))
     }
@@ -327,7 +327,7 @@ feis <- function(formula, data, id, robust = FALSE, intercept = FALSE,
       e <- rowsum(mxu, i)
       dfc <- ((length(unique(i)) / (length(unique(i)) - 1))
               * ((length(i) - 1) / (length(i) - (ncol(X1) + ncol(Xn)))))
-      vcovCL <- dfc * (solve(t(Xn) %*% Xn) %*% t(e) %*% e %*% solve(t(Xn) %*% Xn))
+      vcovCL <- dfc * (solve(crossprod(Xn)) %*% crossprod(e) %*% solve(crossprod(Xn)))
 
       vcov[rownames(vcovCL), colnames(vcovCL)] <- vcovCL
 
@@ -337,7 +337,7 @@ feis <- function(formula, data, id, robust = FALSE, intercept = FALSE,
   }else{
     if(!robust){
       sigma <- sum((u * u)) / (df)
-      vcov <- sigma * solve(t(X) %*% X)
+      vcov <- sigma * solve(crossprod(X))
       # se <- sqrt(diag(vcov))
     }
 
@@ -347,7 +347,7 @@ feis <- function(formula, data, id, robust = FALSE, intercept = FALSE,
       e <- rowsum(mxu, i)
       dfc <- ((length(unique(i)) / (length(unique(i)) - 1))
               * ((length(i) - 1) / (length(i) - (ncol(X1) + ncol(X)))))
-      vcovCL <- dfc * (solve(t(X) %*% X) %*% t(e) %*% e %*% solve(t(X) %*% X))
+      vcovCL <- dfc * (solve(crossprod(X)) %*% crossprod(e) %*% solve(crossprod(X)))
       # se <- sqrt(diag(vcovCL))
 
       vcov <- vcovCL
@@ -418,7 +418,7 @@ slpmk <- function(Y=NA, X=NA, Z=NA, beta=NA, checkcol = TRUE){
   }
 
 
-  res[vars] <- as.vector(solve(t(Z) %*% Z) %*% t(Z) %*% (Y - X %*% beta))
+  res[vars] <- as.vector(solve(crossprod(Z), crossprod(Z, (Y - X %*% beta))))
   return(t(res))
 }
 

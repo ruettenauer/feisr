@@ -578,9 +578,9 @@ bsfeistest <- function(model = NA, type = c("all", "bs1", "bs2", "bs3"),
   mat.bdiff.bs3 <- mat.coef.feis - mat.coef.re[, colnames(mat.coef.feis)]
 
   I <- matrix(1, ncol = 1, nrow = rep)
-  mean.feis <- I %*% (t(I) %*% mat.coef.feis) / rep
-  mean.fe <- I %*% (t(I) %*% mat.coef.fe) / rep
-  mean.re <- I %*% (t(I) %*% mat.coef.re) / rep
+  mean.feis <- I %*% crossprod(I, mat.coef.feis) / rep
+  mean.fe <- I %*% crossprod(I, mat.coef.fe) / rep
+  mean.re <- I %*% crossprod(I, mat.coef.re) / rep
 
   mat.mdiff.bs1 <- mean.feis - mean.fe[, colnames(mean.feis)]
   mat.mdiff.bs2 <- mean.fe - mean.re
@@ -593,9 +593,9 @@ bsfeistest <- function(model = NA, type = c("all", "bs1", "bs2", "bs3"),
 
   ### Covariance matrix
 
-  V.bs1 <- (t(mat.diff.bs1) %*% mat.diff.bs1) / (rep - 1)
-  V.bs2 <- (t(mat.diff.bs2) %*% mat.diff.bs2) / (rep - 1)
-  V.bs3 <- (t(mat.diff.bs3) %*% mat.diff.bs3) / (rep - 1)
+  V.bs1 <- crossprod(mat.diff.bs1) / (rep - 1)
+  V.bs2 <- crossprod(mat.diff.bs2) / (rep - 1)
+  V.bs3 <- crossprod(mat.diff.bs3) / (rep - 1)
 
 
   ### Test statistic

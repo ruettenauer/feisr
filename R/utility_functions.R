@@ -41,9 +41,9 @@ expand.formula <- function(x){
 #### Function Residual maker ####
 #################################
 
-resm <- function(x, ...){
+resm <- function(x, tol = .Machine$double.eps, ...){
   x <- as.matrix(x)
-  r <- diag(1, nrow(x)) - x %*% solve(t(x) %*% x) %*% t(x)
+  r <- diag(1, nrow(x)) - x %*% tcrossprod(solve(crossprod(x), tol = tol), x)
   return(r)
 }
 
@@ -53,6 +53,7 @@ resm <- function(x, ...){
 
 hatm <- function(y, x, checkcol=TRUE, tol = .Machine$double.eps, ...){
   x <- as.matrix(x)
+  y <- as.matrix(y)
 
   # Check for perfect collinearity within groups
   if(checkcol == TRUE){
@@ -63,7 +64,7 @@ hatm <- function(y, x, checkcol=TRUE, tol = .Machine$double.eps, ...){
     }
   }
 
-  res <- x %*% solve(t(x) %*% x, tol = tol) %*% t(x) %*% as.matrix(y)
+  res <- x %*% solve(crossprod(x), crossprod(x, y), tol = tol)
   return(res)
 }
 
