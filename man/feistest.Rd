@@ -99,7 +99,7 @@ summary(ht2)
 \insertAllCited{}
 }
 \seealso{
-\code{\link[feisr]{summary.feistest}},
-\code{\link[feisr]{feis}}, \code{\link[feisr]{bsfeistest}}, \code{\link[plm]{plm}},
+\code{\link[feisr]{summary.feistest}}, \code{\link[feisr]{bsfeistest}},
+\code{\link[feisr]{feis}},  \code{\link[plm]{plm}},
 \code{\link[aod]{wald.test}}, \code{\link[plm]{phtest}}
 }

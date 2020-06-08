@@ -2,7 +2,7 @@
 #### S3 methods for feis ####
 #############################
 #' @importFrom stats delete.response formula model.frame terms residuals df.residual coef vcov deviance nobs fitted predict
-# #' @importFrom sandwich estfun
+#' @importFrom sandwich estfun
 
 
 #' @rdname feis
@@ -42,8 +42,62 @@ coef.feis <- function(object,...){
 
 #' @rdname feis
 #' @export
-vcov.feis <- function(object,...){
-  object$vcov
+sigma.feis <- function(object,...){
+  sqrt(sum(residuals(object)^2) / df.residual(object))
+}
+
+
+#' @title Calculate Variance-Covariance Matrix for a feis object
+#'
+#' @description
+#' Returns the variance-covariance matrix of the main parameters of an object of class "\code{feis}".
+#' By default, this is the unscaled variance-covariance matrix.
+#'
+#' @details
+#' By default, \code{vcov()} return the unscaled variance-covariance matrix of the fitted FEIS model.
+#' If set to \code{scale = TRUE}, the vcov is scaled by the nuisance parameter sigma^2
+#' (as is \code{object$vcov}). Note that corrections for clustering (i.e. \code{robust = TRUE}
+#' in the fitted model) are ignored in \code{vcov()}. In this case, \code{object$vcov} will return
+#' the vcov with corrections for clustering.
+#'
+#'
+#' @seealso \code{\link[feisr]{feis}}, \code{\link[stats]{vcov}}, \code{\link[stats]{sigma}}
+#'
+#' @param object an object of class "\code{feis}", fitted model.
+#' @param scale logical. If \code{TRUE} returns scaled vcov by sigma^2 (default is \code{FALSE}).
+#' @param ...	further arguments.
+#'
+#' @return A matrix of the estimated covariances between the parameter estimates in the fitted FEIS model.
+#'
+#' @examples
+#' data("mwp", package = "feisr")
+#' feis.mod <- feis(lnw ~ marry | exp,
+#'                  data = mwp, id = "id")
+#' vcov(feis.mod)
+#'
+#' @export
+#'
+vcov.feis <- function(object,..., scale = FALSE){
+  vcov_arg <- object$vcov_arg
+  sigma_sq <- sigma(object)^2
+  if(vcov_arg == "Normal standard errors"){
+    svcov <- object$vcov
+    if(scale == FALSE){
+      res <- svcov / sigma_sq
+    }else if(scale == TRUE){
+      res <- svcov
+    }
+  }
+  if(vcov_arg == "Cluster robust standard errors"){
+    xmat <- model.matrix(object)
+    if(any(alias <- is.na(coef(x)))) xmat <- xmat[, !alias, drop = FALSE]
+    if(scale == FALSE){
+      res <- solve(crossprod(xmat))
+    }else if(scale == TRUE){
+      res <- res * sigma_sq
+    }
+  }
+  return(res)
 }
 
 
@@ -139,39 +193,57 @@ model.matrix.feis <- function(object, ...){
 ### Methods for integration with vcovHC from package sandwich
 
 
+#' @rdname feis
+#' @export
+estfun.feis <- function(x, ...)
+{
+  xmat <- model.matrix(x)
+  xmat <- naresid(x$na.action, xmat)
+  if(any(alias <- is.na(coef(x)))) xmat <- xmat[, !alias, drop = FALSE]
+  # wts <- weights(x)
+  # if(is.null(wts)) wts <- 1
+  res <- residuals(x)
+  rval <- as.vector(res) * xmat
+  attr(rval, "assign") <- NULL
+  attr(rval, "contrasts") <- NULL
+  attr(rval, "id") <- x$id
+  return(rval)
+}
+
+
+#' @rdname feis
+#' @export
+hatvalues.feis <- function(x, ...)
+{
+  xmat <- model.matrix(x)
+  xmat <- naresid(x$na.action, xmat)
+  if(any(alias <- is.na(coef(x)))) xmat <- xmat[, !alias, drop = FALSE]
+  qr <- qr.default(xmat)
+  Q <- qr.qy(qr, diag(1, nrow = nrow(qr$qr), ncol = qr$rank))
+  hat <- diag(tcrossprod(Q))
+  names(hat) <- rownames(xmat)
+
+  return(hat)
+}
+
+
 #' #' @rdname feis
 #' #' @export
-#' estfun.feis <- function(x, ...)
-#' {
-#'   xmat <- model.matrix(x)
-#'   xmat <- naresid(x$na.action, xmat)
-#'   if(any(alias <- is.na(coef(x)))) xmat <- xmat[, !alias, drop = FALSE]
-#'   # wts <- weights(x)
-#'   # if(is.null(wts)) wts <- 1
-#'   res <- residuals(x)
-#'   rval <- as.vector(res) * xmat
-#'   attr(rval, "assign") <- NULL
-#'   attr(rval, "contrasts") <- NULL
-#'   attr(rval, "id") <- x$id
+#' bread.feis <- function(x, ...){
+#'   vcov_arg <- x$vcov_arg
+#'   if(vcov_arg == "Normal standard errors"){
+#'     res <- residuals(x)
+#'     n <- nobs(x)
+#'     df <- df.residual(x)
+#'     sigma_sq <- sum(res^2) / df
+#'     rval <- (x$vcov / sigma_sq) * n
+#'   }else if(vcov_arg == "Cluster robust standard errors"){
+#'     xmat <- model.matrix(x)
+#'     if(any(alias <- is.na(coef(x)))) xmat <- xmat[, !alias, drop = FALSE]
+#'     rval <- solve(crossprod(xmat)) * n
+#'   }
+#'
 #'   return(rval)
-#' }
-#'
-#'
-#'
-#' #' @rdname feis
-#' #' @export
-#' hatvalues.feis <- function(x, ...)
-#' {
-#'   xmat <- model.matrix(x)
-#'   xmat <- naresid(x$na.action, xmat)
-#'   if(any(alias <- is.na(coef(x)))) xmat <- xmat[, !alias, drop = FALSE]
-#'
-#'   qr <- qr.default(xmat)
-#'   Q <- qr.qy(qr, diag(1, nrow = nrow(qr$qr), ncol = qr$rank))
-#'   hat <- diag(tcrossprod(Q))
-#'   names(hat) <- rownames(xmat)
-#'
-#'   return(hat)
 #' }
 
 

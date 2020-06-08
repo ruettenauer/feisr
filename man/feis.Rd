@@ -7,11 +7,13 @@
 \alias{residuals.feis}
 \alias{df.residual.feis}
 \alias{coef.feis}
-\alias{vcov.feis}
+\alias{sigma.feis}
 \alias{deviance.feis}
 \alias{nobs.feis}
 \alias{fitted.feis}
 \alias{predict.feis}
+\alias{estfun.feis}
+\alias{hatvalues.feis}
 \title{Fixed Effects Individual Slope Estimator}
 \usage{
 feis(
@@ -35,7 +37,7 @@ feis(
 
 \method{coef}{feis}(object, ...)
 
-\method{vcov}{feis}(object, ...)
+\method{sigma}{feis}(object, ...)
 
 \method{deviance}{feis}(object, ...)
 
@@ -44,6 +46,10 @@ feis(
 \method{fitted}{feis}(object, ...)
 
 \method{predict}{feis}(object, newdata = NULL, ...)
+
+\method{estfun}{feis}(x, ...)
+
+\method{hatvalues}{feis}(x, ...)
 }
 \arguments{
 \item{formula}{a symbolic description for the model to be fitted (see Details).}
@@ -72,7 +78,7 @@ feis(
 \value{
 An object of class "\code{feis}", containing the following elements:
 \item{coefficients}{the vector of coefficients.}
-\item{vcov}{the variance-covariance matrix of the coefficients.}
+\item{vcov}{the scaled variance-covariance matrix of the coefficients.}
 \item{residuals}{the vector of residuals (computed from the "detrended" data).}
 \item{df.residual}{degrees of freedom of the residuals.}
 \item{formula}{an object of class "\code{Formula}" describing the model.}

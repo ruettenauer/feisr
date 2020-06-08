@@ -37,8 +37,8 @@
 #' If specified (\code{robust=TRUE}), \code{feistest} uses panel-robust standard errors.
 #'
 #' @seealso
-#' \code{\link[feisr]{summary.feistest}},
-#' \code{\link[feisr]{feis}}, \code{\link[feisr]{bsfeistest}}, \code{\link[plm]{plm}},
+#' \code{\link[feisr]{summary.feistest}}, \code{\link[feisr]{bsfeistest}},
+#' \code{\link[feisr]{feis}},  \code{\link[plm]{plm}},
 #' \code{\link[aod]{wald.test}}, \code{\link[plm]{phtest}}
 #'
 #' @param model	an object of class "\code{feis}".
@@ -332,8 +332,8 @@ feistest <- function(model = NA, robust = FALSE, type = c("all", "art1", "art2",
 #' chi-squared test on the differences between coefficients.
 #'
 #' @seealso
-#' \code{\link[feisr]{summary.bsfeistest}},
-#' \code{\link[feisr]{feis}}, \code{\link[feisr]{feistest}}, \code{\link[plm]{plm}},
+#' \code{\link[feisr]{summary.feistest}}, \code{\link[feisr]{feistest}},
+#' \code{\link[feisr]{feis}},  \code{\link[plm]{plm}},
 #' \code{\link[aod]{wald.test}}, \code{\link[plm]{phtest}}
 #'
 #' @param model	an object of class "\code{feis}".

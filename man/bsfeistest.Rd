@@ -92,7 +92,7 @@ summary(bsht)
 \insertAllCited{}
 }
 \seealso{
-\code{\link[feisr]{summary.bsfeistest}},
-\code{\link[feisr]{feis}}, \code{\link[feisr]{feistest}}, \code{\link[plm]{plm}},
+\code{\link[feisr]{summary.feistest}}, \code{\link[feisr]{feistest}},
+\code{\link[feisr]{feis}},  \code{\link[plm]{plm}},
 \code{\link[aod]{wald.test}}, \code{\link[plm]{phtest}}
 }

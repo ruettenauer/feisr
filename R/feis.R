@@ -56,7 +56,7 @@
 #'
 #' @return An object of class "\code{feis}", containing the following elements:
 #' \item{coefficients}{the vector of coefficients.}
-#' \item{vcov}{the variance-covariance matrix of the coefficients.}
+#' \item{vcov}{the scaled variance-covariance matrix of the coefficients.}
 #' \item{residuals}{the vector of residuals (computed from the "detrended" data).}
 #' \item{df.residual}{degrees of freedom of the residuals.}
 #' \item{formula}{an object of class "\code{Formula}" describing the model.}
