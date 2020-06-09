@@ -12,9 +12,7 @@ r_packages:
   - Formula
   - plm
   - Rdpack
-  - stats
   - dplyr 
-  - texreg,
   - testthat
   - knitr
   - rmarkdown
