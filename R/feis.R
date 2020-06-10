@@ -49,7 +49,8 @@
 #' @param intercept logical. If \code{TRUE} estimates the model with an intercept (default is \code{FALSE}).
 #' @param dropgroups logical. If \code{TRUE} groups without any within variance on a slope variable are dropped
 #'  , if \code{FALSE} those variables are omitted for the respective groups only (default is \code{FALSE}).
-#' @param tol	the tolerance for detecting linear dependencies in slopes (see \code{\link[base]{solve}}).
+#' @param tol	the tolerance for detecting linear dependencies in the residual maker transformation
+#' (see \code{\link[base]{solve}}).
 #' @param newdata the new data set for the predict method.
 #' @param lhs,rhs indexes of the left- and right-hand side for the methods formula and terms.
 #' @param ...	further arguments.
@@ -153,13 +154,14 @@ feis <- function(formula, data, id, robust = FALSE, intercept = FALSE,
 
   # Check for collinearity in slopes and within variance in slopes (to avoid computationally singular)
   X1_test <- model.matrix(formula, data, rhs = 2, lhs = 0, cstcovar.rm = "all")
-  X1_test_dm <- X1_test[, -1, drop = FALSE] - apply(X1_test[, -1, drop = FALSE], 2, FUN =
-                                                function(u) ave(u, i, FUN = function(z) mean(z)))
+  X1_test_dm <- X1_test[, -1, drop = FALSE] - apply(X1_test[, -1, drop = FALSE], 2,
+                                               FUN = function(u) ave(u, i, FUN = function(z) mean(z)))
 
   if(qr(X1_test_dm)$rank < ncol(X1_test_dm)){
     stop(paste("Perfect collinearity in slope variables"))
   }
 
+  # Check within variance
   wvar <- apply(X1_test[, -1, drop = FALSE], 2, FUN = function(u) ave(u, i, FUN = function(z) sd(z)))
   novar <- apply(wvar, 1, FUN = function(u) any(u == 0))
 
@@ -191,7 +193,6 @@ feis <- function(formula, data, id, robust = FALSE, intercept = FALSE,
 
 
   ### First level (individual slope) regression
-
   X1 <- model.matrix(formula, data, rhs = 2, lhs = 0, cstcovar.rm = "all")
   sv <- colnames(X1)[-1]
 
@@ -214,10 +215,8 @@ feis <- function(formula, data, id, robust = FALSE, intercept = FALSE,
     dhat <- do.call(rbind, lapply(dhat, as.matrix)) # use dplyr for more efficiency
   }
 
-  # rn <- unlist(lapply(dhat, FUN = function(x) rownames(x))) # Rownames preserved in dplyr 1.0.0
-  # rownames(dhat) <- rn
-
-  colnames(dhat) <- colnames(df_step1)[(nx + 1):(nx + ny)] # Keep orig col names
+  # Keep orig col names
+  colnames(dhat) <- colnames(df_step1)[(nx + 1):(nx + ny)]
 
   # Ensure original order
   dhat <- as.matrix(dhat[match(rownames(data), rownames(dhat)), ])

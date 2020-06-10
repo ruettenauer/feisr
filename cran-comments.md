@@ -1,12 +1,12 @@
 ## Submission feisr v.1.1.0
 This is the new version 1.1.0 of the package feisr.
 
-Best, Tobias
+Best wishes, Tobias
 
 ## Test environments
-* local WIN7 64Bit, R 3.6.3, R 4.0.0, devel
-* Travis-CI: Ubuntu 14.04, R 3.6.3, R 4.0.0, devel
-* Travis-CI: Mac OS X 10.13.3, R 3.6.3, R 4.0.0
+* local: WIN10 64Bit, R 3.6.3, R 4.0.1, devel
+* Travis-CI: Ubuntu 16.04, R 3.6.3, R 4.0.0, devel
+* Travis-CI: Mac OS X 10.13.6, R 3.6.3, R 4.0.1
 
 ## R CMD check results
 
@@ -14,13 +14,9 @@ Best, Tobias
 
 Note(s):
 
-* checking CRAN incoming feasibility ... NOTE
+* Found the following (possibly) invalid DOIs / URLs: DOI: 10.1177/0049124120926211
 
-  Maintainer: 'Tobias Ruettenauer <ruettenauer@sowi.uni-kl.de>'
-  
-  New submission
-
-  This is my first submission.
+  The article is forthcoming, and will be published with this DOI within the next days.
 
 ## Reverse dependencies
 

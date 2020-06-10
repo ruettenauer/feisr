@@ -1,10 +1,17 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 
 language: R
+os:
+  - linux
+  - osx
 r:
   - oldrel
   - release
   - devel
+matrix:
+  exclude:
+  - os: osx
+    r: devel  
 sudo: false
 cache: packages
 r_packages:
@@ -18,6 +25,3 @@ r_packages:
   - rmarkdown
   - ggplot2
   - rmarkdown
-os:
-  - linux
-  - osx

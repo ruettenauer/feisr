@@ -92,7 +92,7 @@ nowithinvar <- function(x, mf, id, tol = 1e-12, ...){
 
   within <- lapply(colnames(x), FUN = function(u) mf - apply(mf, 2, FUN = function(z)
     ave(z, x[, u], FUN = function(w) mean(w)))
-       - apply(mf, 2, FUN = function(v) ave(v, id, FUN=function(y) mean(y))))
+       - apply(mf, 2, FUN = function(v) ave(v, id, FUN = function(y) mean(y))))
 
   withinsd <- sapply(within, FUN = function(u) apply(u, 2, FUN = function(z) sd(z)))
 

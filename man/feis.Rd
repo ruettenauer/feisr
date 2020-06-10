@@ -62,7 +62,8 @@ feis(
 \item{dropgroups}{logical. If \code{TRUE} groups without any within variance on a slope variable are dropped
 , if \code{FALSE} those variables are omitted for the respective groups only (default is \code{FALSE}).}
 
-\item{tol}{the tolerance for detecting linear dependencies in slopes (see \code{\link[base]{solve}}).}
+\item{tol}{the tolerance for detecting linear dependencies in the residual maker transformation
+(see \code{\link[base]{solve}}).}
 
 \item{...}{further arguments.}
 

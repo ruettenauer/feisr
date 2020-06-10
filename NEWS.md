@@ -2,11 +2,7 @@
 
 ### Major Changes
 
-- Included dplyr `bind_rows()` for faster transformation of large data (depends on dplyr (>= 1.0.0)). Old fall-back code available for dplyr < 1.0.0.
-
-- Added vignette for package use.
-
-- Bug fix `feis()`, `feistest()`, `bsfeistest()`: Standard errors are now computed even if some coefficients are NA.
+- Bug fix `feis()`, `feistest()`, `bsfeistest()`: Vcov / Standard errors are now computed even if some coefficients are NA.
 
 - `feistest()` and `bsfeistest()`: added `terms` option to perform Hausman / Chi_sq test on subset of coefficients only.
 
@@ -16,6 +12,9 @@
 
 - Added general info page `feisr-package`.
 
+- Included dplyr `bind_rows()` for more efficient transformation of large data (depends on dplyr (>= 1.0.0)). Old fall-back code available for dplyr < 1.0.0.
+
+- Added vignette for package use.
 
 ### Minor Changes
 
