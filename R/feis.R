@@ -50,7 +50,7 @@
 #' @param dropgroups logical. If \code{TRUE} groups without any within variance on a slope variable are dropped
 #'  , if \code{FALSE} those variables are omitted for the respective groups only (default is \code{FALSE}).
 #' @param tol	the tolerance for detecting linear dependencies in the residual maker transformation
-#' (see \code{\link[base]{solve}}).
+#' (see \code{\link[base]{solve}}). The argument is forwarded to \code{\link[feisr]{bsfeistest}}.
 #' @param newdata the new data set for the predict method.
 #' @param lhs,rhs indexes of the left- and right-hand side for the methods formula and terms.
 #' @param ...	further arguments.
@@ -80,6 +80,7 @@
 #' \item{r2}{R squared of the "detrended" model.}
 #' \item{adj.r2}{adjusted R squared of the "detrended" model.}
 #' \item{vcov_arg}{a character containing the method used to compute the variance-covariance matrix.}
+#' \item{tol}{the tolerance parameter (for use in bsfeistest).}
 #'
 #' @references
 #' \insertAllCited{}
@@ -380,6 +381,8 @@ feis <- function(formula, data, id, robust = FALSE, intercept = FALSE,
   if(robust){
     result$vcov_arg <- "Cluster robust standard errors"
   }else{result$vcov_arg <- "Normal standard errors"}
+
+  result$tol <- tol
 
   class(result)  <-  c("feis")
 

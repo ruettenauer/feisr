@@ -32,6 +32,9 @@
 #' the slopes and reduce the model to a conventional RE model.
 #' \insertCite{@for a formal description please see @Ruttenauer.2020}{feisr}.
 #'
+#' Currently, the \code{tol} option in \code{feis()} is only forwarded in bsfeistest,
+#' but not in feistest.
+#'
 #'
 #'
 #' If specified (\code{robust=TRUE}), \code{feistest} uses panel-robust standard errors.
@@ -399,6 +402,7 @@ bsfeistest <- function(model = NA, type = c("all", "bs1", "bs2", "bs3"),
   nc <- length(model$coefficients)
   ns <- length(model$slopevars)
   cl <- model$call
+  tol <- model$tol
   type <- type[1]
 
   if (!type %in% c("all", "bs1", "bs2", "bs3")){
@@ -461,7 +465,7 @@ bsfeistest <- function(model = NA, type = c("all", "bs1", "bs2", "bs3"),
 
   # FEIS
   if(!type == "bs2"){
-    feis.mod <- feis(fm.feis, data = df, id = "id")
+    feis.mod <- feis(fm.feis, data = df, id = "id", tol = tol)
 
     coef.feis <- feis.mod$coefficients
   } else {coef.feis <- NA}
@@ -531,7 +535,7 @@ bsfeistest <- function(model = NA, type = c("all", "bs1", "bs2", "bs3"),
 
     # FEIS
     if(!type=="bs2"){
-      tmp.feis <- feis(fm.feis, data = df.tmp, id = "sid")
+      tmp.feis <- feis(fm.feis, data = df.tmp, id = "sid", tol = tol)
 
       mat.coef.feis[j, ] <- t(tmp.feis$coefficients)
     }

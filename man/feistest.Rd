@@ -80,6 +80,9 @@ slopes, and no averages. This allows to test whether we can omit the estimated v
 the slopes and reduce the model to a conventional RE model.
 \insertCite{@for a formal description please see @Ruttenauer.2020}{feisr}.
 
+Currently, the \code{tol} option in \code{feis()} is only forwarded in bsfeistest,
+but not in feistest.
+
 
 
 If specified (\code{robust=TRUE}), \code{feistest} uses panel-robust standard errors.

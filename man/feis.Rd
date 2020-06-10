@@ -63,7 +63,7 @@ feis(
 , if \code{FALSE} those variables are omitted for the respective groups only (default is \code{FALSE}).}
 
 \item{tol}{the tolerance for detecting linear dependencies in the residual maker transformation
-(see \code{\link[base]{solve}}).}
+(see \code{\link[base]{solve}}). The argument is forwarded to \code{\link[feisr]{bsfeistest}}.}
 
 \item{...}{further arguments.}
 
@@ -99,6 +99,7 @@ An object of class "\code{feis}", containing the following elements:
 \item{r2}{R squared of the "detrended" model.}
 \item{adj.r2}{adjusted R squared of the "detrended" model.}
 \item{vcov_arg}{a character containing the method used to compute the variance-covariance matrix.}
+\item{tol}{the tolerance parameter (for use in bsfeistest).}
 }
 \description{
 Estimates fixed effects individual slope estimators by applying linear \code{lm} models
