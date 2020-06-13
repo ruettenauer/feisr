@@ -36,7 +36,7 @@ Imports:
     stats,
     dplyr
 Suggests: 
-    texreg,
+    texreg (>= 1.37.1),
     testthat,
     knitr,
     rmarkdown,

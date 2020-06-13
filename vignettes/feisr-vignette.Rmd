@@ -114,6 +114,14 @@ wages.re <- plm(lnw ~ marry + enrol + yeduc + as.factor(yeargr)
 ```
 
 The difference between the three models produced above can be visualized using the `screenreg()` and `texreg()` functions of the [texreg](https://CRAN.R-project.org/package=texreg) package [@Leifeld.2013]. Since version *1.37.1*, the `texreg` packages comes with an extract method for `feis` models.
+```{r extract.feis, echo = FALSE , results = "hide", warning = FALSE, message = FALSE}
+# Fallback for production of vignettes if texreg < 1.37.1 (internal extract.feis)
+if(utils::packageVersion("texreg") < "1.37.1"){
+  library(texreg)
+  setMethod("extract", signature = className("feis", "feisr"),
+        definition = feisr:::extract.feis)
+}
+```
 ```{r compare, width = 70}
 library(texreg)
 screenreg(list(wages.feis, wages.feis.rob, wages.fe, wages.re), digits = 3,
