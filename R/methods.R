@@ -71,9 +71,11 @@ sigma.feis <- function(object,...){
 #'
 #' @examples
 #' data("mwp", package = "feisr")
-#' feis.mod <- feis(lnw ~ marry | exp,
+#' feis.mod <- feis(lnw ~ marry + enrol | exp,
 #'                  data = mwp, id = "id")
 #' vcov(feis.mod)
+#' all.equal(vcov(feis.mod), feis.mod$vcov) # FALSE: not equal, because vcov() unscaled
+#' all.equal(vcov(feis.mod, scale = TRUE), feis.mod$vcov) # equal
 #'
 #' @export
 #'

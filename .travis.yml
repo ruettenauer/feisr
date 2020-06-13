@@ -15,13 +15,6 @@ matrix:
 sudo: false
 cache: packages
 r_packages:
-  - aod
-  - Formula
-  - plm
-  - Rdpack
-  - dplyr 
-  - testthat
   - knitr
   - rmarkdown
-  - ggplot2
-  - rmarkdown
+

@@ -10,7 +10,7 @@ bibentry(bibtype = "Article",
   journal      = "Sociological Methods and Research",
   volume       = "Forthcoming",
   doi          = "10.1177/0049124120926211",
-  url          = "https://osf.io/preprints/socarxiv/py4hz/",
+  url          = "https://osf.io/preprints/socarxiv/k4rnu/",
   
   textVersion = 
          paste("Ruettenauer T, Ludwig V (2020).", 
