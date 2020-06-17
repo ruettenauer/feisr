@@ -1,6 +1,7 @@
 #############################
 #### S3 methods for feis ####
 #############################
+context("Test methods")
 
 data("mwp", package = "feisr")
 

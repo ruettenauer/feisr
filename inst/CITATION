@@ -1,21 +1,21 @@
 bibentry(bibtype = "Article",
   title        = "Fixed Effects Individual Slopes: Accounting and Testing for Heterogeneous Effects in Panel Data or Other Multilevel Models",
   author       = c(person(given = "Tobias",
-                          family = "Ruettenauer",
+                          family = "Rüttenauer",
                           email = "tobias.ruttenauer@nuffield.ox.ac.uk"),
                    person(given = "Volker",
                           family = "Ludwig",
                           email = "ludwig@sowi.uni-kl.de")),
   year         = "2020",
   journal      = "Sociological Methods and Research",
-  volume       = "Forthcoming",
+  volume       = "OnlineFirst",
   doi          = "10.1177/0049124120926211",
   url          = "https://osf.io/preprints/socarxiv/k4rnu/",
   
   textVersion = 
-         paste("Ruettenauer T, Ludwig V (2020).", 
+         paste("Rüttenauer T, Ludwig V (2020).", 
                "Fixed Effects Individual Slopes: Accounting and Testing for Heterogeneous Effects in Panel Data or Other Multilevel Models",
-               "Sociological Methods and Research. Forthcoming. 10.1177/0049124120926211"),
+               "Sociological Methods and Research. OnlineFirst. 10.1177/0049124120926211"),
 		   
   header       = "To cite feisr in publications please use:"
 )

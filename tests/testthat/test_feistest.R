@@ -1,6 +1,8 @@
 #################################
 #### feistest and bsfeistest ####
 #################################
+context("Unit tests feistest and bsfeistest")
+
 
 data("mwp", package = "feisr")
 

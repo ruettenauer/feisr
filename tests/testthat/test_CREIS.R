@@ -53,22 +53,22 @@ plm1.mod <- plm(log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp + as.numeric(y
 
 # Estimation of CREIS with plm
 
-Produc$log_pcap<-log(Produc$pcap)
-Produc$log_pc<-log(Produc$pc)
-Produc$log_emp<-log(Produc$emp)
+Produc$log_pcap <- log(Produc$pcap)
+Produc$log_pc <- log(Produc$pc)
+Produc$log_emp <- log(Produc$emp)
 
-dhat<-by(cbind(Produc$log_pcap,
+dhat <- by(cbind(Produc$log_pcap,
                Produc$log_pc,
                Produc$log_emp,
                Produc$unemp,
                rep(1,nrow(Produc)), Produc$year),
          Produc$state,
-         FUN= function(u) hatm(y = u[, 1:4],x = u[,5:6]))
-dhat<-do.call(rbind, lapply(dhat, as.matrix))
+         FUN = function(u) hatm(y = u[, 1:4],x = u[,5:6]))
+dhat <- do.call(rbind, lapply(dhat, as.matrix))
 
-Produc2<-cbind(Produc, dhat)
+Produc2 <- cbind(Produc, dhat)
 
-plm.creis1.mod<-plm(log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp
+plm.creis1.mod <- plm(log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp
                + V1 + V2 + V3 + V4,
                data = Produc2,
                index = c("state", "year"),
