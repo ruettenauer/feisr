@@ -26,7 +26,6 @@ which is used for estimation of the model in \code{lm()}.
 data("mwp", package = "feisr")
 feis.mod <- feis(lnw ~ marry + as.factor(yeargr) | exp,
                  data = mwp, id = "id")
-mf <- model.frame(feis.mod)
 mm <- model.matrix(feis.mod)
 
 }

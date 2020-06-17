@@ -1,3 +1,9 @@
+### feisr 1.1.1
+
+- Bug fix for vignette: Add correct suggests version
+
+- Minor documentation updates
+
 # feisr 1.1.0
 
 ### Major Changes

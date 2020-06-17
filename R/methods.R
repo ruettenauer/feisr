@@ -179,7 +179,6 @@ predict.feis <- function(object, newdata = NULL, ...){
 #' data("mwp", package = "feisr")
 #' feis.mod <- feis(lnw ~ marry + as.factor(yeargr) | exp,
 #'                  data = mwp, id = "id")
-#' mf <- model.frame(feis.mod)
 #' mm <- model.matrix(feis.mod)
 #'
 #' @export
