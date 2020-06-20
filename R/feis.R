@@ -142,7 +142,7 @@ feis <- function(formula, data, id, robust = FALSE, intercept = FALSE,
   ns <- ncol(attr(terms(formula(formula, rhs = 2, lhs = 0)), "factors"))
   pcount <- ave(c(1:length(i)), i, FUN = function(x) length(x))
 
-  if(any(pcount<=(ns+1))){
+  if(any(pcount <= (ns + 1))){
     warning(paste("FEIS needs at least n(slopes)+1 observations per group. \n",
                   "You specified", ns, "slope parameter(s) plus intercept,",
                   "all groups with t <=", ns+1, "dropped", sep=" "), call. = TRUE, immediate. = TRUE)
@@ -208,8 +208,9 @@ feis <- function(formula, data, id, robust = FALSE, intercept = FALSE,
 
   df_step1 <- cbind(X1, Y1)
 
-  dhat <- by(df_step1, i, FUN = function(u) data.frame(hatm(y = u[, (nx + 1):(nx + ny)], x = u[, 1:nx],
-                                               checkcol = !dropgroups, tol = tol)))
+  dhat <- by(df_step1, i, FUN = function(u) data.frame(hatm(y = u[, (nx + 1):(nx + ny), drop = FALSE],
+                                                            x = u[, 1:nx, drop = FALSE],
+                                               checkcol = !dropgroups, tol = tol)), simplify = FALSE)
 
   if(utils::packageVersion("dplyr") >= "1.0.0"){
     dhat <- dplyr::bind_rows(rbind(dhat), .id = NULL) # only for version dplyr >= 1.0.0 keeps rownames
