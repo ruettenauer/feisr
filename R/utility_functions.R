@@ -68,7 +68,7 @@ hatm <- function(y, x, checkcol = TRUE, tol = .Machine$double.eps, ...){
     }
   }
 
-  res <- x %*% solve(crossprod(x), crossprod(x, y), tol = tol)
+  res <- stats::fitted(stats::lm.fit(x, y, tol = tol))
   return(res)
 }
 

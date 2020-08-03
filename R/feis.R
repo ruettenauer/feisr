@@ -231,14 +231,18 @@ feis <- function(formula, data, id, robust = FALSE, intercept = FALSE,
   ass_X <- attr(X, "assign")
   cont_X <- attr(X, "contrasts")
 
-  # Test for computationally singular (including slope vars)
-  novar <- nowithinvar(X1, X, i)
-  drop <- colnames(X)[novar]
-
-  if(any(novar[which(names(novar) != "(Intercept)")])){
-    drop <- drop[which(drop != "(Intercept)")]
-    X <- X[, -which(colnames(X) %in% drop)]
-  }
+  # # Test for computationally singular (including slope vars) # Instead use dhat == x later
+  # novar <- nowithinvar(X1, X, i)
+  # drop <- colnames(X)[novar]
+  #
+  # if(any(novar[which(names(novar) != "(Intercept)")])){
+  #   drop <- drop[which(drop != "(Intercept)")]
+  #   X <- X[, -which(colnames(X) %in% drop)]
+  #   cv <- cv[-which(cv %in% drop)]
+  #   warning(paste0("Dropped the following variables because of no variance within slope(s): ",
+  #                  paste(drop, collapse = ", ")),
+  #           call. = TRUE, immediate. = TRUE)
+  # }
 
   # Omit intercept
   if(plm::has.intercept(formula)[1] & intercept == FALSE){
@@ -255,10 +259,23 @@ feis <- function(formula, data, id, robust = FALSE, intercept = FALSE,
     }
   }
 
-  # Substract dhat
+  # Subtract dhat
   o1 <- match(cv, colnames(X))
   o2 <- match(cv, colnames(dhat))
   X[, o1] <- X[, o1] - dhat[, o2]
+
+  # Test within slope variance in X
+  zero <- rep(0, nrow(X))
+  novar <- sapply(1:ncol(X), function(z) all.equal(X[, z], zero, tol = 1e-12,
+                                                   check.attributes = FALSE, check.names = FALSE))
+  if(any(novar == TRUE)){
+    drop <- which(novar == TRUE)
+    X <- X[, - drop]
+    warning(paste0("Dropped the following variables because of no variance within slope(s): ",
+                   paste(cv[drop], collapse = ", ")),
+            call. = TRUE, immediate. = TRUE)
+    cv <- cv[-drop]
+  }
 
 
   Y <- as.matrix(model.response(data, "numeric"))

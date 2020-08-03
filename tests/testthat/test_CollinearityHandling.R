@@ -16,12 +16,15 @@ Wages$year<-rep(c(1976:1982), times = 595)
 
 # Handling of contant vars
 # ed + sex constant,  exp perfectly collinear with slope var year
+expect_warning(
 feis1.mod <- feis(lwage ~ ed + sex + exp + bluecol + ind + smsa +  married + wks | year,
                     data = Wages, id = "id", robust = F)
+)
 
+expect_warning(
 feis1b.mod <- feis(lwage ~ ed + sex + exp + bluecol + ind + smsa +  married + wks | year,
                   data = Wages, id = "id", robust = F, intercept = T)
-
+)
 
 ht1 <- feistest(feis1.mod, robust=F, type = "all")
 ht1b <- feistest(feis1b.mod, robust=F, type = "all")
@@ -75,3 +78,19 @@ test_that("Drop (within-) constant vars (Wages)", {
   expect_identical(names(feis4.mod$coefficients), c("crim", "chasyes"))
 })
 
+
+
+
+### Test within variance
+
+# Create time dummy
+Wages$td <- 0
+Wages$td[Wages$year > 1976 & Wages$year > 1979] <- 1
+
+expect_warning(
+feis5.mod <- feis(lwage ~ ed + sex + exp + bluecol + ind + smsa +  married + wks + td | year,
+                  data = Wages, id = "id", robust = F)
+)
+test_that("Keep time-related dummy if linear time slope", {
+  expect_identical(names(feis5.mod$coefficients), c(vars, "td"))
+})
