@@ -2,7 +2,7 @@
 % Please edit documentation in R/methods.R
 \name{vcov.feis}
 \alias{vcov.feis}
-\title{Calculate Variance-Covariance Matrix for a feis object}
+\title{Calculate Variance-Covariance Matrix for feis models}
 \usage{
 \method{vcov}{feis}(object, ..., scale = FALSE)
 }

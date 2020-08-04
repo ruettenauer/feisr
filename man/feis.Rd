@@ -11,7 +11,6 @@
 \alias{deviance.feis}
 \alias{nobs.feis}
 \alias{fitted.feis}
-\alias{predict.feis}
 \alias{hatvalues.feis}
 \title{Fixed Effects Individual Slope Estimator}
 \usage{
@@ -44,8 +43,6 @@ feis(
 
 \method{fitted}{feis}(object, ...)
 
-\method{predict}{feis}(object, newdata = NULL, ...)
-
 \method{hatvalues}{feis}(model, ...)
 }
 \arguments{
@@ -70,8 +67,6 @@ feis(
 \item{lhs, rhs}{indexes of the left- and right-hand side for the methods formula and terms.}
 
 \item{object, x, model}{an object of class "\code{feis}".}
-
-\item{newdata}{the new data set for the predict method.}
 }
 \value{
 An object of class "\code{feis}", containing the following elements:

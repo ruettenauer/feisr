@@ -51,7 +51,6 @@
 #'  , if \code{FALSE} those variables are omitted for the respective groups only (default is \code{FALSE}).
 #' @param tol	the tolerance for detecting linear dependencies in the residual maker transformation
 #' (see \code{\link[base]{solve}}). The argument is forwarded to \code{\link[feisr]{bsfeistest}}.
-#' @param newdata the new data set for the predict method.
 #' @param lhs,rhs indexes of the left- and right-hand side for the methods formula and terms.
 #' @param ...	further arguments.
 #'
