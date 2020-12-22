@@ -49,7 +49,7 @@ the \code{object$vcov} is used, thus allowing for robust variance-covariance mat
 Setting intervals specifies computation of confidence or prediction (tolerance) intervals
 at the specified \code{level}.
 
-\bold{Note}: Currently, predictions are based on the transformed (detrended) data.
+\bold{Note}: Currently, predictions are based on the transformed (de-trended) data.
 }
 \examples{
 feis.mod <- feis(lnw ~ age | exp,

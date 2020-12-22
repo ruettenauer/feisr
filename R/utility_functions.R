@@ -381,11 +381,29 @@ nowithinvar <- function(x, mf, id, tol = 1e-12, ...){
 #### Extract response ####
 ##########################
 
-# this has to be the "demeaned" response var
-# ATTENTION WITH ORDER!!
-
-# Attach demeaned data to model output??
-
+#' @title A function to extract the model.response
+#'
+#' @description
+#' Returns the de-trended response variable of a \code{feis} object.
+#'
+#' @details
+#' The function provides a convenient way to return the model.response of a \code{feis} object.
+#' This is the transformed (de-trended) variable which is used for estimation of the final model.
+#'
+#' @param x an object of class \code{feis}.
+#' @param ...	further arguments.
+#'
+#' @return A "\code{numeric}" of the transformed response variable of the estimation model.
+#'
+#'
+#' @examples
+#' data("mwp", package = "feisr")
+#' feis.mod <- feis(lnw ~ marry + enrol | year,
+#'                  data = mwp, id = "id")
+#' y_tilde <- model.response.feis(feis.mod)
+#'
+#' @export
+#'
 model.response.feis <- function(x, ...){
   res <- as.vector(x$response)
   return(res)

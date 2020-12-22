@@ -19,7 +19,7 @@ Methods to extract transformed model matrix for "\code{feis}" objects.
 }
 \details{
 \code{model.matrix} for \code{feis} objects returns the model or design matrix
-of the respective FEIS model. This is the transformed (detrended) data,
+of the respective FEIS model. This is the transformed (de-trended) data,
 which is used for estimation of the model in \code{lm()}.
 }
 \examples{

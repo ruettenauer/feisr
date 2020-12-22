@@ -101,7 +101,7 @@ feistest <- function(model = NA, robust = FALSE, type = c("all", "art1", "art2",
   data <- model$model
   i <- model$id
   cl <- model$call
-  type <- type[1]
+  type <- match.arg(type)
 
   if (!type %in% c("all", "art1", "art2", "art3")){
     stop(paste("type must be one of \"all\", \"art1\", \"art2\", \"art3\""))
@@ -403,7 +403,7 @@ bsfeistest <- function(model = NA, type = c("all", "bs1", "bs2", "bs3"),
   ns <- length(model$slopevars)
   cl <- model$call
   tol <- model$tol
-  type <- type[1]
+  type <- match.arg(type)
 
   if (!type %in% c("all", "bs1", "bs2", "bs3")){
     stop(paste("type must be one of \"all\", \"bs1\", \"bs2\", \"bs3\""))

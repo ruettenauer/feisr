@@ -141,7 +141,7 @@ fitted.feis <- function(object,...){
 #' Setting intervals specifies computation of confidence or prediction (tolerance) intervals
 #' at the specified \code{level}.
 #'
-#' \bold{Note}: Currently, predictions are based on the transformed (detrended) data.
+#' \bold{Note}: Currently, predictions are based on the transformed (de-trended) data.
 #'
 #'
 #' @seealso \code{\link[stats]{predict.lm}, \link[stats]{predict}}
@@ -267,7 +267,7 @@ predict.feis <- function(object, newdata = NULL, se.fit = FALSE, vcov = NULL,
 #'
 #' @details
 #' \code{model.matrix} for \code{feis} objects returns the model or design matrix
-#' of the respective FEIS model. This is the transformed (detrended) data,
+#' of the respective FEIS model. This is the transformed (de-trended) data,
 #' which is used for estimation of the model in \code{lm()}.
 #'
 #'
