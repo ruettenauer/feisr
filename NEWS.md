@@ -1,3 +1,7 @@
+### feisr 1.1.3
+
+- Bug fix correct order in detrend.
+
 ### feisr 1.1.2
 
 - New options se.fit and interval for `predict.feis()`: Compute standard errors and confidence intervals for predicted values.

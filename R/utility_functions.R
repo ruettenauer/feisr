@@ -293,7 +293,7 @@ detrend <- function(data, slopes, id = NULL, intercept = TRUE,
   colnames(dhat) <- colnames(df_step1)[(nz + 1):(nz + nx)]
 
   # Ensure original order
-  dhat <- dhat[match(rownames(X), rownames(dhat)), ]
+  dhat <- dhat[match(rownames(dhat), rownames(X)), ]
 
   # Detrend X
   detr <- data.frame(X - dhat)

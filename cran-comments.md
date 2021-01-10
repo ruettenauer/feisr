@@ -15,6 +15,6 @@ Tobias
 
 ## Reverse dependencies
 
-R CMD check --as-cran was run on all reverse dependencies locally (insight, texreg). All tests related to feisr passed.
+R CMD check --as-cran was run on all reverse dependencies locally (insight, texreg). No problems with feisr detected (though insight fails for other reasons).
 
 
