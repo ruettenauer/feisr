@@ -52,6 +52,9 @@ test_that("Detrend == x - fit(lm) in loop ", {
 
 ### Check NA handling
 set.seed(1234)
+
+rownames(mwp) <- sample(1:10000, nrow(mwp))
+
 mwp[sample(1:nrow(mwp), 200), "lnw"] <- NA
 mwp[sample(1:nrow(mwp), 200), "exp"] <- NA
 
@@ -76,6 +79,9 @@ test_that("NA returned in detrend", {
   expect_true(all(is.na(mwp_det$lnw[na2])))
   expect_true(all(is.na(mwp_det$enrol[na1])))
   expect_true(all(is.na(mwp_det$enrol[na2])))
+
+  expect_false(all(is.na(mwp_det$lnw[-unique(c(na1, na2))])))
+  expect_false(all(is.na(mwp_det$enrol[-unique(c(na1, na2))])))
 })
 
 
@@ -94,8 +100,8 @@ det_overall2 <- detrend(mwp[, c("lnw")], mwp$exp, 1, intercept = FALSE)
 det_fit1 <- mwp$lnw - fitted(lm(lnw ~ exp, data = mwp, na.action = na.exclude))
 det_fit2 <- mwp$lnw - fitted(lm(lnw ~ exp - 1, data = mwp, na.action = na.exclude))
 test_that("Overall detrend = X - fitted lm", {
-  expect_equal(det_overall1, det_fit1, tolerance = .000001)
-  expect_equal(det_overall2, det_fit2, tolerance = .000001)
+  expect_equal(det_overall1, det_fit1, tolerance = .000001, check.names = FALSE)
+  expect_equal(det_overall2, det_fit2, tolerance = .000001, check.names = FALSE)
 })
 
 
