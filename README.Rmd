@@ -14,6 +14,15 @@ knitr::opts_chunk$set(
 
 # feisr
 
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/ruettenauer/feisr/workflows/R-CMD-check/badge.svg)](https://github.com/ruettenauer/feisr/actions)
+[![License](http://img.shields.io/badge/license-GPL%20%28%3E=%202%29-brightgreen.svg?style=flat)](http://www.gnu.org/licenses/gpl-2.0.html)
+[![CRAN status](https://www.r-pkg.org/badges/version/feisr)](https://CRAN.R-project.org/package=feisr)
+[![cran checks](https://cranchecks.info/badges/worst/feisr)](https://cran.r-project.org/web/checks/check_results_feisr.html)
+[![Downloads](http://cranlogs.r-pkg.org/badges/feisr?color=brightgreen)](http://www.r-pkg.org/pkg/feisr)
+<!-- badges: end -->
+
+
 The packages feisr provides a function to estimate fixed effects individual slope (FEIS) models in R. FEIS models constitute a more general version of the often used conventional fixed effects (FE) panel models. In contrast to conventional fixed effects models, data are not person 'demeaned', but 'detrended' by the predicted individual slope of each person, which relaxes the assumptions of parallel trends between treated and untreated groups. For more information see Brüderl and Ludwig (2015); Frees (2001); Polachek and Kim (1994); Rüttenauer and Ludwig (2020); Wooldridge (2010).
 
 ## Installation

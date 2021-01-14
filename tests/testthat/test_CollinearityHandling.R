@@ -40,9 +40,14 @@ test_that("Drop (within-) constant vars (Wages)", {
 
 
 # Handling of perfectly collinear slopes (error message)
+test_that("Avoid collinearity by default tol value", {
+expect_warning(feis(lwage ~ ed + sex + bluecol + ind + smsa +  married + wks | year + exp,
+                    data = Wages, id = "id", robust = F))
+})
+
 test_that("Stop if slopes perfectly collinear", {
   expect_error(feis(lwage ~ ed + sex + bluecol + ind + smsa +  married + wks | year + exp,
-                    data = Wages, id = "id", robust = F))
+                      data = Wages, id = "id", robust = F, tol = 1e-07))
 })
 
 

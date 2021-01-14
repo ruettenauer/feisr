@@ -248,7 +248,7 @@ detrend <- function(data, slopes, id = NULL, intercept = TRUE,
   pcount <- ave(id, id, FUN = function(x) length(x))
 
   if(any(pcount < (ns + 1))){
-    warning(paste("FEIS needs at least n(slopes)+1 observations per group. \n",
+    warning(paste("Detrend needs at least n(slopes)+1 observations per group. \n",
                   "You specified", ns, "slope parameter(s) plus intercept,",
                   "all groups with t <=", ns+1, "dropped", sep=" "), call. = TRUE, immediate. = TRUE)
 
@@ -267,8 +267,8 @@ detrend <- function(data, slopes, id = NULL, intercept = TRUE,
   }
 
   ### Check collinearity and variance
-  if(qr(Z)$rank < ncol(Z)){
-    stop(paste("Perfect collinearity in slope variables"))
+  if(qr(Z, tol = tol)$rank < ncol(Z)){
+    stop(paste("Perfect collinearity in slope variables. See 'tol' option."))
   }
 
   ### Detrend

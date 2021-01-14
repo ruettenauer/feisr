@@ -158,8 +158,8 @@ feis <- function(formula, data, id, robust = FALSE, intercept = FALSE,
   X1_test_dm <- X1_test[, -1, drop = FALSE] - apply(X1_test[, -1, drop = FALSE], 2,
                                                FUN = function(u) ave(u, i, FUN = function(z) mean(z)))
 
-  if(qr(X1_test_dm)$rank < ncol(X1_test_dm)){
-    stop(paste("Perfect collinearity in slope variables"))
+  if(qr(X1_test_dm, tol = tol)$rank < ncol(X1_test_dm)){
+    stop(paste("Perfect collinearity in slope variables. See 'tol' option"))
   }
 
   # Check within variance

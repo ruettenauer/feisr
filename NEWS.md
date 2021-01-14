@@ -1,3 +1,7 @@
+### feisr 1.1.4
+
+- Bug fix: pass tol-option to collinearity handling (feis and detrend) introduced in v1.1.2
+
 ### feisr 1.1.3
 
 - Bug fix correct order in detrend.
