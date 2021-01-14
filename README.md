@@ -155,7 +155,7 @@ Gap.” Journal of Econometrics, 61(1), 23-42.
 
 Rüttenauer T, Ludwig V (2020). “Fixed Effects Individual Slopes:
 Accounting and Testing for Heterogeneous Effects in Panel Data or Other
-Multilevel Models.” Sociological Methods and Research, Forthcoming.
+Multilevel Models.” Sociological Methods and Research, OnlineFirst.
 <https://doi.org/10.1177/0049124120926211>.
 
 Wooldridge JM (2010). “Econometric Analysis of Cross Section and Panel
