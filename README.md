@@ -3,6 +3,17 @@
 
 # feisr
 
+<!-- badges: start -->
+
+[![R-CMD-check](https://github.com/ruettenauer/feisr/workflows/R-CMD-check/badge.svg)](https://github.com/ruettenauer/feisr/actions)
+[![License](http://img.shields.io/badge/license-GPL%20%28%3E=%202%29-brightgreen.svg?style=flat)](http://www.gnu.org/licenses/gpl-2.0.html)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/feisr)](https://CRAN.R-project.org/package=feisr)
+[![cran
+checks](https://cranchecks.info/badges/worst/feisr)](https://cran.r-project.org/web/checks/check_results_feisr.html)
+[![Downloads](http://cranlogs.r-pkg.org/badges/feisr?color=brightgreen)](http://www.r-pkg.org/pkg/feisr)
+<!-- badges: end -->
+
 The packages feisr provides a function to estimate fixed effects
 individual slope (FEIS) models in R. FEIS models constitute a more
 general version of the often used conventional fixed effects (FE) panel
@@ -98,8 +109,8 @@ summary(ht)
 #> ------------
 #> H0: FEIS and FE estimates consistent 
 #> Alternative H1: FE inconsistent 
-#> Model constraints: marry_hat,  enrol_hat,  yeduc_hat,  as_factor_yeargr_2_hat,  
-#> as_factor_yeargr_3_hat,  as_factor_yeargr_4_hat,  as_factor_yeargr_5_hat = 0 
+#> Model constraints: marry_hat, enrol_hat, yeduc_hat, as_factor_yeargr_2_hat, 
+#> as_factor_yeargr_3_hat, as_factor_yeargr_4_hat, as_factor_yeargr_5_hat = 0 
 #> 
 #> Chi-squared test:
 #> Chisq = 49.558, df = 7, P(> X2) = 1.7639e-08
@@ -109,9 +120,9 @@ summary(ht)
 #> ------------
 #> H0: FE and RE estimates consistent 
 #> Alternative H1: RE inconsistent 
-#> Model constraints: marry_mean,  enrol_mean,  yeduc_mean,  
-#> as_factor_yeargr_2_mean,  as_factor_yeargr_3_mean,  as_factor_yeargr_4_mean,  
-#> as_factor_yeargr_5_mean,  exp_mean,  exp_2_mean = 0 
+#> Model constraints: marry_mean, enrol_mean, yeduc_mean, as_factor_yeargr_2_mean, 
+#> as_factor_yeargr_3_mean, as_factor_yeargr_4_mean, as_factor_yeargr_5_mean, 
+#> exp_mean, exp_2_mean = 0 
 #> 
 #> Chi-squared test:
 #> Chisq = 13.087, df = 9, P(> X2) = 0.15872
@@ -121,8 +132,8 @@ summary(ht)
 #> ------------
 #> H0: FEIS and RE estimates consistent 
 #> Alternative H1: RE inconsistent 
-#> Model constraints: marry_hat,  enrol_hat,  yeduc_hat,  as_factor_yeargr_2_hat,  
-#> as_factor_yeargr_3_hat,  as_factor_yeargr_4_hat,  as_factor_yeargr_5_hat = 0 
+#> Model constraints: marry_hat, enrol_hat, yeduc_hat, as_factor_yeargr_2_hat, 
+#> as_factor_yeargr_3_hat, as_factor_yeargr_4_hat, as_factor_yeargr_5_hat = 0 
 #> 
 #> Chi-squared test:
 #> Chisq = 55.231, df = 7, P(> X2) = 1.342e-09
