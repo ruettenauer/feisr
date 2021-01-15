@@ -1,5 +1,5 @@
 ## Submission feisr v.1.1.2
-v 1.1.3 fixes a bug in the previous release.
+v 1.1.4 fixes (yet another, sorry for that!) bug in the previous release.
 
 Thank you very much and best wishes, 
 Tobias
