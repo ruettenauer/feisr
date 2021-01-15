@@ -15,12 +15,11 @@ knitr::opts_chunk$set(
 # feisr
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/ruettenauer/feisr/workflows/R-CMD-check/badge.svg)](https://github.com/ruettenauer/feisr/actions)
-[![Build Status](https://travis-ci.com/ruettenauer/feisr.svg?branch=master)](https://travis-ci.com/ruettenauer/feisr)
-[![License](http://img.shields.io/badge/license-GPL%20%28%3E=%202%29-brightgreen.svg?style=flat)](http://www.gnu.org/licenses/gpl-2.0.html)
-[![CRAN status](https://www.r-pkg.org/badges/version/feisr)](https://CRAN.R-project.org/package=feisr)
+[![R-CMD-check](https://github.com/ruettenauer/feisr/workflows/R-CMD-check/badge.svg)](https://github.com/ruettenauer/feisr/actions/)
+[![Build Status](https://travis-ci.com/ruettenauer/feisr.svg?branch=master)](https://travis-ci.com/ruettenauer/feisr/)
+[![License](https://img.shields.io/badge/license-GPL%20%28%3E=%202%29-brightgreen.svg?style=flat)](https://www.gnu.org/licenses/gpl-2.0.html)
+[![CRAN status](https://www.r-pkg.org/badges/version/feisr)](https://CRAN.R-project.org/package=feisr/)
 [![cran checks](https://cranchecks.info/badges/worst/feisr)](https://cran.r-project.org/web/checks/check_results_feisr.html)
-[![Downloads](http://cranlogs.r-pkg.org/badges/feisr?color=brightgreen)](http://www.r-pkg.org/pkg/feisr)
 <!-- badges: end -->
 
 
