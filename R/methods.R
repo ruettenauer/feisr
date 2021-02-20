@@ -43,7 +43,9 @@ coef.feis <- function(object,...){
 #' @rdname feis
 #' @export
 sigma.feis <- function(object,...){
-  sqrt(sum(residuals(object)^2) / df.residual(object))
+  u <- resid(object)
+  nna <- which(!is.na(u))
+  sqrt(sum(u[nna]^2) / df.residual(object))
 }
 
 

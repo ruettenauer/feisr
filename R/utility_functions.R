@@ -55,7 +55,7 @@ resm <- function(x, tol = .Machine$double.eps, ...){
 #### Function Predicted maker ####
 ##################################
 
-hatm <- function(y, x, checkcol = TRUE, tol = .Machine$double.eps, ...){
+hatm <- function(y, x, weights = NULL, checkcol = TRUE, tol = .Machine$double.eps, isw = FALSE, ...){
   x <- as.matrix(x)
   y <- as.matrix(y)
 
@@ -68,7 +68,12 @@ hatm <- function(y, x, checkcol = TRUE, tol = .Machine$double.eps, ...){
     }
   }
 
-  res <- stats::fitted(stats::lm.fit(x, y, tol = tol))
+  if(!isw){
+    res <- stats::fitted(stats::lm.fit(x, y, tol = tol))
+  }else{
+    res <- stats::fitted(stats::lm.wfit(x, y, w = weights, tol = tol))
+  }
+
   return(res)
 }
 
@@ -417,7 +422,9 @@ model.response.feis <- function(x, ...){
 #################
 
 sumres <- function(x, ...){
-  sr <- summary(unclass(resid(x)))
+  u <- resid(x)
+  nna <- which(!is.na(u))
+  sr <- summary(unclass(u[nna]))
   srm <- sr["Mean"]
   if (abs(srm) < 1e-10){
     sr <- sr[c(1:3, 5:6)]
@@ -426,7 +433,9 @@ sumres <- function(x, ...){
 }
 
 rss.feis <- function(x, ...){
-  rss <- sum(x$residuals^2)
+  u <- resid(x)
+  nna <- which(!is.na(u))
+  rss <- sum(u[nna]^2)
 }
 
 
@@ -435,7 +444,9 @@ rss.feis <- function(x, ...){
 #############
 
 tss.feis <- function(x, ...){
-  var(model.response.feis(x)) * (length(model.response.feis(x)) - 1)
+  u <- resid(x)
+  nna <- which(!is.na(u))
+  var(model.response.feis(x)[nna]) * (length(model.response.feis(x)[nna]) - 1)
 }
 
 
@@ -446,9 +457,11 @@ tss.feis <- function(x, ...){
 r.sq.feis <- function(object, adj=FALSE, df=NULL, intercept=FALSE){
   z <- object
   r <- z$residuals
+  nna <- which(!is.na(r))
+  r <- r[nna]
   n <- length(r)
   rss <- sum(r^2)
-  f <- z$fitted.values
+  f <- z$fitted.values[nna]
   if(is.null(df)){
     rdf <- z$df.residual
   } else{

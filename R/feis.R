@@ -93,7 +93,7 @@
 #'
 #' @export
 #'
-feis <- function(formula, data, id, robust = FALSE, intercept = FALSE,
+feis <- function(formula, data, id, weights = NULL, robust = FALSE, intercept = FALSE,
                  dropgroups = FALSE, tol = .Machine$double.eps, ...){
 
   if(!is.character(formula)){
@@ -120,9 +120,11 @@ feis <- function(formula, data, id, robust = FALSE, intercept = FALSE,
     stop(paste("Individual slopes have to be estimated with intercept"))
   }
 
+
+
   cl <- match.call()
   mf <- match.call(expand.dots = FALSE)
-  m <- match(c("formula", "data", "subset", "weights", "na.action"), names(mf), 0)
+  m <- match(c("formula", "data", "weights", "na.action"), names(mf), 0)
   mf <- mf[c(1, m)]
   mf$drop.unused.levels  <-  TRUE
   mf[[1]] <- as.name("model.frame")
@@ -130,6 +132,7 @@ feis <- function(formula, data, id, robust = FALSE, intercept = FALSE,
   new_rownames <- 1:nrow(data)
   row.names(data) <- new_rownames
   mf$data <- data
+  mf$weights <- weights
 
   # Eval
   data <- eval(mf, parent.frame())
@@ -186,12 +189,23 @@ feis <- function(formula, data, id, robust = FALSE, intercept = FALSE,
   # Preserve original row.names
   row.names(data)  <-  orig_rownames[as.numeric(row.names(data))]
 
-
   # Names
   #sv <- attr(terms(formula(formula, rhs = 2, lhs = 0)), "term.labels")
   cv <- attr(terms(formula(formula, rhs = 1, lhs = 0)), "term.labels")
   rv <- all.vars(formula(formula, rhs = 0, lhs = 1))
 
+  ### Apply weights
+  w <- model.weights(data)
+  if (!is.null(w)) {
+    if (!is.numeric(w)) {
+      stop("'weights' must be a numeric vector")
+    }
+    isw <- TRUE
+  }
+  else {
+    w <- 1
+    isw <- FALSE
+  }
 
   ### First level (individual slope) regression
   X1 <- model.matrix(formula, data, rhs = 2, lhs = 0, cstcovar.rm = "all")
@@ -205,11 +219,12 @@ feis <- function(formula, data, id, robust = FALSE, intercept = FALSE,
   ny <- ncol(Y1)
   nx <- ncol(X1)
 
-  df_step1 <- cbind(X1, Y1)
+  df_step1 <- cbind(X1, Y1, w)
 
   dhat <- by(df_step1, i, FUN = function(u) data.frame(hatm(y = u[, (nx + 1):(nx + ny), drop = FALSE],
                                                             x = u[, 1:nx, drop = FALSE],
-                                               checkcol = !dropgroups, tol = tol)), simplify = FALSE)
+                                                            weights = u[, (nx + ny + 1)],
+                                               checkcol = !dropgroups, tol = tol, isw = isw)), simplify = FALSE)
 
   if(utils::packageVersion("dplyr") >= "1.0.0"){
     dhat <- dplyr::bind_rows(rbind(dhat), .id = NULL) # only for version dplyr >= 1.0.0 keeps rownames
@@ -273,7 +288,8 @@ feis <- function(formula, data, id, robust = FALSE, intercept = FALSE,
     warning(paste0("Dropped the following variables because of no variance within slope(s): ",
                    paste(cv[drop], collapse = ", ")),
             call. = TRUE, immediate. = TRUE)
-    cv <- cv[-drop]
+    cv <- cv[-(drop - ifelse(intercept, 1, 0))]
+    ass_X <- ass_X[-drop]
   }
 
 
@@ -282,7 +298,12 @@ feis <- function(formula, data, id, robust = FALSE, intercept = FALSE,
 
 
   # Store transformed data
-  transformed <- data.frame(Y, X)
+  if(intercept){
+    transformed <- data.frame(Y, X[, -1, drop = TRUE])
+  }else{
+    transformed <- data.frame(Y, X)
+  }
+
   # colnames(transformed)[1] <- rv
   colnames(transformed) <- c(rv, cv)
 
@@ -299,7 +320,26 @@ feis <- function(formula, data, id, robust = FALSE, intercept = FALSE,
   #
   # result  <-  lm(f, data = data.frame(transformed))
 
-  result <- stats::lm.fit(X, Y, ...)
+  if(!isw){
+    result <- stats::lm.fit(X, Y, ...)
+    oonz <- 1:nrow(X)
+  }else{
+
+    # Account for zero weights
+    zerow <- which(w == 0)
+    if(length(zerow) > 0){
+      warning(paste(length(zerow), "observations with zero weights dropped"),
+              call. = TRUE, immediate. = TRUE)
+
+      oonz <- which(w != 0)
+    }else{
+      oonz <- 1:nrow(X)
+    }
+
+    result <- stats::lm.wfit(X, Y, w = w, ...)
+    # result <- stats::lm.wfit(X[oonz, ], Y[oonz], w = w[oonz, ], ...)
+  }
+
 
   # Exract coefs
   beta <- result$coefficients
@@ -307,70 +347,76 @@ feis <- function(formula, data, id, robust = FALSE, intercept = FALSE,
 
   # Extract residuals
   u <- resid(result)
-  k <- length(unique(i)) * ncol(X1) + ncol(X)
-  df <- length(u) - k
+  k <- length(unique(i[oonz])) * ncol(X1) + ncol(X)
+  df <- length(u[oonz]) - k
 
   # Extract Rsquared
   r.squared <- r.sq.feis(result, adj = FALSE, intercept = intercept)
   adj.r.squared <- r.sq.feis(result, adj = TRUE, intercept = intercept)
 
   # Fitted values (similar fitted values as plm for FE)
-  fitted <- as.vector(Y - u)
+  fitted <- result$fitted.values
 
   names(fitted) <- rownames(X)
   names(Y) <- rownames(X)
   names(u) <- rownames(X)
 
   ### Standard errors
+  uw <- u[oonz]
+  if(isw){
+    ww <- w[oonz]
+  }else{
+    ww <- w
+  }
 
 
   # Check for NAs in beta, and drop vars from for SE calculation
   if(any(is.na(beta))){
-    Xn <- X[, -which(is.na(beta))]
+    Xn <- result$qr$qr[oonz, -which(is.na(beta))]
+    R <- chol2inv(Xn)
 
     vcov <- matrix(NA, ncol = ncol(X), nrow = ncol(X))
     colnames(vcov) <- colnames(X)
     rownames(vcov) <- colnames(X)
 
     if(!robust){
-      sigma <- sum((u * u)) / (df)
-      tmp <- sigma * solve(crossprod(Xn))
+      sigma <- sum(ww * uw^2, na.rm = TRUE) / (df)
+      tmp <- sigma * chol2inv(Xn)
       vcov[rownames(tmp), colnames(tmp)] <- tmp
-      # se <- sqrt(diag(vcov))
     }
 
     # Cluster robust SEs
     if(robust){
-      mxu <- Xn * u
-      e <- rowsum(mxu, i)
-      dfc <- ((length(unique(i)) / (length(unique(i)) - 1))
-              * ((length(i) - 1) / (length(i) - (ncol(X1) + ncol(Xn)))))
-      vcovCL <- dfc * (solve(crossprod(Xn)) %*% crossprod(e) %*% solve(crossprod(Xn)))
+      mxu <- X[oonz, -which(is.na(beta))] * uw * ww
+      e <- rowsum(mxu, i[oonz])
+      dfc <- ((length(unique(i[oonz])) / (length(unique(i[oonz])) - 1))
+              * ((length(i[oonz]) - 1) / (length(i[oonz]) - (ncol(X1) + ncol(Xn)))))
+      vcovCL <- dfc * R %*% crossprod(e) %*% R
 
       vcov[rownames(vcovCL), colnames(vcovCL)] <- vcovCL
-
-      # se <- sqrt(diag(vcov))
     }
 
   }else{
+    Xn <- result$qr$qr[oonz, ]
+    R <- chol2inv(Xn)
+
     if(!robust){
-      sigma <- sum((u * u)) / (df)
-      vcov <- sigma * solve(crossprod(X))
-      # se <- sqrt(diag(vcov))
+      sigma <- sum(ww * uw^2, na.rm = TRUE) / (df)
+      vcov <- sigma * R
     }
 
     # Cluster robust SEs
     if(robust){
-      mxu <- X * u
-      e <- rowsum(mxu, i)
-      dfc <- ((length(unique(i)) / (length(unique(i)) - 1))
-              * ((length(i) - 1) / (length(i) - (ncol(X1) + ncol(X)))))
-      vcovCL <- dfc * (solve(crossprod(X)) %*% crossprod(e) %*% solve(crossprod(X)))
-      # se <- sqrt(diag(vcovCL))
+      mxu <- X[oonz, ] * uw * ww
+      e <- rowsum(mxu, i[oonz])
+      dfc <- ((length(unique(i[oonz])) / (length(unique(i[oonz])) - 1))
+              * ((length(i[oonz]) - 1) / (length(i[oonz]) - (ncol(X1) + ncol(X)))))
+      vcovCL <- dfc * R %*% crossprod(e) %*% R
 
       vcov <- vcovCL
     }
   }
+  colnames(vcov) <- rownames(vcov) <- names(beta)
 
 
   ### Output
@@ -385,7 +431,8 @@ feis <- function(formula, data, id, robust = FALSE, intercept = FALSE,
                modeltrans    = transformed,
                response      = Y,
                fitted.values = fitted,
-               id            = i)
+               id            = i,
+               weights       = w)
   result$call <- cl
   result$assign <- ass_X
   result$na.action <- omitted

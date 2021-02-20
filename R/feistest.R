@@ -118,11 +118,23 @@ feistest <- function(model = NA, robust = FALSE, type = c("all", "art1", "art2",
 
   X <- model.matrix(formula, data, rhs = 1, lhs = 0, cstcovar.rm = "all")
   colnames(X) <- cleani(colnames(X))
-  X <- X[, which(colnames(X) %in% cleani(cv)), drop = F]
+  X <- X[, match(cleani(cv), colnames(X)), drop = F]
 
   S <- model.matrix(formula, data, rhs = 2, lhs = 0, cstcovar.rm = "all")
   S <- S[, -1, drop = FALSE]
   colnames(S) <- cleani(colnames(S))
+
+  # Transformed data
+  Xtrans <- model$modeltrans
+  colnames(Xtrans) <- cleani(colnames(Xtrans))
+  Xtrans <- Xtrans[, match(cleani(cv), colnames(Xtrans)), drop = FALSE]
+
+
+  # Get weights
+  w <- model$weights
+  if(all(w == 1)){
+    w <- NULL
+  }
 
   # Check if terms fit colnames
   if(!is.null(terms)){
@@ -137,8 +149,8 @@ feistest <- function(model = NA, robust = FALSE, type = c("all", "art1", "art2",
   }
 
   # Transformed variables
-  X_hat <- data.frame(model$modelhat)
-  X_hat <- X_hat[, -1, drop = F]
+  X_hat <- X - Xtrans
+  X_hat <- X_hat
   colnames(X_hat) <- cleani(colnames(X_hat))
   X_hat <- X_hat[, which(colnames(X_hat) %in% cleani(cv)), drop = F]
   colnames(X_hat) <- paste(colnames(X_hat), "_hat", sep = "")
@@ -184,7 +196,7 @@ feistest <- function(model = NA, robust = FALSE, type = c("all", "art1", "art2",
     ### Estimate Correlated RE model
 
     creis.mod <- plm::plm(fm,
-                   data = df, index = c("id", "id2"),
+                   data = df, index = c("id", "id2"), weights = w,
                    model = "random", effect = "individual", random.method = "walhus" )
 
     # Robust vcov if specified
@@ -220,7 +232,7 @@ feistest <- function(model = NA, robust = FALSE, type = c("all", "art1", "art2",
     ### Estimate Correlated RE model
 
     cre.mod <- plm::plm(fm,
-                 data = df, index = c("id", "id2"),
+                 data = df, index = c("id", "id2"), weights = w,
                  model = "random", effect = "individual", random.method = "walhus" )
 
     # Robust vcov if specified
@@ -258,7 +270,7 @@ feistest <- function(model = NA, robust = FALSE, type = c("all", "art1", "art2",
     ### Estimate Correlated RE model
 
     creis2.mod <- plm::plm(fm,
-                          data = df, index = c("id", "id2"),
+                          data = df, index = c("id", "id2"), weights = w,
                           model = "random", effect = "individual", random.method = "walhus" )
 
     # Robust vcov if specified
@@ -423,11 +435,13 @@ bsfeistest <- function(model = NA, type = c("all", "bs1", "bs2", "bs3"),
 
   X <- model.matrix(formula, data, rhs = 1, lhs = 0, cstcovar.rm = "all")
   colnames(X) <- cleani(colnames(X))
-  X <- X[, which(colnames(X) %in% cleani(cv)), drop = F]
+  X <- X[, match(cleani(cv), colnames(X)), drop = F]
 
   S <- model.matrix(formula, data, rhs = 2, lhs = 0, cstcovar.rm = "all")
   S <- S[, -1, drop = FALSE]
   colnames(S) <- cleani(colnames(S))
+
+
 
   # Check for and drop NA coef columns
   if(any(is.na(model$coefficients))){
@@ -439,6 +453,12 @@ bsfeistest <- function(model = NA, type = c("all", "bs1", "bs2", "bs3"),
   # Combine (with fake year)
   i2 <- ave(1:length(i), i, FUN = function(u) seq_along(u))
   df <- data.frame(id = i, id2 = i2, Y, X, S)
+
+  # Get weights
+  w <- model$weights
+  if(all(w == 1)){
+    w <- NULL
+  }
 
 
   ### Set up formulas
@@ -457,7 +477,7 @@ bsfeistest <- function(model = NA, type = c("all", "bs1", "bs2", "bs3"),
 
   # FE
   if(!type == "bs3"){
-    fe.mod <- plm::plm(fm.fe, data = df, index = c("id", "id2"),
+    fe.mod <- plm::plm(fm.fe, data = df, index = c("id", "id2"), weights = w,
                        effect = "individual", model = "within")
 
     coef.fe <- fe.mod$coefficients
@@ -465,14 +485,14 @@ bsfeistest <- function(model = NA, type = c("all", "bs1", "bs2", "bs3"),
 
   # FEIS
   if(!type == "bs2"){
-    feis.mod <- feis(fm.feis, data = df, id = "id", tol = tol)
+    feis.mod <- feis(fm.feis, data = df, id = "id", weights = w, tol = tol)
 
     coef.feis <- feis.mod$coefficients
   } else {coef.feis <- NA}
 
   # RE
   if(!type=="bs1"){
-    re.mod <- plm::plm(fm.fe, data = df, index = c("id", "id2"),
+    re.mod <- plm::plm(fm.fe, data = df, index = c("id", "id2"), weights = w,
                        effect = "individual", model = "random")
 
     coef.re <- re.mod$coefficients
@@ -527,7 +547,7 @@ bsfeistest <- function(model = NA, type = c("all", "bs1", "bs2", "bs3"),
 
     # FE
     if(!type=="bs3"){
-      tmp.fe <- plm::plm(fm.fe, data = df.tmp, index = c("sid", "id2"),
+      tmp.fe <- plm::plm(fm.fe, data = df.tmp, index = c("sid", "id2"), weights = w,
                          effect = "individual", model = "within")
 
       mat.coef.fe[j, ] <- t(tmp.fe$coefficients)
@@ -535,14 +555,14 @@ bsfeistest <- function(model = NA, type = c("all", "bs1", "bs2", "bs3"),
 
     # FEIS
     if(!type=="bs2"){
-      tmp.feis <- feis(fm.feis, data = df.tmp, id = "sid", tol = tol)
+      tmp.feis <- feis(fm.feis, data = df.tmp, id = "sid", weights = w, tol = tol)
 
       mat.coef.feis[j, ] <- t(tmp.feis$coefficients)
     }
 
     # RE
     if(!type=="bs1"){
-      tmp.re <- plm::plm(fm.fe, data = df.tmp, index = c("sid", "id2"),
+      tmp.re <- plm::plm(fm.fe, data = df.tmp, index = c("sid", "id2"), weights = w,
                          effect = "individual", model = "random")
 
       if(any(names(tmp.re$coefficients) == "(Intercept)")){

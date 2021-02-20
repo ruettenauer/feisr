@@ -1,5 +1,9 @@
 ### feisr 1.2.0
 
+- Omit modelhat and y in modeltrans from output (modelhat can be calculated with model.matrix, modeltrans, and y retrieved with model.response)
+
+- Bug fix: Omit intercept from transformed if intercept = TRUE
+
 - Corrected test R:44:1 for ATLAS: Provided "default" tol value
 
 - Minor documentation and vignette updates
