@@ -39,7 +39,7 @@
 #' The model output can be exported using the \code{\link[texreg]{texreg}} package.
 #'
 #' @seealso \code{\link[feisr]{summary.feis}}, \code{\link[plm]{plm}}, \code{\link[plm]{pvcm}},
-#' \code{\link[plm]{pmg}}, \code{\link[feisr]{feistest}}
+#' \code{\link[plm]{pmg}}, \code{\link[feisr]{feistest}}, \code{\link[fixest]{feols}}
 #'
 #' @param formula	a symbolic description for the model to be fitted (see Details).
 #' @param object,x,model	an object of class "\code{feis}".

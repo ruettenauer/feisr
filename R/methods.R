@@ -167,9 +167,11 @@ fitted.feis <- function(object,...){
 #' new <- data.frame(age = seq(-10, 10, 1))
 #' feis.pred <- predict(feis.mod, newdata = new,
 #'                      se.fit = TRUE, interval = "confidence")
+#'
+#' \dontrun{
 #' matplot(new$age, feis.pred$fit, lty = c(1,2,2),
 #'         type = "l", ylab = "predicted y")
-#'
+#' }
 #'
 #' @export
 predict.feis <- function(object, newdata = NULL, se.fit = FALSE, vcov = NULL,

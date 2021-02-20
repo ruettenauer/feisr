@@ -61,7 +61,7 @@ The main functions of the `feisr` package are:
 
 * `slopes()`: Extracts the individual slopes from `feis` objects.
 
-The functions included in the R package `feisr` are also available in the [xtfeis ado](https://ideas.repec.org/c/boc/bocode/s458045.html) for Stata. The package [plm](https://CRAN.R-project.org/package=plm) [@Croissant.2008.0; @Croissant.2019] provides estimation of related models, as for instance the mean group (MG) or common correlated effects mean groups (CCEMG) estimator via `pmg()` function, and the estimator of models with variable coefficients via `pvcm()`.
+The functions included in the R package `feisr` are also available in the [xtfeis ado](https://ideas.repec.org/c/boc/bocode/s458045.html) for Stata. The package [plm](https://CRAN.R-project.org/package=plm) [@Croissant.2008.0; @Croissant.2019] provides estimation of related models, as for instance the mean group (MG) or common correlated effects mean groups (CCEMG) estimator via `pmg()` function, and the estimator of models with variable coefficients via `pvcm()`. The package [fixest](https://cran.r-project.org/web/packages/fixest/index.html) also provides estimation of FE models with individual slopes in its function `feols', including higher dimensional FEIS models and instrumental variable approaches.
 
 ## Estimating `feis` models
 

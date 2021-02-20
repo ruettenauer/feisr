@@ -1,3 +1,9 @@
+### feisr 1.2.0
+
+- Corrected test R:44:1 for ATLAS: Provided "default" tol value
+
+- Minor documentation and vignette updates
+
 ### feisr 1.1.4
 
 - Bug fix: pass tol-option to collinearity handling (feis and detrend) introduced in v1.1.2

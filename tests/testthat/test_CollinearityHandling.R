@@ -40,9 +40,10 @@ test_that("Drop (within-) constant vars (Wages)", {
 
 
 # Handling of perfectly collinear slopes (error message)
+devtolwin <- 2.220446e-16
 test_that("Avoid collinearity by default tol value", {
 expect_warning(feis(lwage ~ ed + sex + bluecol + ind + smsa +  married + wks | year + exp,
-                    data = Wages, id = "id", robust = F))
+                    data = Wages, id = "id", robust = F, tol = devtolwin))
 })
 
 test_that("Stop if slopes perfectly collinear", {

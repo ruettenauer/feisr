@@ -1,4 +1,7 @@
-## Submission feisr v.1.1.2
+Re-Submission: Changed links (dropped broken cranlog link)
+Thanks for checking!
+
+## Submission feisr v.1.1.4
 v 1.1.4 fixes (yet another, sorry for that!) bug in the previous release.
 
 Thank you very much and best wishes, 
