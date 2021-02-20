@@ -1,6 +1,6 @@
 ### feisr 1.2.0
 
-- Omit modelhat and y in modeltrans from output (modelhat can be calculated with model.matrix, modeltrans, and y retrieved with model.response)
+- Rank deficit columns / NA coefs are now dropped from the model (with warning message)
 
 - Bug fix: Omit intercept from transformed if intercept = TRUE
 

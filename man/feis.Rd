@@ -53,6 +53,8 @@ feis(
 
 \item{id}{the name of a unique group / person identifier (as string).}
 
+\item{weights}{an optional vector of weights to be used in the fitting process. See \code{\link[stats]{lm}}.}
+
 \item{robust}{logical. If \code{TRUE} estimates cluster robust standard errors (default is \code{FALSE}).}
 
 \item{intercept}{logical. If \code{TRUE} estimates the model with an intercept (default is \code{FALSE}).}
@@ -86,6 +88,7 @@ An object of class "\code{feis}", containing the following elements:
 \item{response}{the vector of the "detrended" response variable.}
 \item{fitted.values}{the vector of fitted values (computed from the "detrended" data).}
 \item{id}{a vector containing the unique person identifier.}
+\item{weights}{a vector containing weights used in fitting, or integer 1 if not speficied in call.}
 \item{call}{the matched call.}
 \item{assign}{assign attributes of the formula.}
 \item{na.omit}{(where relevant) a vector of the omitted observations. The only handling method

@@ -3,7 +3,7 @@
 #######################
 #' @importFrom Rdpack reprompt
 #' @importFrom utils packageVersion
-#' @importFrom stats as.formula ave coef coefficients lm model.matrix model.response printCoefmat pt resid sd terms update var
+#' @importFrom stats as.formula ave coef coefficients lm model.matrix model.response model.weights printCoefmat pt resid sd terms update var
 
 #' @title Fixed Effects Individual Slope Estimator
 #'
@@ -45,6 +45,7 @@
 #' @param object,x,model	an object of class "\code{feis}".
 #' @param data a \code{data.frame} containing the specified variables.
 #' @param id the name of a unique group / person identifier (as string).
+#' @param weights an optional vector of weights to be used in the fitting process. See \code{\link[stats]{lm}}.
 #' @param robust logical. If \code{TRUE} estimates cluster robust standard errors (default is \code{FALSE}).
 #' @param intercept logical. If \code{TRUE} estimates the model with an intercept (default is \code{FALSE}).
 #' @param dropgroups logical. If \code{TRUE} groups without any within variance on a slope variable are dropped
@@ -70,6 +71,7 @@
 #' \item{response}{the vector of the "detrended" response variable.}
 #' \item{fitted.values}{the vector of fitted values (computed from the "detrended" data).}
 #' \item{id}{a vector containing the unique person identifier.}
+#' \item{weights}{a vector containing weights used in fitting, or integer 1 if not speficied in call.}
 #' \item{call}{the matched call.}
 #' \item{assign}{assign attributes of the formula.}
 #' \item{na.omit}{(where relevant) a vector of the omitted observations. The only handling method
