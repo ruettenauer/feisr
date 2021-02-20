@@ -67,6 +67,35 @@ test_that("Drop groups without within slope var", {
 
 
 
+
+
+### NA coef handling
+
+
+data("mwp", package = "feisr")
+mwp$wts <- 0.3
+mwp$wts[1:(nrow(mwp)/2)] <- 1
+mwp$lnw[sample(1:nrow(mwp), 10)] <- NA
+mwp$enrol2 <- mwp$enrol
+
+wages.feis1 <- feis(lnw ~ marry + enrol  + yeduc
+                    | exp, data = mwp, weights = mwp$wts, id = "id")
+
+expect_warning(
+  wages.feis2 <- feis(lnw ~ marry + enrol + enrol2 + yeduc
+                      | exp, data = mwp, weights = mwp$wts, id = "id")
+)
+
+test_that("Results equal if NA coef dropped because of collinearity", {
+  expect_equal(wages.feis1$coefficients, wages.feis2$coefficients, tolerance = 1e-10)
+  expect_equal(vcov(wages.feis1, scale = TRUE), vcov(wages.feis2, scale = TRUE), tolerance = 1e-10)
+})
+
+
+
+
+
+
 ### Hedonic
 
 data("Hedonic", package = "plm")

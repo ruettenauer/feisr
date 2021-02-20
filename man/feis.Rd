@@ -18,6 +18,7 @@ feis(
   formula,
   data,
   id,
+  weights = NULL,
   robust = FALSE,
   intercept = FALSE,
   dropgroups = FALSE,

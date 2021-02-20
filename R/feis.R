@@ -340,14 +340,22 @@ feis <- function(formula, data, id, weights = NULL, robust = FALSE, intercept = 
     # result <- stats::lm.wfit(X[oonz, ], Y[oonz], w = w[oonz, ], ...)
   }
 
+  # Check rank
+  r <- result$qr$rank
+  p <- result$qr$pivot[1:r]
+  if(r < ncol(X)){
+    dv <- colnames(X)[-p]
+    warning(paste("Variable(s) dropped because of collinearity:", paste(dv, collapse = ", ")),
+            call. = TRUE, immediate. = TRUE)
+  }
 
   # Exract coefs
-  beta <- result$coefficients
+  beta <- result$coefficients[p]
   # aliased <- result$aliased
 
   # Extract residuals
   u <- resid(result)
-  k <- length(unique(i[oonz])) * ncol(X1) + ncol(X)
+  k <- length(unique(i[oonz])) * ncol(X1) + r
   df <- length(u[oonz]) - k
 
   # Extract Rsquared
@@ -370,51 +378,25 @@ feis <- function(formula, data, id, weights = NULL, robust = FALSE, intercept = 
   }
 
 
-  # Check for NAs in beta, and drop vars from for SE calculation
-  if(any(is.na(beta))){
-    Xn <- result$qr$qr[oonz, -which(is.na(beta))]
-    R <- chol2inv(Xn)
+  ### Standard errors
+  Xn <- result$qr$qr[oonz, 1:r, drop = FALSE]
+  R <- chol2inv(Xn)
 
-    vcov <- matrix(NA, ncol = ncol(X), nrow = ncol(X))
-    colnames(vcov) <- colnames(X)
-    rownames(vcov) <- colnames(X)
 
-    if(!robust){
-      sigma <- sum(ww * uw^2, na.rm = TRUE) / (df)
-      tmp <- sigma * chol2inv(Xn)
-      vcov[rownames(tmp), colnames(tmp)] <- tmp
-    }
+  if(!robust){
+    sigma <- sum(ww * uw^2, na.rm = TRUE) / (df)
+    vcov <- sigma * chol2inv(Xn)
+  }
 
-    # Cluster robust SEs
-    if(robust){
-      mxu <- X[oonz, -which(is.na(beta))] * uw * ww
-      e <- rowsum(mxu, i[oonz])
-      dfc <- ((length(unique(i[oonz])) / (length(unique(i[oonz])) - 1))
-              * ((length(i[oonz]) - 1) / (length(i[oonz]) - (ncol(X1) + ncol(Xn)))))
-      vcovCL <- dfc * R %*% crossprod(e) %*% R
+  # Cluster robust SEs
+  if(robust){
+    mxu <- X[oonz, p, drop = FALSE] * uw * ww
+    e <- rowsum(mxu, i[oonz])
+    dfc <- ((length(unique(i[oonz])) / (length(unique(i[oonz])) - 1))
+            * ((length(i[oonz]) - 1) / (length(i[oonz]) - (ncol(X1) + ncol(Xn)))))
+    vcovCL <- dfc * R %*% crossprod(e) %*% R
 
-      vcov[rownames(vcovCL), colnames(vcovCL)] <- vcovCL
-    }
-
-  }else{
-    Xn <- result$qr$qr[oonz, ]
-    R <- chol2inv(Xn)
-
-    if(!robust){
-      sigma <- sum(ww * uw^2, na.rm = TRUE) / (df)
-      vcov <- sigma * R
-    }
-
-    # Cluster robust SEs
-    if(robust){
-      mxu <- X[oonz, ] * uw * ww
-      e <- rowsum(mxu, i[oonz])
-      dfc <- ((length(unique(i[oonz])) / (length(unique(i[oonz])) - 1))
-              * ((length(i[oonz]) - 1) / (length(i[oonz]) - (ncol(X1) + ncol(X)))))
-      vcovCL <- dfc * R %*% crossprod(e) %*% R
-
-      vcov <- vcovCL
-    }
+    vcov <- vcovCL
   }
   colnames(vcov) <- rownames(vcov) <- names(beta)
 

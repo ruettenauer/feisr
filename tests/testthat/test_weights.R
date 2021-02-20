@@ -56,3 +56,9 @@ test_that("weighted results = lsdv results with weights", {
 
 
 
+
+
+
+
+
+
