@@ -335,6 +335,16 @@ detrend <- function(data, slopes, id = NULL, intercept = TRUE,
 
 
 
+#############################
+#### Weighted mean by id ####
+#############################
+
+
+ave_wm <- function(x, i, w, na.rm = TRUE){
+  Z <- data.frame(x, i, w)
+  res <- ave(Z[, c(1, 3)], Z[, 2], FUN = function(v) weighted.mean(v[, 1], w = v[, 2], na.rm = na.rm))[[1]]
+  return(res)
+}
 
 
 ############################

@@ -67,7 +67,8 @@
 #' \item{modelhat}{a constructed model frame as a \code{data.frame} containing the predicted
 #'   values from the first stage regression using the slope variable(s) as predictor(s).}
 #' \item{modeltrans}{a constructed model frame as a \code{data.frame} containing the "detrended"
-#'   variables used for the final model estimation and the untransformed slope variables.}
+#'   variables used for the final model estimation.
+#'   Note that the weights are already used for detrending if specified.}
 #' \item{response}{the vector of the "detrended" response variable.}
 #' \item{fitted.values}{the vector of fitted values (computed from the "detrended" data).}
 #' \item{id}{a vector containing the unique person identifier.}
