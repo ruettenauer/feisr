@@ -111,6 +111,9 @@ feis <- function(formula, data, id, weights = NULL, robust = FALSE, intercept = 
   orig_rownames <- row.names(data)
 
   # Extract id
+  if(!id %in% colnames(data)){
+    stop(paste0("ID variable not found in data."))
+  }
   i <- data[, which(colnames(data) == id)]
 
   # eval the model.frame
@@ -165,11 +168,13 @@ feis <- function(formula, data, id, weights = NULL, robust = FALSE, intercept = 
 
   }
 
+
   # Check for collinearity in slopes and within variance in slopes (to avoid computationally singular)
   if(ns != 0){
     X1_test <- model.matrix(formula, data, rhs = 2, lhs = 0, cstcovar.rm = "all")
     X1_test_dm <- X1_test[, -1, drop = FALSE] - apply(X1_test[, -1, drop = FALSE], 2,
                                                       FUN = function(u) ave(u, i, FUN = function(z) mean(z)))
+
 
     if(qr(X1_test_dm, tol = tol)$rank < ncol(X1_test_dm)){
       stop(paste("Perfect collinearity in slope variables. See 'tol' option"))
@@ -232,10 +237,35 @@ feis <- function(formula, data, id, weights = NULL, robust = FALSE, intercept = 
 
   df_step1 <- cbind(X1, Y1, w)
 
-  dhat <- by(df_step1, i, FUN = function(u) data.frame(hatm(y = u[, (nx + 1):(nx + ny), drop = FALSE],
-                                                            x = u[, 1:nx, drop = FALSE],
-                                                            weights = u[, (nx + ny + 1)],
-                                               checkcol = !dropgroups, tol = tol, isw = isw)), simplify = FALSE)
+  # # Set up multisession
+  # if(parallel == TRUE){
+  #   suppressWarnings({pc1 <- require("future"); pc2 <- require("future.apply")})
+  #   if(!pc1 | !pc2){
+  #     stop(paste("Parallel computing requires packages future and future.apply."))
+  #   }
+  #   if(is.null(workers)){
+  #     workers <- future::availableCores(logical = FALSE)/2
+  #   }
+  #   future::plan(multisession, workers = workers)
+  # }
+  # if(parallel == TRUE){
+  #   dhat <- future.apply::future_by(df_step1, i, FUN = function(u)
+  #     data.frame(hatm(y = u[, (nx + 1):(nx + ny), drop = FALSE],
+  #                     x = u[, 1:nx, drop = FALSE],
+  #                     weights = u[, (nx + ny + 1)],
+  #                     checkcol = !dropgroups, tol = tol, isw = isw)),
+  #     simplify = FALSE)
+  #
+  # }
+
+  # Make hat matrix
+  dhat <- by(df_step1, i, FUN = function(u)
+    data.frame(hatm(y = u[, (nx + 1):(nx + ny), drop = FALSE],
+                    x = u[, 1:nx, drop = FALSE],
+                    weights = u[, (nx + ny + 1)],
+                    checkcol = !dropgroups, tol = tol, isw = isw)),
+    simplify = FALSE)
+
 
   if(utils::packageVersion("dplyr") >= "1.0.0"){
     dhat <- dplyr::bind_rows(rbind(dhat), .id = NULL) # only for version dplyr >= 1.0.0 keeps rownames
