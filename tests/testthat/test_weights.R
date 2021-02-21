@@ -63,18 +63,12 @@ wages.fe5 <- plm(lnw ~ marry + enrol + yeduc + exp,
                  data = mwp, index = c("id", "year"),
                  effect = "individual", model = "within")
 
-# wages.feols5 <- fixest::feols(lnw ~ marry + enrol + yeduc + exp | id,
-#                  data = mwp, se = "standard")
-
 wages.feis6 <- feis(lnw ~ marry + enrol + yeduc + exp | 1,
                     data = mwp, id = "id", weights = mwp$wts)
 
 wages.fe6 <- plm(lnw ~ marry + enrol + yeduc + exp,
                  data = mwp, index = c("id", "year"), weights = mwp$wts,
                  effect = "individual", model = "within")
-
-# wages.feols6 <- fixest::feols(lnw ~ marry + enrol + yeduc + exp | id,
-#                             data = mwp, weights = mwp$wts, se = "standard")
 
 
 ### Check results plm against feis with intercept only

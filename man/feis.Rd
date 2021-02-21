@@ -145,5 +145,5 @@ summary(feis.mod)
 }
 \seealso{
 \code{\link[feisr]{summary.feis}}, \code{\link[plm]{plm}}, \code{\link[plm]{pvcm}},
-\code{\link[plm]{pmg}}, \code{\link[feisr]{feistest}}, \code{\link[fixest]{feols}}
+\code{\link[plm]{pmg}}, \code{\link[feisr]{feistest}}
 }

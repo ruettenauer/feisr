@@ -4,7 +4,7 @@
 
 - Rank deficit columns / NA coefs are now dropped from the model (with warning message)
 
-- Bug fix: Omit intercept from transformed if intercept = TRUE
+- Bug fix: Omit intercept from transformed data if intercept = TRUE
 
 - Corrected test R:44:1 for ATLAS: Provided "default" tol value
 
