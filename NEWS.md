@@ -1,5 +1,7 @@
 ### feisr 1.2.0
 
+- Allows estimation of conventional FE models by 'y ~ x | 1'
+
 - Rank deficit columns / NA coefs are now dropped from the model (with warning message)
 
 - Bug fix: Omit intercept from transformed if intercept = TRUE

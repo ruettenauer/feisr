@@ -45,7 +45,11 @@ coef.feis <- function(object,...){
 sigma.feis <- function(object,...){
   u <- resid(object)
   nna <- which(!is.na(u))
-  sqrt(sum(u[nna]^2) / df.residual(object))
+  w <- object$weights
+  if(length(w) > 1){
+    w <- w[nna]
+  }
+  sqrt(sum(w * u[nna]^2) / df.residual(object))
 }
 
 

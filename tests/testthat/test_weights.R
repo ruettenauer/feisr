@@ -2,7 +2,7 @@
 #### Compare Results to Stata ado xtfeis (V. Ludwig) ####
 #########################################################
 context("Test weighted estimation")
-
+library(plm)
 data("mwp", package = "feisr")
 
 
@@ -51,6 +51,41 @@ test_that("weighted results = lsdv results with weights", {
   expect_equal(vcov(wages.feis2, scale = TRUE), vcov(wages.lsdv2, scale = TRUE)[2:4, 2:4], tolerance = 1e-10)
   expect_equal(wages.feis3$coefficients, wages.lsdv3$coefficients[2:4], tolerance = 1e-10)
   expect_equal(vcov(wages.feis3, scale = TRUE), vcov(wages.lsdv3, scale = TRUE)[2:4, 2:4], tolerance = 1e-10)
+})
+
+
+
+### Check results for conventional FE
+wages.feis5 <- feis(lnw ~ marry + enrol + yeduc + exp | 1,
+                    data = mwp, id = "id")
+
+wages.fe5 <- plm(lnw ~ marry + enrol + yeduc + exp,
+                 data = mwp, index = c("id", "year"),
+                 effect = "individual", model = "within")
+
+# wages.feols5 <- fixest::feols(lnw ~ marry + enrol + yeduc + exp | id,
+#                  data = mwp, se = "standard")
+
+wages.feis6 <- feis(lnw ~ marry + enrol + yeduc + exp | 1,
+                    data = mwp, id = "id", weights = mwp$wts)
+
+wages.fe6 <- plm(lnw ~ marry + enrol + yeduc + exp,
+                 data = mwp, index = c("id", "year"), weights = mwp$wts,
+                 effect = "individual", model = "within")
+
+# wages.feols6 <- fixest::feols(lnw ~ marry + enrol + yeduc + exp | id,
+#                             data = mwp, weights = mwp$wts, se = "standard")
+
+
+### Check results plm against feis with intercept only
+test_that("FEIS intercept only = plm results", {
+  expect_equal(wages.feis5$coefficients, wages.fe5$coefficients, tolerance = 1e-10)
+  expect_equal(vcov(wages.feis5, scale = TRUE), vcov(wages.fe5, scale = TRUE), tolerance = 1e-10)
+})
+
+test_that("FEIS weighted intercept only = plm weighted results", {
+  expect_equal(wages.feis6$coefficients, wages.fe6$coefficients, tolerance = 0.001)
+  expect_equal(vcov(wages.feis6, scale = TRUE), vcov(wages.fe6, scale = TRUE), tolerance = 0.001)
 })
 
 

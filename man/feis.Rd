@@ -123,9 +123,9 @@ the model can be estimated with:
 \itemize{
   \item \code{formula = y ~ x1 + x2 | x3 + x4}
 }
-If the second part is not specified (and individual "slopes" are estimated only by an intercept),
-the model reduces to a conventional fixed effects (within) model. In this case please use
-the well-established \code{\link[plm]{plm}} (\code{model="within"}) function instead of \code{feis}.
+
+To estimate a conventional fixed effects model without individual slopes, please use
+\code{y ~ x1 + x2 | 1} to indicate that the slopes should only contain an individual-specific intercept.
 
 If specified, \code{feis} estimates panel-robust standard errors. Panel-robust standard errors are
 robust to arbitrary forms of serial correlation within groups formed by \code{id} as well as

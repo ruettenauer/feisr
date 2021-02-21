@@ -28,9 +28,9 @@
 #' \itemize{
 #'   \item \code{formula = y ~ x1 + x2 | x3 + x4}
 #' }
-#' If the second part is not specified (and individual "slopes" are estimated only by an intercept),
-#' the model reduces to a conventional fixed effects (within) model. In this case please use
-#' the well-established \code{\link[plm]{plm}} (\code{model="within"}) function instead of \code{feis}.
+#'
+#' To estimate a conventional fixed effects model without individual slopes, please use
+#' \code{y ~ x1 + x2 | 1} to indicate that the slopes should only contain an individual-specific intercept.
 #'
 #' If specified, \code{feis} estimates panel-robust standard errors. Panel-robust standard errors are
 #' robust to arbitrary forms of serial correlation within groups formed by \code{id} as well as
@@ -117,7 +117,8 @@ feis <- function(formula, data, id, weights = NULL, robust = FALSE, intercept = 
   if (length(formula)[2] == 2){
     formula  <-  expand.formula(formula)
   }else{
-    stop(paste("No individual slopes specified. Please use plm"))
+    stop(paste("No individual slopes specified.
+               For conventional FE please use 'y ~ x | 1' explicitly."))
   }
   if (! plm::has.intercept(formula)[2]){
     stop(paste("Individual slopes have to be estimated with intercept"))
@@ -144,7 +145,12 @@ feis <- function(formula, data, id, weights = NULL, robust = FALSE, intercept = 
   i <- i[as.numeric(row.names(data))]
 
   # Subset to obs with N > n_slopes+1
-  ns <- ncol(attr(terms(formula(formula, rhs = 2, lhs = 0)), "factors"))
+  if(length(formula(formula, rhs = 2, lhs = 0)) == 2 &&
+     as.character(formula(formula, rhs = 2, lhs = 0))[2] == "1"){
+    ns <- 0
+  }else{
+    ns <- ncol(attr(terms(formula(formula, rhs = 2, lhs = 0)), "factors"))
+  }
   pcount <- ave(c(1:length(i)), i, FUN = function(x) length(x))
 
   if(any(pcount <= (ns + 1))){
@@ -160,27 +166,29 @@ feis <- function(formula, data, id, weights = NULL, robust = FALSE, intercept = 
   }
 
   # Check for collinearity in slopes and within variance in slopes (to avoid computationally singular)
-  X1_test <- model.matrix(formula, data, rhs = 2, lhs = 0, cstcovar.rm = "all")
-  X1_test_dm <- X1_test[, -1, drop = FALSE] - apply(X1_test[, -1, drop = FALSE], 2,
-                                               FUN = function(u) ave(u, i, FUN = function(z) mean(z)))
+  if(ns != 0){
+    X1_test <- model.matrix(formula, data, rhs = 2, lhs = 0, cstcovar.rm = "all")
+    X1_test_dm <- X1_test[, -1, drop = FALSE] - apply(X1_test[, -1, drop = FALSE], 2,
+                                                      FUN = function(u) ave(u, i, FUN = function(z) mean(z)))
 
-  if(qr(X1_test_dm, tol = tol)$rank < ncol(X1_test_dm)){
-    stop(paste("Perfect collinearity in slope variables. See 'tol' option"))
-  }
+    if(qr(X1_test_dm, tol = tol)$rank < ncol(X1_test_dm)){
+      stop(paste("Perfect collinearity in slope variables. See 'tol' option"))
+    }
 
-  # Check within variance
-  wvar <- apply(X1_test[, -1, drop = FALSE], 2, FUN = function(u) ave(u, i, FUN = function(z) sd(z)))
-  novar <- apply(wvar, 1, FUN = function(u) any(u == 0))
+    # Check within variance
+    wvar <- apply(X1_test[, -1, drop = FALSE], 2, FUN = function(u) ave(u, i, FUN = function(z) sd(z)))
+    novar <- apply(wvar, 1, FUN = function(u) any(u == 0))
 
-  if(any(novar) & dropgroups == TRUE){
-    nom <- length(unique(i[which(novar)]))
-    warning(paste(nom, "groups without any within variance on slope variable(s) dropped"),
-            call. = TRUE, immediate. = TRUE)
+    if(any(novar) & dropgroups == TRUE){
+      nom <- length(unique(i[which(novar)]))
+      warning(paste(nom, "groups without any within variance on slope variable(s) dropped"),
+              call. = TRUE, immediate. = TRUE)
 
-    # Reduce sample
-    data <- data[-which(novar), ]
-    i <- i[-which(novar)]
+      # Reduce sample
+      data <- data[-which(novar), ]
+      i <- i[-which(novar)]
 
+    }
   }
 
 

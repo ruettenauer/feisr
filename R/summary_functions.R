@@ -77,7 +77,7 @@ summary.feis <- function(object, vcov = NULL, ...){
 
   object$r.squared <- c(rsq  = object$r2,
                         adjrsq = object$adj.r2)
-
+  object$weights <- object$weights
 
   # construct the table of coefficients
   std.err <- sqrt(diag(vcov))
@@ -475,7 +475,7 @@ extract.feis <- function(model, include.rsquared = TRUE, include.adjrs = TRUE,
     gof.decimal <- c(gof.decimal, FALSE)
   }
   if (include.rmse == TRUE) {
-    rmse <- sqrt(sum((model$residuals * model$residuals)) / model$df.residual)
+    rmse <- rmse.feis(model)
     gof <- c(gof, rmse)
     gof.names <- c(gof.names, "RMSE")
     gof.decimal <- c(gof.decimal, TRUE)

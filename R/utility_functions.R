@@ -434,7 +434,13 @@ model.response.feis <- function(x, ...){
 sumres <- function(x, ...){
   u <- resid(x)
   nna <- which(!is.na(u))
-  sr <- summary(unclass(u[nna]))
+  w <- x$weights
+  if(length(w) > 1){
+    sr <- summary(unclass(w[nna] * u[nna]))
+  }else{
+    sr <- summary(unclass(u[nna]))
+  }
+
   srm <- sr["Mean"]
   if (abs(srm) < 1e-10){
     sr <- sr[c(1:3, 5:6)]
@@ -445,7 +451,14 @@ sumres <- function(x, ...){
 rss.feis <- function(x, ...){
   u <- resid(x)
   nna <- which(!is.na(u))
-  rss <- sum(u[nna]^2)
+  w <- x$weights
+  if(length(w) > 1){
+    w <- w[nna]
+  }else if(is.null(w)){
+    w <- 1
+  }
+  rss <- sum(w * u[nna]^2)
+  return(rss)
 }
 
 
@@ -456,7 +469,31 @@ rss.feis <- function(x, ...){
 tss.feis <- function(x, ...){
   u <- resid(x)
   nna <- which(!is.na(u))
-  var(model.response.feis(x)[nna]) * (length(model.response.feis(x)[nna]) - 1)
+  y <- model.response.feis(x)[nna]
+  N <- length(y)
+  w <- x$weights
+  if(length(w) > 1){
+    w <- w[nna]
+  }
+  tss <- sum(w * (y - mean(y))^2)
+  return(tss)
+}
+
+
+##############
+#### RMSE ####
+##############
+
+rmse.feis <- function(x, ...){
+  u <- resid(x)
+  df <- df.residual(x)
+  nna <- which(!is.na(u))
+  w <- x$weights
+  if(length(w) > 1){
+    w <- w[nna]
+  }
+  rmse <- sqrt(sum(w * u[nna]^2) / df)
+  return(rmse)
 }
 
 
@@ -470,7 +507,7 @@ r.sq.feis <- function(object, adj=FALSE, df=NULL, intercept=FALSE){
   nna <- which(!is.na(r))
   r <- r[nna]
   n <- length(r)
-  rss <- sum(r^2)
+  rss <- rss.feis(object)
   f <- z$fitted.values[nna]
   if(is.null(df)){
     rdf <- z$df.residual
@@ -478,12 +515,19 @@ r.sq.feis <- function(object, adj=FALSE, df=NULL, intercept=FALSE){
     rdf <- df
   }
 
+  w <- object$weights
+  if(length(w) > 1){
+    w <- w[nna]
+  }else if(is.null(w)){
+    w <- 1
+  }
+
   if(intercept == TRUE){
-    mss <- sum((f - mean(f))^2)
+    mss <- sum(w * (f - mean(f))^2)
     df.int <- 1L
     rdf <- rdf + 1
   } else{
-    mss <- sum(f^2)
+    mss <- sum(w * f^2)
     df.int <- 0L
   }
   r.squared <- mss/(mss + rss)
