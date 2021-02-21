@@ -1,5 +1,7 @@
 ### feisr 1.2.0
 
+- `feis()` now has option `weights` to estimate FEIS models with weighted least squares
+
 - Allows estimation of conventional FE models by 'y ~ x | 1'
 
 - Rank deficit columns / NA coefs are now dropped from the model (with warning message)
