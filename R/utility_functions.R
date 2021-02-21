@@ -1,4 +1,4 @@
-#' @importFrom stats complete.cases
+#' @importFrom stats complete.cases weighted.mean
 
 
 ###################################

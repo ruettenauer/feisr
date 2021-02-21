@@ -433,9 +433,6 @@ bsfeistest <- function(model = NA, type = c("all", "bs1", "bs2", "bs3"),
   formula  <- model$formula
   data <- model$model
   i <- model$id
-  N <- length(i)
-  ids <- unique(i)
-  n <- length(ids)
   nc <- length(model$coefficients)
   ns <- length(model$slopevars)
   cl <- model$call
@@ -466,8 +463,6 @@ bsfeistest <- function(model = NA, type = c("all", "bs1", "bs2", "bs3"),
   S <- S[, -1, drop = FALSE]
   colnames(S) <- cleani(colnames(S))
 
-
-
   # Check for and drop NA coef columns
   if(any(is.na(model$coefficients))){
     drop <- which(is.na(model$coefficients))
@@ -475,15 +470,39 @@ bsfeistest <- function(model = NA, type = c("all", "bs1", "bs2", "bs3"),
     X <- X[, -drop, drop = FALSE]
   }
 
-  # Combine (with fake year)
-  i2 <- ave(1:length(i), i, FUN = function(u) seq_along(u))
-  df <- data.frame(id = i, id2 = i2, Y, X, S)
-
   # Get weights
   w <- model$weights
   if(all(w == 1)){
-    w <- NULL
+    w <- 1
+    isw <- FALSE
+  }else {
+    isw <- TRUE
   }
+
+  # If weights, pre-weight data
+  X <- X * sqrt(w)
+  S <- S * sqrt(w)
+  Y <- Y * sqrt(w)
+
+  # Drop zero weights
+  if(isw){
+    zerow <- which(w == 0)
+    if(length(zerow) > 0){
+      oonz <- which(w != 0)
+    }else{
+      oonz <- 1:nrow(X)
+    }
+  }else{
+    oonz <- 1:nrow(X)
+  }
+
+  # Combine (with fake year)
+  i2 <- ave(1:length(i), i, FUN = function(u) seq_along(u))
+  df <- data.frame(id = i, id2 = i2, Y, X, S)[oonz, ]
+  ids <- unique(df$id)
+  i <- df$id
+  N <- length(i)
+  n <- length(ids)
 
 
   ### Set up formulas
@@ -502,7 +521,7 @@ bsfeistest <- function(model = NA, type = c("all", "bs1", "bs2", "bs3"),
 
   # FE
   if(!type == "bs3"){
-    fe.mod <- plm::plm(fm.fe, data = df, index = c("id", "id2"), weights = w,
+    fe.mod <- plm::plm(fm.fe, data = df, index = c("id", "id2"),
                        effect = "individual", model = "within")
 
     coef.fe <- fe.mod$coefficients
@@ -510,14 +529,14 @@ bsfeistest <- function(model = NA, type = c("all", "bs1", "bs2", "bs3"),
 
   # FEIS
   if(!type == "bs2"){
-    feis.mod <- feis(fm.feis, data = df, id = "id", weights = w, tol = tol)
+    feis.mod <- feis(fm.feis, data = df, id = "id",  tol = tol)
 
     coef.feis <- feis.mod$coefficients
   } else {coef.feis <- NA}
 
   # RE
   if(!type=="bs1"){
-    re.mod <- plm::plm(fm.fe, data = df, index = c("id", "id2"), weights = w,
+    re.mod <- plm::plm(fm.fe, data = df, index = c("id", "id2"),
                        effect = "individual", model = "random")
 
     coef.re <- re.mod$coefficients
@@ -537,8 +556,7 @@ bsfeistest <- function(model = NA, type = c("all", "bs1", "bs2", "bs3"),
   mat.coef.re <- matrix(NA, nrow = rep, ncol = (ncol(X) + ncol(S)))
 
   colnames(mat.coef.feis) <- colnames(X)
-  colnames(mat.coef.fe) <- colnames(mat.coef.re) <-
-    c(colnames(X), colnames(S))
+  colnames(mat.coef.fe) <- colnames(mat.coef.re) <- c(colnames(X), colnames(S))
 
   # Sample id list
   sample <- list()
@@ -573,7 +591,7 @@ bsfeistest <- function(model = NA, type = c("all", "bs1", "bs2", "bs3"),
 
     # FE
     if(!type=="bs3"){
-      tmp.fe <- plm::plm(fm.fe, data = df.tmp, index = c("sid", "id2"), weights = w.tmp,
+      tmp.fe <- plm::plm(fm.fe, data = df.tmp, index = c("sid", "id2"),
                          effect = "individual", model = "within")
 
       mat.coef.fe[j, ] <- t(tmp.fe$coefficients)
@@ -581,14 +599,14 @@ bsfeistest <- function(model = NA, type = c("all", "bs1", "bs2", "bs3"),
 
     # FEIS
     if(!type=="bs2"){
-      tmp.feis <- feis(fm.feis, data = df.tmp, id = "sid", weights = w.tmp, tol = tol)
+      tmp.feis <- feis(fm.feis, data = df.tmp, id = "sid", tol = tol)
 
       mat.coef.feis[j, ] <- t(tmp.feis$coefficients)
     }
 
     # RE
     if(!type=="bs1"){
-      tmp.re <- plm::plm(fm.fe, data = df.tmp, index = c("sid", "id2"), weights = w.tmp,
+      tmp.re <- plm::plm(fm.fe, data = df.tmp, index = c("sid", "id2"),
                          effect = "individual", model = "random")
 
       if(any(names(tmp.re$coefficients) == "(Intercept)")){

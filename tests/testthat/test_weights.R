@@ -56,24 +56,30 @@ test_that("weighted results = lsdv results with weights", {
 
 
 
-### Check test results
+### Check ART and BSHT test results
 
 wages.art1 <- feistest(wages.feis)
 wages.art2 <- feistest(wages.feis2)
 
-
-
-wages.bsht2 <- bsfeistest(wages.feis2, type = "bs1", rep = 10, seed = 123, prog = FALSE)
 wages.bsht1 <- bsfeistest(wages.feis, type = "bs1", rep = 10, seed = 123, prog = FALSE)
+wages.bsht2 <- bsfeistest(wages.feis2, type = "bs1", rep = 10, seed = 123, prog = FALSE)
 
 
-test_that("ART and BSHT CREIS with weights = weighted model", {
+test_that("ART CREIS with weights = weighted model", {
   expect_equal(wages.art2$CREIS$coefficients[2:4], wages.feis2$coefficients, tolerance = 1e-10)
   expect_equal(wages.art2$CREIS$coefficients, wages.art1$CREIS$coefficients, tolerance = 1e-10)
   expect_equal(wages.art2$wald_feis$result$chi2, wages.art1$wald_feis$result$chi2, tolerance = 1e-10)
-  # expect_equal(wages.bsht1$wald_feis$result$chi2, wages.bsht2$wald_feis$result$chi2, tolerance = 1e-5)
 })
 
+test_that("BSHT same sample for subset and weights", {
+  expect_equal(wages.bsht2$samples, wages.bsht1$samples, tolerance = 1e-10)
+})
 
+test_that("BSHT CREIS with weights = weighted model", {
+  expect_equal(wages.bsht2$wald_feis, wages.bsht1$wald_feis, tolerance = 1e-10)
+  expect_equal(wages.bsht2$bscoef.feis, wages.bsht1$bscoef.feis, tolerance = 1e-10)
+  expect_equal(wages.bsht2$bscoef.fe, wages.bsht1$bscoef.fe, tolerance = 1e-10)
+
+})
 
 
