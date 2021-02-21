@@ -469,11 +469,14 @@ rss.feis <- function(x, ...){
 tss.feis <- function(x, ...){
   u <- resid(x)
   nna <- which(!is.na(u))
-  y <- model.response.feis(x)[nna]
+  f <- fitted(x)[nna]
+  y <- f - u
   N <- length(y)
   w <- x$weights
   if(length(w) > 1){
     w <- w[nna]
+  }else if(is.null(w)){
+    w <- 1
   }
   tss <- sum(w * (y - mean(y))^2)
   return(tss)
@@ -507,10 +510,10 @@ r.sq.feis <- function(object, adj=FALSE, df=NULL, intercept=FALSE){
   nna <- which(!is.na(r))
   r <- r[nna]
   n <- length(r)
-  rss <- rss.feis(object)
+  tss <- tss.feis(object)
   f <- z$fitted.values[nna]
   if(is.null(df)){
-    rdf <- z$df.residual
+    rdf <- df.residual(object)
   } else{
     rdf <- df
   }
@@ -530,8 +533,8 @@ r.sq.feis <- function(object, adj=FALSE, df=NULL, intercept=FALSE){
     mss <- sum(w * f^2)
     df.int <- 0L
   }
-  r.squared <- mss/(mss + rss)
-  adj.r.squared <- 1 - (1 - r.squared) * ((n - df.int)/rdf) ##TR: Correct for slope parameters??
+  r.squared <- mss/tss
+  adj.r.squared <- 1 - (1 - r.squared) * ((n - df.int)/rdf)
 
   if(adj){
     return(adj.r.squared)

@@ -372,6 +372,9 @@ feis <- function(formula, data, id, weights = NULL, robust = FALSE, intercept = 
   # Extract Rsquared
   r.squared <- r.sq.feis(result, adj = FALSE, intercept = intercept)
   adj.r.squared <- r.sq.feis(result, adj = TRUE, intercept = intercept)
+  # One could also pass the overall dfs, but: tss and mss are net of FE and slopes,
+  # do we need need FEs and slopes in df correction for within R2 then?
+  # adj.r.squared <- r.sq.feis(result, adj = TRUE, df = df, intercept = intercept)
 
   # Fitted values (similar fitted values as plm for FE)
   fitted <- result$fitted.values
