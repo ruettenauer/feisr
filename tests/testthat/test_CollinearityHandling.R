@@ -42,7 +42,7 @@ test_that("Drop (within-) constant vars (Wages)", {
 # Handling of perfectly collinear slopes (error message)
 # Make test QR rank specific (for handling chcks with alternative BLAS)
 devtolwin <- 2.220446e-22
-Xm <- detrend(Wages[, c("year", "exp")], 1, Wages$id)
+Xm <- feisr::detrend(data = Wages[, c("year", "exp")], slopes = 1, id = Wages$id)
 rank <- qr(as.matrix(Xm), tol = devtolwin)$rank
 test_that("Avoid collinearity by default tol value", {
   if(rank == 2){

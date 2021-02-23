@@ -114,7 +114,7 @@ hatm <- function(y, x, weights = NULL, checkcol = TRUE, tol = .Machine$double.ep
 #'  \code{slopes} as variable(s). Otherwise must be excluded.
 #' @param slopes a \code{data.frame}, \code{matrix}, or \code{vector} of slopes to be used for detrending,
 #'  not containing an intercept. Optionally, a \code{character} vector of the names of slope variables
-#'  in \code{data}. For pure de-meaning please use "slopes = 1".
+#'  in \code{data}. For pure de-meaning use \code{"slopes = 1"}.
 #' @param id a \code{vector} of a unique group / person identifier. Optionally, a \code{character}
 #'  of the name of the unique group / person identifier in \code{data}. For overall detrending,
 #'  use \code{"id = 1"}.
@@ -254,7 +254,7 @@ detrend <- function(data, slopes, id = NULL, intercept = TRUE,
 
   Z <- model.matrix(fmz, slopes)
   # instead of update fm -1 use [,-1] (to avoid contrasts for intercept)
-  if(intercept == FALSE && slopes != 1){
+  if(intercept == FALSE && !dem){
     Z <- Z[, -1, drop = FALSE]
   }
 

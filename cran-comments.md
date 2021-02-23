@@ -1,3 +1,8 @@
+This is a re-submission
+
+The test failing on ATLAS now runs conditional on QR results, which should resolve the issue.
+However, as this is a BLAS specific issue, I cannot check if it is resolved on environments available to me.
+
 ## Submission feisr v.1.2.0
 This is anew version v.1.2.0 of feisr.
 
