@@ -41,24 +41,24 @@ test_that("Drop (within-) constant vars (Wages)", {
 
 # Handling of perfectly collinear slopes (error message)
 # Make test QR rank specific (for handling chcks with alternative BLAS)
-# devtolwin <- 2.220446e-4
-# Xm <- apply(Wages[, c("year", "exp")], 2, function(x), ave(x, ))
-# rank <- qr(as.matrix(), tol = devtolwin)$rank
-# test_that("Avoid collinearity by default tol value", {
-#   if(rank == 2){
-#     expect_warning(feis(lwage ~ ed + sex + bluecol + ind + smsa +  married + wks | year + exp,
-#                         data = Wages, id = "id", robust = F, tol = devtolwin))
-#   }
-#   if(rank < 2){
-#     expect_error(feis(lwage ~ ed + sex + bluecol + ind + smsa +  married + wks | year + exp,
-#                         data = Wages, id = "id", robust = F, tol = devtolwin))
-#   }
-# })
-#
-# test_that("Stop if slopes perfectly collinear", {
-#   expect_error(feis(lwage ~ ed + sex + bluecol + ind + smsa +  married + wks | year + exp,
-#                       data = Wages, id = "id", robust = F, tol = 1e-04))
-# })
+devtolwin <- 2.220446e-22
+Xm <- detrend(Wages[, c("year", "exp")], 1, Wages$id)
+rank <- qr(as.matrix(Xm), tol = devtolwin)$rank
+test_that("Avoid collinearity by default tol value", {
+  if(rank == 2){
+    expect_warning(feis(lwage ~ ed + sex + bluecol + ind + smsa +  married + wks | year + exp,
+                        data = Wages, id = "id", robust = F, tol = devtolwin))
+  }
+  if(rank < 2){
+    expect_error(feis(lwage ~ ed + sex + bluecol + ind + smsa +  married + wks | year + exp,
+                        data = Wages, id = "id", robust = F, tol = devtolwin))
+  }
+})
+
+test_that("Stop if slopes perfectly collinear", {
+  expect_error(feis(lwage ~ ed + sex + bluecol + ind + smsa +  married + wks | year + exp,
+                      data = Wages, id = "id", robust = F, tol = 1e-04))
+})
 
 
 # Handling of (within-) constant slopes

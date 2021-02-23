@@ -21,14 +21,15 @@ and / or \code{slopes} are given as character (see below), must contain \code{id
 
 \item{slopes}{a \code{data.frame}, \code{matrix}, or \code{vector} of slopes to be used for detrending,
 not containing an intercept. Optionally, a \code{character} vector of the names of slope variables
-in \code{data}.}
+in \code{data}. For pure de-meaning please use "slopes = 1".}
 
 \item{id}{a \code{vector} of a unique group / person identifier. Optionally, a \code{character}
 of the name of the unique group / person identifier in \code{data}. For overall detrending,
 use \code{"id = 1"}.}
 
-\item{intercept}{logical. If \code{TRUE} the slopes will contain and an individual
-intercept (default is \code{TRUE}). For \code{"id = 1"}, this is an overall intercept.}
+\item{intercept}{logical. If \code{TRUE} the slopes will contain an individual
+intercept (default is \code{TRUE}). For \code{"id = 1"}, this is an overall intercept.
+Ignored if "slopes = 1".}
 
 \item{na.action}{character, either \code{na.exclude} (default) or \code{na.omit} indicates the use
 of \code{NA}s. \code{na.exclude} passes \code{NA}s through to the output (same length as input).

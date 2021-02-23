@@ -12,6 +12,8 @@
 
 ### Minor Changes
 
+- `detrend()` allows demeaning by 'slopes = 1'
+
 - Minor documentation and vignette updates
 
 - Omit test R:44:1 for ATLAS as tol seems to be ignored on ATLAS BLAS
