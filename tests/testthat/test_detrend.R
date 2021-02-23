@@ -106,8 +106,6 @@ test_that("Overall detrend = X - fitted lm", {
 
 
 
-
-
 ### Check errors
 test_that("NA returned in detrend", {
   expect_error(detrend(mwp[, c("lnw", "enrol")], mwp$exp, mwp$id[1:100]))
@@ -119,3 +117,16 @@ test_that("NA returned in detrend", {
 
 
 
+### Check demeaning
+dem_id1 <- detrend(mwp[, c("lnw", "marry")], 1, mwp$id)
+dem_id2 <- data.frame(apply(mwp[, c("lnw", "marry")], 2,
+                      FUN = function(x) x - ave(x, mwp$id,
+                      FUN = function(z) mean(z, na.rm = TRUE))))
+
+dem_ov1 <- detrend(mwp[, c("lnw", "marry")], 1, 1)
+dem_ov2 <- data.frame(apply(mwp[, c("lnw", "marry")], 2, FUN = function(x) x - mean(x, na.rm = TRUE)))
+
+test_that("De-meaning (only consant in slopes)", {
+  expect_equal(complete.cases(dem_id1), complete.cases(dem_id2), tolerance = .000001, check.names = FALSE)
+  expect_equal(complete.cases(dem_ov1), complete.cases(dem_ov2), tolerance = .000001, check.names = FALSE)
+})

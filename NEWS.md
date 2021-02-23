@@ -14,7 +14,7 @@
 
 - Minor documentation and vignette updates
 
-- Omit test R:44:1 for ATLAS as tol seems to be ignore on ATLAS BLAS
+- Omit test R:44:1 for ATLAS as tol seems to be ignored on ATLAS BLAS
 
 ### feisr 1.1.4
 
