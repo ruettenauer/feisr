@@ -1,4 +1,6 @@
-### feisr 1.2.0
+# feisr 1.2.0
+
+### Major Changes
 
 - `feis()` now has option `weights` to estimate FEIS models with weighted least squares
 
@@ -8,9 +10,11 @@
 
 - Bug fix: Omit intercept from transformed data if intercept = TRUE
 
-- Corrected test R:44:1 for ATLAS: Provided "default" tol value
+### Minor Changes
 
 - Minor documentation and vignette updates
+
+- Omit test R:44:1 for ATLAS as tol seems to be ignore on ATLAS BLAS
 
 ### feisr 1.1.4
 

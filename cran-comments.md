@@ -1,16 +1,13 @@
-Re-Submission: Changed links (dropped broken cranlog link)
-Thanks for checking!
+## Submission feisr v.1.2.0
+This is anew version v.1.2.0 of feisr.
 
-## Submission feisr v.1.1.4
-v 1.1.4 fixes (yet another, sorry for that!) bug in the previous release.
-
-Thank you very much and best wishes, 
+Thank you very much for checking and best wishes, 
 Tobias
 
 ## Test environments
-* local: WIN10 64Bit, R 3.6.3, R 4.0.3, devel
+* local: WIN10 64Bit, R 3.6.3, R 4.0.4, devel
 * Travis-CI: Ubuntu 16.04, R 3.6.3, R 4.0.2, devel
-* Travis-CI: Mac OS X 10.13.6, R 3.6.3, R 4.0.3
+* Travis-CI: Mac OS X 10.13.6, R 3.6.3, R 4.0.4
 
 ## R CMD check results
 
