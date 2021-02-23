@@ -16,7 +16,7 @@
 
 - Minor documentation and vignette updates
 
-- Omit test R:44:1 for ATLAS as tol seems to be ignored on ATLAS BLAS
+- Define collinearity test (R:44:1) dynamic based on QR rank on system
 
 ### feisr 1.1.4
 
