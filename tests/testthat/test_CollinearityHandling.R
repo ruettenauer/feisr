@@ -50,7 +50,7 @@ test_that("Avoid collinearity by default tol value", {
     expect_warning(feis(lwage ~ ed + sex + bluecol + ind + smsa +  married + wks | year + exp,
                         data = Wages, id = "id", robust = F, tol = devtolwin))
   }
-  if(rank < 2){
+  if(rank != 2){
     expect_error(feis(lwage ~ ed + sex + bluecol + ind + smsa +  married + wks | year + exp,
                         data = Wages, id = "id", robust = F, tol = devtolwin))
   }
