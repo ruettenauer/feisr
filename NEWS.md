@@ -1,3 +1,11 @@
+# feisr 1.2.1
+
+- Bug-fix `detrend()` for handling of vectors in `data` 
+
+- Bug-fix `detrend()` for character vectors of data length in `id` 
+
+- `predicted` option in `detrend()` returns predicted values
+
 # feisr 1.2.0
 
 ### Major Changes

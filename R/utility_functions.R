@@ -126,6 +126,8 @@ hatm <- function(y, x, weights = NULL, checkcol = TRUE, tol = .Machine$double.ep
 #'  \code{na.omit} drops \code{NA} rows (list-wise).
 #' @param tol	the tolerance for detecting linear dependencies in the residual maker transformation
 #' (see \code{\link[base]{solve}}).
+#' @param predicted logical. If \code{TRUE} returns the predicted values instead of the
+#' detrended data (default is \code{FALSE}).
 #' @param ...	further arguments.
 #'
 #' @return An object of class "\code{data.frame}" or "\code{numeric} (if only one data column),
@@ -148,7 +150,7 @@ hatm <- function(y, x, weights = NULL, checkcol = TRUE, tol = .Machine$double.ep
 #'
 detrend <- function(data, slopes, id = NULL, intercept = TRUE,
                     na.action = c("na.exlude", "na.omit"),
-                    tol = .Machine$double.eps, ...){
+                    tol = .Machine$double.eps, predicted = FALSE, ...){
 
   ### Test input
   if(! is.matrix(data) & ! is.data.frame(data) & ! is.vector(data) ){
@@ -184,7 +186,7 @@ detrend <- function(data, slopes, id = NULL, intercept = TRUE,
       }
     }
   }
-  if(is.character(id)){
+  if(is.character(id) && length(id) != ifelse(is.vector(data), length(data), nrow(data))){
     if(length(id) != 1){
       stop(paste("id must be character of dimension 1"))
     }
@@ -281,8 +283,8 @@ detrend <- function(data, slopes, id = NULL, intercept = TRUE,
     omitted <- sort(c(omitted, na))
     attr(omitted, "class") <- "omit"
 
-    X <- X[-nn, ]
-    Z <- Z[-nn, ]
+    X <- X[-nn, , drop = FALSE]
+    Z <- Z[-nn, , drop = FALSE]
     id <- id[-nn]
   }
 
@@ -316,8 +318,14 @@ detrend <- function(data, slopes, id = NULL, intercept = TRUE,
   # Ensure original order
   dhat <- dhat[match(rownames(X), rownames(dhat)), ]
 
-  # Detrend X
-  detr <- data.frame(X - dhat)
+  # Detrend X (or return predicted)
+  if(predicted == FALSE){
+    detr <- data.frame(X - dhat)
+  }
+  if(predicted == TRUE){
+    detr <- data.frame(dhat)
+    rownames(detr) <- rownames(X)
+  }
 
   ### Add NA rows for omitted
   if(na.action[1] == "na.omit"){

@@ -1,7 +1,6 @@
 This is a re-submission
 
-The test failing on ATLAS now runs conditional on QR results, which should resolve the issue.
-However, as this is a BLAS specific issue, I cannot check if it is resolved on environments available to me.
+Last attempt for the ATLAS check. If it fails again, I will drop the respective test. Sorry for this, and thanks a lot for the patience!
 
 Thanks a lot for checking and best wishes
 Tobias

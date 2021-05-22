@@ -11,6 +11,7 @@ detrend(
   intercept = TRUE,
   na.action = c("na.exlude", "na.omit"),
   tol = .Machine$double.eps,
+  predicted = FALSE,
   ...
 )
 }
@@ -37,6 +38,9 @@ of \code{NA}s. \code{na.exclude} passes \code{NA}s through to the output (same l
 
 \item{tol}{the tolerance for detecting linear dependencies in the residual maker transformation
 (see \code{\link[base]{solve}}).}
+
+\item{predicted}{logical. If \code{TRUE} returns the predicted values instead of the
+detrended data (default is \code{FALSE}).}
 
 \item{...}{further arguments.}
 }
