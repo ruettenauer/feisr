@@ -36,12 +36,12 @@ If not specified, the current seed is used.}
 }
 \value{
 An object of class "\code{feistest}", containing the following elements:
-\item{wald_feis}{an object of class "\code{wald.test}" (see \code{\link[aod]{wald.test}})
+\item{wald_feis}{an object of class "\code{wald.test}"
  testing the fixed effects individual slopes model against the conventional fixed effects
  model (\code{type="bs1"}).}
-\item{wald_fe}{an object of class "\code{wald.test}" (see \code{\link[aod]{wald.test}})
+\item{wald_fe}{an object of class "\code{wald.test}"
  testing the fixed effects model against the random effects model (\code{type="bs2"}).}
-\item{wald_re}{an object of class "\code{wald.test}" (see \code{\link[aod]{wald.test}})
+\item{wald_re}{an object of class "\code{wald.test}"
 testing the fixed effects individual slopes model against the random effects model
 (\code{type="bs3"}).}
 \item{vcov1}{the empirical (bootstrapped) variance-covariance matrix of the
@@ -77,7 +77,7 @@ fixed effects models against random effects models.
 \code{type="bs3"} estimates a bootstrapped Hausman directly comparing FEIS against RE, thereby testing
 for inconsistency of the RE model due to either heterogeneous slopes or time-constant omitted heterogeneity.
 Bootstrapping is perfomed by resampling with replacement while keeping the number of groups identical to
-the number of groups in the original dataset. \code{\link[aod]{wald.test}} is used to perform a Wald
+the number of groups in the original dataset. A wald test from aod package is used to perform a Wald
 chi-squared test on the differences between coefficients.
 }
 \examples{
@@ -96,5 +96,5 @@ summary(bsht)
 \seealso{
 \code{\link[feisr]{summary.feistest}}, \code{\link[feisr]{feistest}},
 \code{\link[feisr]{feis}},  \code{\link[plm]{plm}},
-\code{\link[aod]{wald.test}}, \code{\link[plm]{phtest}}
+\code{\link[plm]{phtest}}
 }

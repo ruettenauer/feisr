@@ -14,7 +14,7 @@
 #' estimating a Mundlak \insertCite{Mundlak.1978.0}{feisr} specification using random effects models
 #' with \code{\link[plm]{plm}}.
 #' Subsequently, \code{feistest} tests whether the time-constant variables / slope variables are correlated with
-#' the unobserved heterogeneity by using a Wald chi-squared test with \code{\link[aod]{wald.test}}.
+#' the unobserved heterogeneity by using a Wald chi-squared test.
 #'
 #' \code{type="art1"} estimates an extended regression-based Hausman test comparing fixed effects
 #' individual slope models and conventional fixed effects models. For \code{art1} the
@@ -42,7 +42,7 @@
 #' @seealso
 #' \code{\link[feisr]{summary.feistest}}, \code{\link[feisr]{bsfeistest}},
 #' \code{\link[feisr]{feis}},  \code{\link[plm]{plm}},
-#' \code{\link[aod]{wald.test}}, \code{\link[plm]{phtest}}
+#' \code{\link[plm]{phtest}}
 #'
 #' @param model	an object of class "\code{feis}".
 #' @param robust logical. If \code{TRUE} uses cluster robust standard errors (Default is \code{FALSE}).
@@ -55,12 +55,12 @@
 #' @param ...	further arguments.
 #'
 #' @return An object of class "\code{feistest}", containing the following elements:
-#' \item{wald_feis}{an object of class "\code{wald.test}" (see \code{\link[aod]{wald.test}}) testing
+#' \item{wald_feis}{an object of class "\code{wald.test}" testing
 #' the fixed effects individual slopes model against the conventional fixed effects model
 #' (\code{type="art1"}).}
-#' \item{wald_fe}{an object of class "\code{wald.test}" (see \code{\link[aod]{wald.test}}) testing
+#' \item{wald_fe}{an object of class "\code{wald.test}" testing
 #' the fixed effects model against the random effects model (\code{type="art2"}).}
-#' \item{wald_re}{an object of class "\code{wald.test}" (see \code{\link[aod]{wald.test}}) testing
+#' \item{wald_re}{an object of class "\code{wald.test}" testing
 #' the fixed effects individual slopes model against the random effects model (\code{type="art3"}).}
 #' \item{vcov1}{the variance-covariance matrix of CREIS (\code{type="art1"}).}
 #' \item{vcov2}{the variance-covariance matrix of CRE (\code{type="art2"}).}
@@ -238,8 +238,8 @@ feistest <- function(model = NA, robust = FALSE, type = c("all", "art1", "art2",
       v_hat <- paste(terms, "_hat", sep = "")
     }
 
-    wt_feis <- aod::wald.test(b = coef(creis.mod), Sigma = vcov1,
-                              Terms = which(names(creis.mod$coefficients) %in% v_hat))
+    wt_feis <- wald.test(b = coef(creis.mod), Sigma = vcov1,
+                         Terms = which(names(creis.mod$coefficients) %in% v_hat))
   } else{wt_feis <- NULL; vcov1 <- NULL; creis.mod <- NULL}
 
 
@@ -277,8 +277,8 @@ feistest <- function(model = NA, robust = FALSE, type = c("all", "art1", "art2",
     }
 
     # FE-RE
-    wt_fe <- aod::wald.test(b = coef(cre.mod), Sigma = vcov2,
-                     Terms = which(names(cre.mod$coefficients) %in% c(v_mean, v_smean)))
+    wt_fe <- wald.test(b = coef(cre.mod), Sigma = vcov2,
+                       Terms = which(names(cre.mod$coefficients) %in% c(v_mean, v_smean)))
   } else{wt_fe <- NULL; vcov2 <- NULL; cre.mod <- NULL}
 
 
@@ -313,8 +313,8 @@ feistest <- function(model = NA, robust = FALSE, type = c("all", "art1", "art2",
     }
 
     # FEIS - RE
-    wt_re <- aod::wald.test(b = coef(creis2.mod), Sigma = vcov3,
-                            Terms = which(names(creis.mod$coefficients) %in% v_hat))
+    wt_re <- wald.test(b = coef(creis2.mod), Sigma = vcov3,
+                       Terms = which(names(creis.mod$coefficients) %in% v_hat))
   } else{wt_re <- NULL; vcov3 <- NULL; creis2.mod <- NULL}
 
 
@@ -368,13 +368,13 @@ feistest <- function(model = NA, robust = FALSE, type = c("all", "art1", "art2",
 #' \code{type="bs3"} estimates a bootstrapped Hausman directly comparing FEIS against RE, thereby testing
 #' for inconsistency of the RE model due to either heterogeneous slopes or time-constant omitted heterogeneity.
 #' Bootstrapping is perfomed by resampling with replacement while keeping the number of groups identical to
-#' the number of groups in the original dataset. \code{\link[aod]{wald.test}} is used to perform a Wald
+#' the number of groups in the original dataset. A wald test from aod package is used to perform a Wald
 #' chi-squared test on the differences between coefficients.
 #'
 #' @seealso
 #' \code{\link[feisr]{summary.feistest}}, \code{\link[feisr]{feistest}},
 #' \code{\link[feisr]{feis}},  \code{\link[plm]{plm}},
-#' \code{\link[aod]{wald.test}}, \code{\link[plm]{phtest}}
+#' \code{\link[plm]{phtest}}
 #'
 #' @param model	an object of class "\code{feis}".
 #' @param type one of "\code{all}" (the Default), "\code{bs1}" for test of FEIS against FE only,
@@ -390,12 +390,12 @@ feistest <- function(model = NA, robust = FALSE, type = c("all", "art1", "art2",
 #' @param ...	further arguments.
 #'
 #' @return An object of class "\code{feistest}", containing the following elements:
-#' \item{wald_feis}{an object of class "\code{wald.test}" (see \code{\link[aod]{wald.test}})
+#' \item{wald_feis}{an object of class "\code{wald.test}"
 #'  testing the fixed effects individual slopes model against the conventional fixed effects
 #'  model (\code{type="bs1"}).}
-#' \item{wald_fe}{an object of class "\code{wald.test}" (see \code{\link[aod]{wald.test}})
+#' \item{wald_fe}{an object of class "\code{wald.test}"
 #'  testing the fixed effects model against the random effects model (\code{type="bs2"}).}
-#' \item{wald_re}{an object of class "\code{wald.test}" (see \code{\link[aod]{wald.test}})
+#' \item{wald_re}{an object of class "\code{wald.test}"
 #' testing the fixed effects individual slopes model against the random effects model
 #' (\code{type="bs3"}).}
 #' \item{vcov1}{the empirical (bootstrapped) variance-covariance matrix of the
@@ -694,8 +694,8 @@ bsfeistest <- function(model = NA, type = c("all", "bs1", "bs2", "bs3"),
     }else{
       tt1 <- 1:length(bdiff.bs1)
     }
-    H.bs1 <- aod::wald.test(b = bdiff.bs1, Sigma = V.bs1,
-                            Terms = tt1)
+    H.bs1 <- wald.test(b = bdiff.bs1, Sigma = V.bs1,
+                       Terms = tt1)
   } else {H.bs1 <- NULL}
 
   if(!type %in% c("bs1", "bs3")){
@@ -704,8 +704,8 @@ bsfeistest <- function(model = NA, type = c("all", "bs1", "bs2", "bs3"),
     }else{
       tt2 <- 1:length(bdiff.bs2)
     }
-    H.bs2 <- aod::wald.test(b = bdiff.bs2, Sigma = V.bs2,
-                            Terms = tt2)
+    H.bs2 <- wald.test(b = bdiff.bs2, Sigma = V.bs2,
+                       Terms = tt2)
   }else{H.bs2 <- NULL}
 
   if(!type %in% c("bs1", "bs2")){
@@ -714,8 +714,8 @@ bsfeistest <- function(model = NA, type = c("all", "bs1", "bs2", "bs3"),
     }else{
       tt3 <- 1:length(bdiff.bs3)
     }
-    H.bs3 <- aod::wald.test(b = bdiff.bs3, Sigma = V.bs3,
-                            Terms = tt3)
+    H.bs3 <- wald.test(b = bdiff.bs3, Sigma = V.bs3,
+                       Terms = tt3)
   }else{H.bs3 <- NULL}
 
 

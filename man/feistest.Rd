@@ -29,12 +29,12 @@ slope variable is always included in "\code{terms}".}
 }
 \value{
 An object of class "\code{feistest}", containing the following elements:
-\item{wald_feis}{an object of class "\code{wald.test}" (see \code{\link[aod]{wald.test}}) testing
+\item{wald_feis}{an object of class "\code{wald.test}" testing
 the fixed effects individual slopes model against the conventional fixed effects model
 (\code{type="art1"}).}
-\item{wald_fe}{an object of class "\code{wald.test}" (see \code{\link[aod]{wald.test}}) testing
+\item{wald_fe}{an object of class "\code{wald.test}" testing
 the fixed effects model against the random effects model (\code{type="art2"}).}
-\item{wald_re}{an object of class "\code{wald.test}" (see \code{\link[aod]{wald.test}}) testing
+\item{wald_re}{an object of class "\code{wald.test}" testing
 the fixed effects individual slopes model against the random effects model (\code{type="art3"}).}
 \item{vcov1}{the variance-covariance matrix of CREIS (\code{type="art1"}).}
 \item{vcov2}{the variance-covariance matrix of CRE (\code{type="art2"}).}
@@ -62,7 +62,7 @@ The Hausman test can be computed by estimating a correlated random effects model
 estimating a Mundlak \insertCite{Mundlak.1978.0}{feisr} specification using random effects models
 with \code{\link[plm]{plm}}.
 Subsequently, \code{feistest} tests whether the time-constant variables / slope variables are correlated with
-the unobserved heterogeneity by using a Wald chi-squared test with \code{\link[aod]{wald.test}}.
+the unobserved heterogeneity by using a Wald chi-squared test.
 
 \code{type="art1"} estimates an extended regression-based Hausman test comparing fixed effects
 individual slope models and conventional fixed effects models. For \code{art1} the
@@ -104,5 +104,5 @@ summary(ht2)
 \seealso{
 \code{\link[feisr]{summary.feistest}}, \code{\link[feisr]{bsfeistest}},
 \code{\link[feisr]{feis}},  \code{\link[plm]{plm}},
-\code{\link[aod]{wald.test}}, \code{\link[plm]{phtest}}
+\code{\link[plm]{phtest}}
 }

@@ -1,4 +1,10 @@
-# feisr 1.2.1
+# feisr 1.3.0
+
+### Major Changes
+
+- `wald.test()` (from aod package) included as internal function to avoid archival
+
+### Minor Changes
 
 - Bug-fix `detrend()` for handling of vectors in `data` 
 
