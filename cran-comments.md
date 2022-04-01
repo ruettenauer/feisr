@@ -12,9 +12,9 @@ Thank you very much for checking and best wishes,
 Tobias
 
 ## Test environments
-* local: WIN10 64Bit, R 3.6.3, R 4.0.4, devel
-* Travis-CI: Ubuntu 16.04, R 3.6.3, R 4.0.2, devel
-* Travis-CI: Mac OS X 10.13.6, R 3.6.3, R 4.0.4
+* local: WIN10 64Bit, R 3.6.3, R 4.1.3, devel
+* Github: Ubuntu 20.04.4, R 4.1.3, devel
+* Github: Mac OS X 11.6.5, R 4.1.3
 
 ## R CMD check results
 
@@ -23,3 +23,8 @@ Tobias
 ## Reverse dependencies
 
 R CMD check --as-cran was run on all reverse dependencies locally (insight, texreg). All checks passed.
+
+  DOI: 10.2307/3316008
+    From: DESCRIPTION
+    Status: Service Unavailable
+    Message: 503
