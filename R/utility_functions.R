@@ -306,7 +306,8 @@ detrend <- function(data, slopes, id = NULL, intercept = TRUE,
                                                             checkcol = TRUE, tol = tol)), simplify = FALSE)
 
   if(utils::packageVersion("dplyr") >= "1.0.0"){
-    dhat <- dplyr::bind_rows(rbind(dhat), .id = NULL) # only for version dplyr >= 1.0.0 keeps rownames
+    dhat <- undim(unclass(dhat))
+    dhat <- dplyr::bind_rows(dhat, .id = NULL) # only for version dplyr >= 1.0.0 keeps rownames
   }else{
     dhat <- do.call(rbind, lapply(dhat, as.matrix)) # use dplyr for more efficiency
   }
@@ -567,6 +568,19 @@ r.sq.feis <- function(object, adj=FALSE, df=NULL, intercept=FALSE){
 
 }
 
+undim <- function (x) {
+  dim <- dim(x)
 
+  if (is.null(dim)) {
+    return(x)
+  }
 
+  dim(x) <- NULL
 
+  if (length(dim) == 1L && !is.null(rownames(x))) {
+    # Preserve names of 1D arrays
+    names(x) <- rownames(x)
+  }
+
+  x
+}
