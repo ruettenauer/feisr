@@ -1,11 +1,11 @@
-## Submission feisr v.1.3.0
-This is a new version v.1.3.0 of feisr.
+## Submission feisr v.1.3.1
+This is a new version v.1.3.1 of feisr.
 
 Thank you very much for checking and best wishes, 
 Tobias
 
 ## Test environments
-* local: WIN10 64Bit, R 4.0.4, R 4.1.3, 4.2.0 alpha
+* local: WIN10 64Bit, R 4.5.1
 * Github: Windows Server 2022, devel
 * Github: Ubuntu 20.04.4, R 4.0.5, R 4.1.3, devel
 * Github: Mac OS X 11.6.5, R 4.1.3, devel

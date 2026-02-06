@@ -41,6 +41,6 @@
 #' \insertAllCited{}
 #'
 #'
-#' @docType package
+#' _PACKAGE
 #' @name feisr-package
 NULL
