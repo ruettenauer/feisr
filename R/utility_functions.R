@@ -568,6 +568,11 @@ r.sq.feis <- function(object, adj=FALSE, df=NULL, intercept=FALSE){
 
 }
 
+
+###############
+#### Undim ####
+###############
+
 undim <- function (x) {
   dim <- dim(x)
 
