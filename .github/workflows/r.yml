@@ -35,13 +35,13 @@ jobs:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout
 
-      - uses: r-lib/actions/setup-r@v4
+      - uses: r-lib/actions/setup-r
         with:
           r-version: ${{ matrix.config.r }}
 
-      - uses: r-lib/actions/setup-pandoc@v1
+      - uses: r-lib/actions/setup-pandoc
 
       - name: Query dependencies
         run: |
