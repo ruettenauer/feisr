@@ -47,6 +47,7 @@ wald.test <- function(Sigma, b, Terms = NULL, L = NULL, H0 = NULL, df = NULL, ve
             class = "wald.test")
 }
 
+#' @exportS3Method
 print.wald.test <- function(x, digits = 2, ...){
   Terms <- x[["Terms"]]; b <- x[["b"]]; H0 <- x[["H0"]]; v <- x[["result"]][["chi2"]]; df <- x[["df"]]
   verbose <- x[["verbose"]]
