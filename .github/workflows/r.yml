@@ -43,6 +43,8 @@ jobs:
 
       - uses: r-lib/actions/setup-pandoc@v2
 
+      - uses: xu-cheng/latex-action@v4
+
       - name: Query dependencies
         run: |
           install.packages('remotes')
